@@ -17,5 +17,8 @@
   "dependencies": {
     "load-json-file": "^5.1.0",
     "object-path": "^0.11.4"
+  },
+  "devDependencies": {
+    "git-blame": "^1.4.0"
   }
 }
