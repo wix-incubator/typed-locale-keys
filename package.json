@@ -16,7 +16,7 @@
   "author": "Guy Warzager",
   "license": "ISC",
   "devDependencies": {
-    "load-json-file": "^5.1.0"
+    "load-json-file": "^5.1.0",
     "git-blame": "^1.4.0"
   }
 }
