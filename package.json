@@ -4,7 +4,8 @@
   "description": "generates and manages locale keys",
   "main": "index.js",
   "scripts": {
-    "generate-js-file": "node generate-js-file.js --input='./locale/messages_en.json'"
+    "generate-locale-class": "TASK=generate-locale-class node index.js",
+    "analyze-usage": "TASK=analyze-usage node index.js"
   },
   "keywords": [
     "i18n",
@@ -14,11 +15,8 @@
   ],
   "author": "Guy Warzager",
   "license": "ISC",
-  "dependencies": {
-    "load-json-file": "^5.1.0",
-    "object-path": "^0.11.4"
-  },
   "devDependencies": {
+    "load-json-file": "^5.1.0"
     "git-blame": "^1.4.0"
   }
 }
