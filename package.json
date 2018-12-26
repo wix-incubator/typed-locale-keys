@@ -1,11 +1,17 @@
 {
-  "name": "typed-locale-keys",
+  "name": "@wix/typed-locale-keys",
   "version": "1.0.0",
   "description": "generates and manages locale keys",
   "main": "index.js",
   "scripts": {
     "generate-locale-class": "TASK=generate-locale-class node index.js",
-    "analyze-usage": "TASK=analyze-usage node index.js"
+    "analyze-usage": "TASK=analyze-usage node index.js",
+    "build": ":",
+    "test": ":",
+    "release": "wnpm-release"
+  },
+  "bin": {
+    "vazi": "index.js"
   },
   "keywords": [
     "i18n",
@@ -14,9 +20,12 @@
     "locale"
   ],
   "author": "Guy Warzager",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "load-json-file": "^5.1.0",
     "git-blame": "^1.4.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }

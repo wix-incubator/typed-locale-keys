@@ -5,7 +5,7 @@ const util = require('util');
 class TSClassBuilder {
 
     createTsClassStringMember(keyProp, realKey) {
-        return `    public ${keyProp} : string =  '${realKey}';\n`;
+        return `    public ${keyProp}: string = '${realKey}';\n`;
     }
 
     async get(srcObj, className = 'LocaleKeys') {
