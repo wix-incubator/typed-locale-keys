@@ -27,7 +27,7 @@ class TSClassBuilder {
     }
 }
 
-async function generateLocaleClass(input, {output = './dist', className}) {
+async function generateLocaleClass({input}, {output, className}) {
 
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
@@ -44,11 +44,11 @@ async function generateLocaleClass(input, {output = './dist', className}) {
 
     const finalClass = await tsClassBuilder.get(localeKeys, className);
 
-    if (!fs.existsSync(outPutDir)) {
-        fs.mkdirSync(outPutDir);
+    if (!fs.existsSync(output)) {
+        fs.mkdirSync(output);
     }
 
-    fs.writeFileSync(`${outPutDir}/${className}.ts`, finalClass, 'utf-8');
+    fs.writeFileSync(`${output}/${className}.ts`, finalClass, 'utf-8');
 }
 
 module.exports = {generateLocaleClass};

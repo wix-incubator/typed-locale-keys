@@ -1,8 +1,12 @@
-const program = require('commander');
+#!/usr/bin/env node
 const {generateLocaleClass} = require('../tasks/generate-locale-class');
+const program = require('caporal');
 
 program
-    .command('generate <dir>', 'Generates a class from the keys of a locale.json file')
-    .option('-o, --output', 'Destination path for generated class')
-    .option('--className', 'Generated class name')
+    .command('generate', 'Generates a class from the keys of a locale.json file')
+    .argument('[input]', 'Locale JSON file path')
+    .option('-o, --output [dir]', 'Destination directory for generated class',program.STRING,'./dist', false)
+    .option('--className [name]', 'Generated class name',program.STRING,'LocaleKeys', false)
     .action(generateLocaleClass);
+
+program.parse(process.argv);
