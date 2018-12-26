@@ -22,8 +22,9 @@
   "author": "Guy Warzager",
   "license": "MIT",
   "devDependencies": {
+    "git-blame": "^1.4.0",
     "load-json-file": "^5.1.0",
-    "git-blame": "^1.4.0"
+    "wnpm-ci": "^7.0.7"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
