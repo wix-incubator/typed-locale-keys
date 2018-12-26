@@ -13,7 +13,7 @@ class TSClassBuilder {
         try {
             const readFile = util.promisify(fs.readFile);
 
-            file = await readFile('./templates/localeKeysTemplate.ts', 'utf-8');
+            file = await readFile('templates/localeKeysTemplate.ts', 'utf-8');
         } catch (err) {
             console.error(err);
         }
