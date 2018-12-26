@@ -27,7 +27,7 @@ class TSClassBuilder {
     }
 }
 
-async function generateLocaleClass(input, outPutDir, className) {
+async function generateLocaleClass(input, {output = './dist', className}) {
 
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
