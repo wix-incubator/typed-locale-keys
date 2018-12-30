@@ -22,11 +22,12 @@
   "author": "Guy Warzager",
   "license": "MIT",
   "devDependencies": {
+    "caporal": "^1.1.0",
+    "commander": "^2.19.0",
     "git-blame": "^1.4.0",
     "load-json-file": "^5.1.0",
-    "wnpm-ci": "^7.0.7",
-    "commander": "^2.19.0",
-    "caporal": "^1.1.0"
+    "object-path": "^0.11.4",
+    "wnpm-ci": "^7.0.7"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
