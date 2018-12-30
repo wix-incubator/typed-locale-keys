@@ -21,7 +21,7 @@
   ],
   "author": "Guy Warzager",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "caporal": "^1.1.0",
     "commander": "^2.19.0",
     "git-blame": "^1.4.0",
