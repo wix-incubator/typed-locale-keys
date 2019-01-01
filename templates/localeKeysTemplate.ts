@@ -1,6 +1,5 @@
-// ts-lint:
 export class LocaleKeysTemplate {
-    constructor() {
+    constructor(/* constructor args */) {
         //
     }
 

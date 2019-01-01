@@ -4,27 +4,36 @@ const util = require('util');
 const objectPath = require("object-path");
 
 const ignoreCoverage = `/* istanbul ignore next line */`;
+const translateFunction = 'translate';
+
 class TSClassBuilder {
 
-    constructor(asFunction) {
-        this.asFunction = asFunction;
+    constructor(asFunction, withTranslation) {
+        this.withTranslation = withTranslation;
+        this.asFunction = asFunction || withTranslation;
     }
 
     getValue(stringValue) {
-        if(this.asFunction) {
-            return `() => '${stringValue}'`;
+        if (this.asFunction) {
+            let functionValue = `'${stringValue}'`;
+
+            if (this.withTranslation) {
+                functionValue = `this.${translateFunction}(${functionValue})`;
+            }
+
+            return `() => ${functionValue}`;
         }
         return `'${stringValue}'`;
     }
 
-    getObjectToString(obj, indent = 2) {
+    convertObjectToString(obj, indent = 2) {
         let final = '';
         const indentTemplate = '    ';
         let indentString = indentTemplate.repeat(indent);
 
-        if(typeof obj === 'object') {
+        if (typeof obj === 'object') {
             const newIndent = ++indent;
-            const printable = Object.keys(obj).map(key => (`${key}: ${this.getObjectToString(obj[key], newIndent)}`));
+            const printable = Object.keys(obj).map(key => (`${key}: ${this.convertObjectToString(obj[key], newIndent)}`));
             final += `{\n`;
             printable.forEach(line => final += `${indentString}${line},\n`);
             final += `${indentString.slice(indentTemplate.length)}}`;
@@ -35,15 +44,32 @@ class TSClassBuilder {
         return final;
     }
 
-    createTsClassStringMember(keyProp, realKey) {
+    createTsClassStringProperty(keyProp, realKey) {
         if (typeof realKey === 'string') {
             return `    public ${keyProp} = ${this.getValue(realKey)};\n`;
         } else {
-            return `    public ${keyProp} = ${this.getObjectToString(realKey)};\n`;
+            return `    public ${keyProp} = ${this.convertObjectToString(realKey)};\n`;
         }
     }
 
-    async get(srcObj, className = 'LocaleKeys') {
+    setKeysToProps(file, srcObj) {
+        let keysProps = '';
+        Object.keys(srcObj).forEach(rootKey => keysProps += this.createTsClassStringProperty(rootKey, srcObj[rootKey]));
+
+        return file.replace('/* placeholder: keys here */', keysProps.trim());
+    }
+
+    setConstructorArgs(file) {
+        let args = '';
+
+        if (this.withTranslation) {
+            args += `private ${translateFunction}: Function`;
+        }
+
+        return file.replace('/* constructor args */', args.trim());
+    }
+
+    async get(srcObj, className) {
         let file;
         try {
             const readFile = util.promisify(fs.readFile);
@@ -53,16 +79,14 @@ class TSClassBuilder {
             console.error(err);
         }
 
-        let keysProps = '';
-        Object.keys(srcObj).forEach(rootKey => keysProps += this.createTsClassStringMember(rootKey, srcObj[rootKey]));
-
-        file = file.replace('/* placeholder: keys here */', keysProps.trim());
         file = file.replace('LocaleKeysTemplate', className.trim());
+        file = this.setConstructorArgs(file);
+        file = this.setKeysToProps(file, srcObj);
         return file;
     }
 }
 
-async function generateLocaleClass({input}, {output, className, nested, coverage}) {
+async function generateLocaleClass({input}, {output, className, nested, coverage, translate}) {
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
         process.exit(1);
@@ -78,7 +102,7 @@ async function generateLocaleClass({input}, {output, className, nested, coverage
         return final;
     });
 
-    const tsClassBuilder = new TSClassBuilder(coverage);
+    const tsClassBuilder = new TSClassBuilder(coverage, translate);
 
     const finalClass = await tsClassBuilder.get(localeKeys, className);
 
