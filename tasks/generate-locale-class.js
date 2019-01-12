@@ -2,15 +2,19 @@ const loadJsonFile = require('load-json-file');
 const fs = require('fs');
 const util = require('util');
 const objectPath = require("object-path");
+const {analyzeAgeOfKey} = require('./analyze-age-of-key');
 
-const ignoreCoverage = `/* istanbul ignore next line */`;
+const ignoreCoverage = (date) => date ? `/* istanbul ignore next (created at: ${date}) */`: '/* istanbul ignore next */';
 const translateFunction = 'translate';
 
 class TSClassBuilder {
 
-    constructor(asFunction, withTranslation) {
+    constructor(withCoverage, withTranslation, analyzedAgeOfKey, gracePeriod) {
         this.withTranslation = withTranslation;
-        this.asFunction = asFunction || withTranslation;
+        this.withCoverage = withCoverage;
+        this.gracePeriod = gracePeriod;
+        this.analyzedAgeOfKey = analyzedAgeOfKey;
+        this.asFunction = withCoverage || withTranslation;
     }
 
     getValue(stringValue) {
@@ -21,7 +25,17 @@ class TSClassBuilder {
                 functionValue = `this.${translateFunction}(${functionValue})`;
             }
 
-            return `() => ${functionValue}`;
+            functionValue =  `() => ${functionValue}`;
+
+            if (this.withCoverage) {
+                const {age} = this.analyzedAgeOfKey[stringValue] || {};
+                const isInGracePeriod = age === undefined || age <= this.gracePeriod;
+                if (isInGracePeriod) {
+                    functionValue = `${ignoreCoverage()} ${functionValue}`;
+                }
+            }
+
+            return functionValue;
         }
         return `'${stringValue}'`;
     }
@@ -86,10 +100,16 @@ class TSClassBuilder {
     }
 }
 
-async function generateLocaleClass({input}, {output, className, nested, coverage, translate}) {
+async function generateLocaleClass({input}, {output, className, nested, coverage, translate, gracePeriod}) {
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
         process.exit(1);
+    }
+
+    let analyzedAgeOfKey = {};
+
+    if (coverage) {
+        analyzedAgeOfKey = await analyzeAgeOfKey(input);
     }
 
     const localeKeys = await loadJsonFile(input).then(localeKeys => {
@@ -102,7 +122,7 @@ async function generateLocaleClass({input}, {output, className, nested, coverage
         return final;
     });
 
-    const tsClassBuilder = new TSClassBuilder(coverage, translate);
+    const tsClassBuilder = new TSClassBuilder(coverage, translate, analyzedAgeOfKey, gracePeriod);
 
     const finalClass = await tsClassBuilder.get(localeKeys, className);
 
