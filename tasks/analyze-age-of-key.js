@@ -1,5 +1,6 @@
 const gitBlame = require('git-blame');
 const path = require('path');
+const fs = require('fs');
 
 const getCurrentKeys = (content) => {
     let keys = [];
@@ -19,6 +20,11 @@ const convertKeyAgeObj = (commits) => {
 
     Object.keys(commits).forEach((hash) => {
         const currentCommit = commits[hash];
+
+        if (!currentCommit.keys) {
+            return;
+        }
+
         const {age, timeStamp} = currentCommit;
         const createdDate = new Date(timeStamp).toLocaleDateString();
         currentCommit.keys.forEach((key) => keyAgeObj[key] = {age, createdDate});
@@ -33,11 +39,30 @@ function analyzeAgeOfKey(input) {
         resolve = _resolve;
     });
 
-    const repoPath = path.resolve(('.git'));
+    let isExists = false;
+    let backDir = 0;
+    let repoPath;
+
+    while (!isExists) {
+        let back = '../'.repeat(backDir);
+        path.resolve(('.git'));
+        repoPath = path.resolve(`${back}.git`);
+        isExists = fs.existsSync(repoPath);
+        backDir++;
+    }
+
+
+    const absoluteGitPath = repoPath.replace('.git', '');
+    const absoluteFilePath = path.resolve(input);
+    const relativeFilePath = absoluteFilePath.replace(absoluteGitPath, '');
+
+    if (!fs.existsSync(relativeFilePath)) {
+        resolve({});
+    }
 
     let commits = {};
     let currentCommit = {};
-    gitBlame(repoPath, {file: input, detectMoved: false})
+    gitBlame(repoPath, {file: relativeFilePath, detectMoved: false})
         .on('data', function (type, data) {
             if (!commits[data.hash]) {
                 commits[data.hash] = {};
@@ -64,9 +89,7 @@ function analyzeAgeOfKey(input) {
                 currentCommit.age = Math.floor(dateMargin / 2.628e+9);
             }
         }).on('error', function (err) {
-            if (err === 'non-zero exit code 128') {
-                resolve({});
-            }
+            console.log(err);
             process.exit(1);
         }).on('end', function () {
             const keyAgeObj = convertKeyAgeObj(commits);
