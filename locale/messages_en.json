@@ -11,6 +11,7 @@
   "gallery.main.sideMenu.manageStore.tooltip" : "Create new collections, add and rearrange products and more.",
   "gallery.main.sideMenu.upgrade" : "Upgrade",
   "gallery.main.backButton" : "Back",
+  "gallery.main.backButton.alt" : "Back Button",
   "commonLocaleKeys.fontPickerTitle" : "Font Picker",
   "commonLocaleKeys.customFontLabel" : "Custom",
   "gallery.settings.hoverType.title" : "On Hover",

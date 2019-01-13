@@ -100,6 +100,21 @@ class TSClassBuilder {
     }
 }
 
+
+const unwrapUnneeded$value = function(localeKeys, allKeys) {
+    const localeKeysUnwrapped = Object.assign({}, localeKeys);
+    Object.assign(allKeys).forEach((path) => {
+        const current = objectPath.get(localeKeysUnwrapped, path);
+        if (typeof current === 'object' &&
+            Object.keys(current).length === 1 &&
+            typeof current.$value === 'string') {
+            objectPath.set(localeKeysUnwrapped, path, current.$value);
+        }
+    });
+
+    return localeKeysUnwrapped;
+};
+
 async function generateLocaleClass({input}, {output, className, nested, coverage, translate, gracePeriod}) {
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
@@ -111,16 +126,17 @@ async function generateLocaleClass({input}, {output, className, nested, coverage
     if (coverage) {
         analyzedAgeOfKey = await analyzeAgeOfKey(input);
     }
+    const localeKeysJSON = await loadJsonFile(input);
 
-    const localeKeys = await loadJsonFile(input).then(localeKeys => {
-        const final = {};
-        if (nested) {
-            Object.keys(localeKeys).forEach((key) => objectPath.set(final, key, key));
-        } else {
-            Object.keys(localeKeys).forEach((key) => final[key.replace(/\./g, '_')] = key);
-        }
-        return final;
-    });
+
+    let localeKeys = {};
+    const allKeys = Object.keys(localeKeysJSON);
+    if (nested) {
+        allKeys.forEach((keyPath) => objectPath.set(localeKeys, `${keyPath}.$value`, keyPath));
+        localeKeys = unwrapUnneeded$value(localeKeys, allKeys);
+    } else {
+        allKeys.forEach((key) => localeKeys[key.replace(/\./g, '_')] = key);
+    }
 
     const tsClassBuilder = new TSClassBuilder(coverage, translate, analyzedAgeOfKey, gracePeriod);
 

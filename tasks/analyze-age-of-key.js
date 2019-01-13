@@ -51,7 +51,6 @@ function analyzeAgeOfKey(input) {
         backDir++;
     }
 
-
     const absoluteGitPath = repoPath.replace('.git', '');
     const absoluteFilePath = path.resolve(input);
     const relativeFilePath = absoluteFilePath.replace(absoluteGitPath, '');
