@@ -6,7 +6,7 @@ generate typescript code from locale keys JSON.
 ### Getting Started
 
 ```
-vazi codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
+tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 ```
 
 ## example
