@@ -4,14 +4,13 @@
   "description": "generates and manages locale keys",
   "main": "./bin/vazi.js",
   "scripts": {
-    "generate-locale-class": "TASK=generate-locale-class node index.js",
-    "analyze-usage": "TASK=analyze-usage node index.js",
+    "generate": "node ./bin/typedLocaleKeys.js codegen",
     "build": ":",
     "test": ":",
     "release": "wnpm-release"
   },
   "bin": {
-    "vazi": "./bin/vazi.js"
+    "tlk": "./bin/typedLocaleKeys.js"
   },
   "keywords": [
     "i18n",
@@ -27,7 +26,17 @@
     "git-blame": "^1.4.0",
     "load-json-file": "^5.1.0",
     "object-path": "^0.11.4",
+    "shelljs": "^0.8.3",
     "wnpm-ci": "^7.0.7"
+  },
+  "typedLocaleKeys": {
+    "entries": {
+      "GalleryKeys": {
+        "source": "./locale/messages_en.json",
+        "output": "./dist/gallery"
+      },
+      "CommonKeys": "./locale/sub/messages_en.json"
+    }
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

@@ -3,6 +3,7 @@ const fs = require('fs');
 const util = require('util');
 const objectPath = require("object-path");
 const {analyzeAgeOfKey} = require('./analyze-age-of-key');
+const shell = require('shelljs');
 
 const ignoreCoverage = (date) => date ? `/* istanbul ignore next (created at: ${date}) */`: '/* istanbul ignore next */';
 const translateFunction = 'translate';
@@ -115,7 +116,7 @@ const unwrapUnneeded$value = function(localeKeys, allKeys) {
     return localeKeysUnwrapped;
 };
 
-async function generateLocaleClass({input}, {output, className, nested, coverage, translate, gracePeriod}) {
+async function generateLocaleClass({input, output, className, nested, coverage, translate, gracePeriod}) {
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
         process.exit(1);
@@ -143,7 +144,7 @@ async function generateLocaleClass({input}, {output, className, nested, coverage
     const finalClass = await tsClassBuilder.get(localeKeys, className);
 
     if (!fs.existsSync(output)) {
-        fs.mkdirSync(output);
+        shell.mkdir('-p', output);
     }
 
     fs.writeFileSync(`${output}/${className}.ts`, finalClass, 'utf-8');
