@@ -15,6 +15,7 @@ input: `messages_eb.json`:
 
 ```
     {
+      "home.header": "header",
       "home.header.title": "hello world",
       "home.header.subtitle": "this is my hello world",
       "home.body.header": "on this app you will do nothing",
@@ -31,6 +32,7 @@ output:
 
         public home = {
             header: {
+                $value: () => this.translate('home.header'),
                 title: () => this.translate('home.header.title'),
                 subtitle: () => this.translate('home.header.subtitle'),
             },
