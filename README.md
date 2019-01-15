@@ -43,11 +43,20 @@ output:
 
 ```
 
-## Istanbul Code Coverage
-`--coverage` option.
-allows Istanbul break build by coverage check.
-has `--threshold` option (default: 4 month), for grace period
+configuration area `package.json`:
+```
+  "typedLocaleKeys": {
+    "entries": {
+      "GalleryKeys": {
+        "source": "./locale/messages_en.json",
+        "output": "./dist/gallery"
+      },
+      "CommonKeys": "./locale/sub/messages_en.json" // for source only
+    },
+    "primaryOutput": "./dist" // fallback output
+  },
+```
 
-### Translate
-`--translate` option.
-add translate function
+more options:
+
+![Alt caporal usage](images/caporal-usage.jpeg?raw=true "Caporal usage")
