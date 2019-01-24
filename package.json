@@ -35,7 +35,8 @@
         "source": "./locale/messages_en.json",
         "output": "./dist/gallery"
       },
-      "CommonKeys": "./locale/sub/messages_en.json"
+      "CommonKeys": "./locale/sub/messages_en.json",
+      "FullExample": "./locale/full_example.json"
     }
   },
   "publishConfig": {

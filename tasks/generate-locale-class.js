@@ -5,28 +5,63 @@ const objectPath = require("object-path");
 const {analyzeAgeOfKey} = require('./analyze-age-of-key');
 const shell = require('shelljs');
 
-const ignoreCoverage = (date) => date ? `/* istanbul ignore next (created at: ${date}) */`: '/* istanbul ignore next */';
+const ignoreCoverage = (date) => date ? `/* istanbul ignore next (created at: ${date}) */` : '/* istanbul ignore next */';
 const translateFunction = 'translate';
 
 class TSClassBuilder {
 
-    constructor(withCoverage, withTranslation, analyzedAgeOfKey, gracePeriod) {
+    constructor(withCoverage, withTranslation, analyzedAgeOfKey, gracePeriod, localeKeysJSON) {
         this.withTranslation = withTranslation;
+        this.localeKeysJSON = localeKeysJSON;
         this.withCoverage = withCoverage;
         this.gracePeriod = gracePeriod;
         this.analyzedAgeOfKey = analyzedAgeOfKey;
         this.asFunction = withCoverage || withTranslation;
     }
 
+    getArgumentsType(keyContent) {
+        let argumentsDecleration = '';
+        const getParamWrapper = /{{[^}]+}}/g;
+        const gettingParam = /[a-z0-9A-Z_$.]+/;
+        const argumentsWrappers = keyContent.match(getParamWrapper);
+
+        if (argumentsWrappers) {
+            let options = {};
+            argumentsWrappers.forEach(wrapper => {
+                const argument = wrapper.match(gettingParam)[0];
+                if (argument) {
+                    objectPath.set(options, argument, ' any')
+                }
+            });
+            argumentsDecleration = JSON.stringify(options)
+                // .replace(/-9999/g, ' string')
+                .replace(/"/g, '')
+                .replace(/,/g, ', ')
+                .replace(/{/g, ' { ')
+                .replace(/}/g, ' }');
+        }
+
+        return argumentsDecleration;
+    }
+
     getValue(stringValue) {
         if (this.asFunction) {
             let functionValue = `'${stringValue}'`;
+            let keyArguments = '';
 
             if (this.withTranslation) {
-                functionValue = `this.${translateFunction}(${functionValue})`;
+                const keyArgumentsType = this.getArgumentsType(this.localeKeysJSON[stringValue]);
+                let translateArguments = [functionValue];
+                if (keyArgumentsType) {
+                    const keyArgumentName = 'options';
+                    keyArguments = `${keyArgumentName}:${keyArgumentsType}`;
+                    translateArguments.push(keyArgumentName)
+                }
+
+                functionValue = `this.${translateFunction}(${translateArguments.join(', ')})`;
             }
 
-            functionValue =  `() => ${functionValue}`;
+            functionValue = `(${keyArguments}) => ${functionValue}`;
 
             if (this.withCoverage) {
                 const {age} = this.analyzedAgeOfKey[stringValue] || {};
@@ -102,7 +137,7 @@ class TSClassBuilder {
 }
 
 
-const unwrapUnneeded$value = function(localeKeys, allKeys) {
+const unwrapUnneeded$value = function (localeKeys, allKeys) {
     const localeKeysUnwrapped = Object.assign({}, localeKeys);
     Object.assign(allKeys).forEach((path) => {
         const current = objectPath.get(localeKeysUnwrapped, path);
@@ -139,7 +174,7 @@ async function generateLocaleClass({input, output, className, nested, coverage, 
         allKeys.forEach((key) => localeKeys[key.replace(/\./g, '_')] = key);
     }
 
-    const tsClassBuilder = new TSClassBuilder(coverage, translate, analyzedAgeOfKey, gracePeriod);
+    const tsClassBuilder = new TSClassBuilder(coverage, translate, analyzedAgeOfKey, gracePeriod, localeKeysJSON);
 
     const finalClass = await tsClassBuilder.get(localeKeys, className);
 

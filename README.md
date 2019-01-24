@@ -14,18 +14,18 @@ tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 input: `messages_eb.json`:
 
 ```
-    {
-      "home.header": "header",
-      "home.header.title": "hello world",
-      "home.header.subtitle": "this is my hello world",
-      "home.body.header": "on this app you will do nothing",
-      "home.body.description": "this describes the meaningless apps"
-    }
+   {
+     "home.header": "header",
+     "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
+     "home.header.subtitle": "this is my hello world",
+     "home.body.header": "on this app you will do nothing",
+     "home.body.description": "this describes the meaningless apps"
+   }
 ```
 
 output:
 ```
-    export class LocaleKeys {
+    export class FullExample {
         constructor(private translate: Function) {
             //
         }
@@ -33,7 +33,7 @@ output:
         public home = {
             header: {
                 $value: () => this.translate('home.header'),
-                title: () => this.translate('home.header.title'),
+                title: (options: { greeting: any, person: { firstName: any, lastName: any }, date: any }) => this.translate('home.header.title', options),
                 subtitle: () => this.translate('home.header.subtitle'),
             },
             body: {
