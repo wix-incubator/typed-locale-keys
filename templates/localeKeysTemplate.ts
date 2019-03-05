@@ -1,3 +1,4 @@
+/* tslint:disable */
 export class LocaleKeysTemplate {
     constructor(/* constructor args */) {
         //
@@ -5,3 +6,4 @@ export class LocaleKeysTemplate {
 
     /* placeholder: keys here */
 }
+/* tslint:enable */

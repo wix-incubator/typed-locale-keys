@@ -55,10 +55,11 @@ configuration area `package.json`:
       },
       "CommonKeys": "./locale/sub/messages_en.json" // for source only
     },
-    "primaryOutput": "./dist" // fallback output
+    "primaryOutput": "./dist" // fallback output (after cli's `--output` fallback)
   },
 ```
 
 more options:
 
-![Alt caporal usage](images/caporal-usage.jpeg?raw=true "Caporal usage")
+<img src="images/caporal-usage.jpeg" alt="drawing" width="100%"/>
+
