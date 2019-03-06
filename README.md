@@ -11,18 +11,18 @@ tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 
 ## How to use
 
-#### in `package.json`
-add to `scripts` :
+#### <u>in `package.json`</u>
+add to `scripts`
 ```
     "pretest": "tlk codegen [ENTRY-DIRECTORY]/messages_en.json [OUTPUT-DIRECTORY]",
 ```
 
-#### initialize generated file with translate function
+#### <u>initialize generated file with translate function</u>
 ```
     const localeKeys = new LocaleKeys(i18nConf.t.bind(i18nConf));
 ```
 
-#### in root component ONLY
+#### <u>in root component ONLY</u>
 add `@translate`
 ```
     import {translate} from 'react-i18next';
