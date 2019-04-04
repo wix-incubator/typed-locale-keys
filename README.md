@@ -13,18 +13,18 @@ tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 
 #### <u>in `package.json`</u>
 add to `scripts`
-```
+```javascript
     "pretest": "tlk codegen [ENTRY-DIRECTORY]/messages_en.json [OUTPUT-DIRECTORY]",
 ```
 
 #### <u>initialize generated file with translate function</u>
-```
+```javascript
     const localeKeys = new LocaleKeys(i18nConf.t.bind(i18nConf));
 ```
 
 #### <u>in root component ONLY</u>
 add `@translate`
-```
+```typescript
     import {translate} from 'react-i18next';
 
     @translate
@@ -37,7 +37,7 @@ add `@translate`
 
 input: `messages_en.json`:
 
-```
+```json
     {
      "home.header": "header",
      "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
@@ -48,7 +48,7 @@ input: `messages_en.json`:
 ```
 
 output:
-```
+```typescript
     /* tslint:disable */
     export class FullExample {
         constructor(private translate: Function) {
@@ -72,7 +72,7 @@ output:
 ```
 
 configuration area `package.json`:
-```
+```json
     "typedLocaleKeys": {
     "entries": {
       "GalleryKeys": {
