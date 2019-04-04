@@ -54,5 +54,5 @@
       "CommonKeys": "./locale/sub/messages_en.json",
       "FullExample": "./locale/full_example.json"
     }
-  },
+  }
 }
