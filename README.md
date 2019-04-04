@@ -37,7 +37,7 @@ add `@translate`
 
 input: `messages_en.json`:
 
-```json
+```javascript
     {
      "home.header": "header",
      "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
@@ -72,7 +72,7 @@ output:
 ```
 
 configuration area `package.json`:
-```json
+```javascript
     "typedLocaleKeys": {
     "entries": {
       "GalleryKeys": {

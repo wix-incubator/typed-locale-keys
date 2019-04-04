@@ -1,5 +1,5 @@
 {
-  "name": "@wix/typed-locale-keys",
+  "name": "typed-locale-keys",
   "version": "1.0.0",
   "description": "generates and manages locale keys",
   "main": "./bin/vazi.js",
@@ -16,9 +16,25 @@
     "i18n",
     "JSON",
     "keys",
-    "locale"
+    "locale",
+    "typescript"
   ],
-  "author": "Guy Warzager",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "author": {
+    "name": "Guy Wargzaer",
+    "email": "guyw@wix.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-incubator/typed-locale-keys.git"
+  },
+  "homepage": "https://github.com/wix-incubator/typed-locale-keys#readme",
+  "bugs": {
+    "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "caporal": "^1.1.0",
@@ -39,7 +55,4 @@
       "FullExample": "./locale/full_example.json"
     }
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  }
 }
