@@ -5,20 +5,16 @@ const objectPath = require("object-path");
 const ignoreCoverage = (date) => date ? `/* istanbul ignore next (created at: ${date}) */` : '/* istanbul ignore next */';
 const translateFunction = 'translate';
 
-class TsLocaleKeysClassBuilder {
+class TSLocaleKeysClassBuilder {
 
-    constructor(withCoverage, withTranslation, analyzedAgeOfKey, gracePeriod, localeKeysJSON, showTranslations) {
+    constructor({withTranslation, localeKeysJSON, showTranslations}) {
         this.withTranslation = withTranslation;
         this.showTranslations = showTranslations;
-        // this.localeKeysJSON = localeKeysJSON;
-        this.withCoverage = withCoverage;
-        this.gracePeriod = gracePeriod;
-        this.analyzedAgeOfKey = analyzedAgeOfKey;
-        this.asFunction = withCoverage || withTranslation;
+        this.asFunction = withTranslation;
     }
 
     getArgumentsType(keyContent) {
-        let argumentsDecleration = '';
+        let argumentsDeclaration = '';
         const getParamWrapper = /{{[^}]+}}/g;
         const gettingParam = /[a-z0-9A-Z_$.]+/;
         const argumentsWrappers = keyContent.match(getParamWrapper);
@@ -31,15 +27,14 @@ class TsLocaleKeysClassBuilder {
                     objectPath.set(options, argument, ' any')
                 }
             });
-            argumentsDecleration = JSON.stringify(options)
-            // .replace(/-9999/g, ' string')
+            argumentsDeclaration = JSON.stringify(options)
                 .replace(/"/g, '')
                 .replace(/,/g, ', ')
                 .replace(/{/g, ' { ')
                 .replace(/}/g, ' }');
         }
 
-        return argumentsDecleration;
+        return argumentsDeclaration;
     }
 
     getValue({key, translation}) {
@@ -60,14 +55,6 @@ class TsLocaleKeysClassBuilder {
             }
 
             functionValue = `(${keyArguments}) => ${functionValue}`;
-
-            if (this.withCoverage) {
-                const {age} = this.analyzedAgeOfKey[key] || {};
-                const isInGracePeriod = age === undefined || age <= this.gracePeriod;
-                if (isInGracePeriod) {
-                    functionValue = `${ignoreCoverage()} ${functionValue}`;
-                }
-            }
         }
 
         if(this.showTranslations) {
@@ -137,4 +124,4 @@ class TsLocaleKeysClassBuilder {
     }
 }
 
-module.exports = {TSLocaleKeysClassBuilder: TsLocaleKeysClassBuilder};
+module.exports = {TSLocaleKeysClassBuilder};

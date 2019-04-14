@@ -1,11 +1,10 @@
-const {TSLocaleKeysClassBuilder} = require('./tsLocaleKeysClassBuilder');
+const {TSLocaleKeysClassBuilder} = require('../utils/tsLocaleKeysClassBuilder');
 const loadJsonFile = require('load-json-file');
 const fs = require('fs');
 const objectPath = require("object-path");
-const {analyzeAgeOfKey} = require('./analyze-age-of-key');
 const shell = require('shelljs');
 
-const unwrapUnneeded$value = function (localeKeys, allKeys) {
+const unwrapUnnecessary$value = function (localeKeys, allKeys) {
     const localeKeysUnwrapped = Object.assign({}, localeKeys);
     Object.assign(allKeys).forEach((path) => {
         const current = objectPath.get(localeKeysUnwrapped, path);
@@ -19,29 +18,24 @@ const unwrapUnneeded$value = function (localeKeys, allKeys) {
     return localeKeysUnwrapped;
 };
 
-async function generateLocaleClass({input, output, className, nested, coverage, translate, gracePeriod, showTranslations}) {
+async function generateLocaleClass({input, output, className, nested, translate, showTranslations}) {
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
         process.exit(1);
     }
 
-    let analyzedAgeOfKey = {};
-
-    if (coverage) {
-        analyzedAgeOfKey = await analyzeAgeOfKey(input);
-    }
     const localeKeysJSON = await loadJsonFile(input);
 
     let localeKeys = {};
     const allKeys = Object.keys(localeKeysJSON);
     if (nested) {
-        allKeys.forEach((keyPath) => objectPath.set(localeKeys, `${keyPath}.$value`, {key: keyPath, translation: localeKeysJSON[keyPath]}));
-        localeKeys = unwrapUnneeded$value(localeKeys, allKeys);
+        allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, {key, translation: localeKeysJSON[key]}));
+        localeKeys = unwrapUnnecessary$value(localeKeys, allKeys);
     } else {
         allKeys.forEach((key) => localeKeys[key.replace(/\./g, '_')] = {key, translation: localeKeysJSON[key]});
     }
 
-    const tsClassBuilder = new TSLocaleKeysClassBuilder(coverage, translate, analyzedAgeOfKey, gracePeriod, localeKeysJSON, showTranslations);
+    const tsClassBuilder = new TSLocaleKeysClassBuilder({withTranslation: translate, localeKeysJSON, showTranslations});
 
     const finalClass = await tsClassBuilder.get(localeKeys, className);
 
@@ -52,4 +46,4 @@ async function generateLocaleClass({input, output, className, nested, coverage, 
     fs.writeFileSync(`${output}/${className}.ts`, finalClass, 'utf-8');
 }
 
-module.exports = {generateLocaleClass};
+module.exports = { generateLocaleClass };

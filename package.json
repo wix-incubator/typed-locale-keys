@@ -2,15 +2,15 @@
   "name": "typed-locale-keys",
   "version": "1.0.1",
   "description": "generates and manages locale keys",
-  "main": "./bin/vazi.js",
+  "main": "src/bin/typedLocaleKeys.js",
   "scripts": {
-    "generate": "node ./bin/typedLocaleKeys.js codegen",
+    "generate": "node ./src/bin/typedLocaleKeys.js codegen",
     "build": ":",
     "test": ":",
     "release": "wnpm-release"
   },
   "bin": {
-    "tlk": "./bin/typedLocaleKeys.js"
+    "tlk": "src/bin/typedLocaleKeys.js"
   },
   "keywords": [
     "i18n",
@@ -36,23 +36,20 @@
     "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
   },
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "caporal": "^1.1.0",
-    "commander": "^2.19.0",
-    "git-blame": "^1.4.0",
     "load-json-file": "^5.1.0",
     "object-path": "^0.11.4",
-    "shelljs": "^0.8.3",
-    "wnpm-ci": "^7.0.7"
+    "shelljs": "^0.8.3"
   },
   "typedLocaleKeys": {
     "entries": {
       "GalleryKeys": {
-        "source": "./locale/messages_en.json",
+        "source": "./tests/locale/messages_en.json",
         "output": "./dist/gallery"
       },
-      "CommonKeys": "./locale/sub/messages_en.json",
-      "FullExample": "./locale/full_example.json"
+      "CommonKeys": "./tests/locale/sub/messages_en.json",
+      "FullExample": "./tests/locale/full_example.json"
     }
   }
 }
