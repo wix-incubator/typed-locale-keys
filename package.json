@@ -2,7 +2,7 @@
   "name": "typed-locale-keys",
   "version": "1.0.1",
   "description": "generates and manages locale keys",
-  "main": "src/bin/typedLocaleKeys.js",
+  "main": "./src/bin/typedLocaleKeys.js",
   "scripts": {
     "generate": "node ./src/bin/typedLocaleKeys.js codegen",
     "build": ":",
@@ -10,7 +10,7 @@
     "release": "wnpm-release"
   },
   "bin": {
-    "tlk": "src/bin/typedLocaleKeys.js"
+    "tlk": "./src/bin/typedLocaleKeys.js"
   },
   "keywords": [
     "i18n",
@@ -40,7 +40,8 @@
     "caporal": "^1.1.0",
     "load-json-file": "^5.1.0",
     "object-path": "^0.11.4",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.3",
+    "wnpm-ci": "^7.0.7"
   },
   "typedLocaleKeys": {
     "entries": {
