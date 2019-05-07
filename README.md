@@ -23,7 +23,7 @@ add to `scripts`
 ```
 
 #### <u>in root component ONLY</u>
-add `@translate`
+add `@translate`. it adds the `wait` logic that prevents rendering prior loading all keys
 ```typescript
     import {translate} from 'react-i18next';
 
