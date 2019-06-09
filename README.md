@@ -19,7 +19,7 @@ add to `scripts`
 
 #### <u>initialize generated file with translate function</u>
 ```javascript
-    const localeKeys = new LocaleKeys(i18nConf.t.bind(i18nConf));
+    const localeKeys = LocaleKeys(i18nConf.t.bind(i18nConf));
 ```
 
 #### <u>in root component ONLY</u>
@@ -39,32 +39,30 @@ input: `messages_en.json`:
 
 ```javascript
     {
-     "home.header": "header",
-     "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
-     "home.header.subtitle": "this is my hello world",
-     "home.body.header": "on this app you will do nothing",
-     "home.body.description": "this describes the meaningless apps"
+      "home.header": "header",
+      "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
+      "home.header.subtitle": "this is my hello world",
+      "home.body.header-small": "on this app you will do nothing",
+      "home.body.description": "this describes the meaningless apps"
     }
 ```
 
 output:
 ```typescript
     /* tslint:disable */
-    export class FullExample {
-        constructor(private translate: Function) {
-            //
-        }
-
-        public home = {
-            header: {
-                $value: () => this.translate('home.header') /* header */,
-                title: (options: { greeting: any, person: { firstName: any, lastName: any }, date: any }) => this.translate('home.header.title', options) /* {{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}} */,
-                subtitle: () => this.translate('home.header.subtitle') /* this is my hello world */,
-            },
-            body: {
-                header: () => this.translate('home.body.header') /* on this app you will do nothing */,
-                description: () => this.translate('home.body.description') /* this describes the meaningless apps */,
-            },
+    export function FullExample(translate: Function) {
+        return {
+            home: {
+                header: {
+                    $value: () => translate('home.header') /* header */,
+                    title: (options: { greeting: any, person: { firstName: any, lastName: any }, date: any }) => translate('home.header.title', options) /* {{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}} */,
+                    subtitle: () => translate('home.header.subtitle') /* this is my hello world */
+                },
+                body: {
+                    'header-small': () => translate('home.body.header-small') /* on this app you will do nothing */,
+                    description: () => translate('home.body.description') /* this describes the meaningless apps */
+                }
+            }
         };
     }
     /* tslint:enable */
@@ -87,5 +85,5 @@ configuration area `package.json`:
 
 more options:
 
-<img src="images/caporal-usage.jpeg" alt="drawing" width="100%"/>
+<img src="images/caporal-usage.jpg" alt="drawing" width="100%"/>
 

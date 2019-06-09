@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const {generateLocaleClass} = require('../tasks/generate-locale-class');
+const {generateLocaleFunction} = require('../tasks/generate-locale-function');
 const loadJsonFile = require('load-json-file');
 const program = require('caporal');
 
@@ -12,9 +12,9 @@ program
     .option('-n, --nested  [bool]', 'should create nested object', program.BOOLEAN, true, false)
     .option('-t, --translate [bool]', 'should add translate function. NOTE: will wrap value with function', program.BOOLEAN, true, false)
     .option('--showTranslations [bool]', 'add translations as function\'s comment', program.BOOLEAN, true, false)
-    .option('--className [name]', 'Generated class name', program.STRING, 'LocaleKeys', false)
-    .action(async ({source}, {output, className, nested, translate, showTranslations}) => {
-        const entryFilesByClassName = {};
+    .option('--functionName [name]', 'Generated function name', program.STRING, 'LocaleKeys', false)
+    .action(async ({source}, {output, functionName, nested, translate, showTranslations}) => {
+        const entryFilesByFunctionName = {};
         const packageJSON = await loadJsonFile('package.json');
         const configuration = Object.assign({}, {primaryOutput: './dist'}, packageJSON.typedLocaleKeys);
 
@@ -26,28 +26,28 @@ program
             const entrySource = entry.source || entry;
             const entryOutput = entry.output || primaryOutput;
 
-            entryFilesByClassName[entryName] = {
+            entryFilesByFunctionName[entryName] = {
                 source: entrySource,
                 output: entryOutput,
             };
         });
 
         if (source) {
-            entryFilesByClassName[className] = {
+            entryFilesByFunctionName[functionName] = {
                 source,
                 output: primaryOutput
             };
         }
 
-        Object.keys(entryFilesByClassName).forEach((entryName) => {
-            const entry = entryFilesByClassName[entryName];
+        Object.keys(entryFilesByFunctionName).forEach((entryName) => {
+            const entry = entryFilesByFunctionName[entryName];
 
-            generateLocaleClass({
+            generateLocaleFunction({
                 input: entry.source,
                 output: entry.output,
-                className: entryName,
+                functionName: entryName,
                 nested,
-                translate,
+                withTranslation: translate,
                 showTranslations
             });
         })

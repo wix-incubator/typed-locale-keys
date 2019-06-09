@@ -1,10 +1,14 @@
 {
   "name": "typed-locale-keys",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "generates and manages locale keys",
   "main": "./src/bin/typedLocaleKeys.js",
   "scripts": {
     "generate": "node ./src/bin/typedLocaleKeys.js codegen",
+    "generate:flat": "node ./src/bin/typedLocaleKeys.js codegen --n false",
+    "generate:noFunction": "node ./src/bin/typedLocaleKeys.js codegen --t false",
+    "generate:noTranslations": "node ./src/bin/typedLocaleKeys.js codegen --showTranslations false",
+    "generate:functionName": "node ./src/bin/typedLocaleKeys.js codegen ./tests/locale/with_path_en.json --functionName SomeName",
     "build": ":",
     "test": ":",
     "release": "wnpm-release"
@@ -41,6 +45,7 @@
     "load-json-file": "^5.1.0",
     "object-path": "^0.11.4",
     "shelljs": "^0.8.3",
+    "stringify-object": "^3.3.0",
     "wnpm-ci": "^7.0.7"
   },
   "typedLocaleKeys": {
