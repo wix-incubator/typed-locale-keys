@@ -50,12 +50,12 @@
   },
   "typedLocaleKeys": {
     "entries": {
-      "GalleryKeys": {
+      "galleryKeys": {
         "source": "./tests/locale/messages_en.json",
         "output": "./dist/gallery"
       },
-      "CommonKeys": "./tests/locale/sub/messages_en.json",
-      "FullExample": "./tests/locale/full_example.json"
+      "commonKeys": "./tests/locale/sub/messages_en.json",
+      "fullExample": "./tests/locale/full_example.json"
     }
   }
 }

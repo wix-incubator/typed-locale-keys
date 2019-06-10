@@ -23,19 +23,15 @@ async function generateLocaleFunction({input, output, functionName, nested, with
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
         process.exit(1);
     }
-
-
     const localeKeysJSON = await loadJsonFile(input);
-
-    // const getValue = (key, value) => JSON.stringify({key, translation: localeKeysJSON[key]});
-
     let localeKeys = {};
+
     const allKeys = Object.keys(localeKeysJSON);
     if (nested) {
         allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, key));
         localeKeys = unwrapUnnecessary$value(localeKeys, allKeys);
     } else {
-        allKeys.forEach(key => localeKeys[key] = key);//({key, translation: localeKeysJSON[key]}));
+        allKeys.forEach(key => localeKeys[key] = key);
     }
 
     const tsFunctionBuilder = new TSLocaleKeysFunctionBuilder({withTranslation, localeKeysJSON, showTranslations});

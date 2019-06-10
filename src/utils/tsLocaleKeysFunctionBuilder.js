@@ -40,7 +40,6 @@ class TSLocaleKeysFunctionBuilder {
     getKeyConvertedValue(key) {
         const translation = this.localeKeysJSON[key];
         let functionValue = `'${key}'`;
-        // console.log('checking:', key,' to =>  ' , translation);
         if (this.withTranslation) {
             let keyArguments = '';
             const keyArgumentsType = this.getArgumentsType(translation);
@@ -65,7 +64,6 @@ class TSLocaleKeysFunctionBuilder {
 
     convertValues(srcObj) {
         if(typeof srcObj === 'string') {
-            // return this.getKeyConvertedValue(srcObj);
             return `<-- value wrapper --${srcObj}-->`
         }
 
