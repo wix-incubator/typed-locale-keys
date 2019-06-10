@@ -50,7 +50,6 @@ input: `messages_en.json`:
 output:
 ```typescript
 /* tslint:disable */
-/* tslint:disable */
 export function fullExample(translate: Function) {
     return {
         home: {
