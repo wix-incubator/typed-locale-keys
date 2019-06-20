@@ -101,17 +101,21 @@ class TSLocaleKeysFunctionBuilder {
         return args.trim();
     }
 
+    getInterfaceName(functionName) {
+        return `I${functionName.charAt(0).toUpperCase()}${functionName.slice(1)}`;
+    }
+
     async get(srcObj, functionName) {
         let templateFilte;
         try {
             const readFile = util.promisify(fs.readFile);
-
             templateFilte = await readFile(require.resolve('../templates/localeKeysFunctionTemplate.ts'), 'utf-8');
         } catch (err) {
             console.error(err);
         }
 
-        templateFilte = templateFilte.replace('LocaleKeysTemplate', functionName.trim());
+        templateFilte = templateFilte.replace(/\bLocaleKeysTemplate\b/g, functionName.trim());
+        templateFilte = templateFilte.replace(/\bILocaleKeysTemplate\b/g, this.getInterfaceName(functionName.trim()));
         templateFilte = templateFilte.replace('/* constructor args */', this.getConstructorArgs());
         templateFilte = templateFilte.replace('/* placeholder: keys here */', this.getKeys(srcObj));
         return templateFilte;
