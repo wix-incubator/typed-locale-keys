@@ -48,8 +48,9 @@ input: `messages_en.json`:
 ```
 
 output:
-```typescript
 /* tslint:disable */
+export type IFullExample = ReturnType<typeof fullExample>;
+
 export function fullExample(translate: Function) {
     return {
         home: {
@@ -74,6 +75,7 @@ export function fullExample(translate: Function) {
     };
 }
 /* tslint:enable */
+
 
 ```
 
