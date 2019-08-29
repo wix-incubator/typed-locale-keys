@@ -10,11 +10,10 @@ async function generateLocaleFunction({input, output, functionName, nested, with
         process.exit(1);
     }
     const localeKeysJSON = await loadJsonFile(input);
-    const allKeys = Object.keys(localeKeysJSON);
 
     const tsFunctionBuilder = new TSLocaleKeysFunctionBuilder({nested, withTranslation, localeKeysJSON, showTranslations, functionName});
 
-    const finalFunction = await tsFunctionBuilder.get(allKeys);
+    const finalFunction = await tsFunctionBuilder.get();
 
     if (!fs.existsSync(output)) {
         shell.mkdir('-p', output);

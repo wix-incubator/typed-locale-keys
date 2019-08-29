@@ -1,8 +1,9 @@
 {
   "home.header": "header",
-  "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
   "home.header.title.readMore": "read more",
   "home.header.subtitle": "this is my hello world",
   "home-empty.body.header": "on this app you will do nothing",
-  "home.body.description.#phone.$value": "this describes the meaningless apps"
+  "home.body.description.#phone.$value": "this describes the meaningless apps",
+  "home.body.description.#phone.$value.extra": "this describes the meaningless apps",
+  "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}"
 }

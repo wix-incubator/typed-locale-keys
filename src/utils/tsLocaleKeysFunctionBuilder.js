@@ -9,6 +9,7 @@ class TSLocaleKeysFunctionBuilder {
 
     constructor({nested, withTranslation, showTranslations, localeKeysJSON, functionName}) {
         this.localeKeysJSON = localeKeysJSON;
+        this.localeKeyNames = Object.keys(localeKeysJSON);
         this.withTranslation = withTranslation;
         this.nested = nested;
         this.showTranslations = showTranslations;
@@ -64,7 +65,7 @@ class TSLocaleKeysFunctionBuilder {
         return functionValue;
     }
 
-    getKeys(srcObj) {
+    stringifyObject(srcObj) {
         const indent = '    ';
 
         const stringifiedObject = stringifyObject(srcObj, {
@@ -81,6 +82,10 @@ class TSLocaleKeysFunctionBuilder {
         return stringifiedObject.replace(/(\n)/g, `\n${indent}`);
     }
 
+    getKeys(rawLocaleKeys) {
+        return this.stringifyObject(rawLocaleKeys)
+    }
+
     getConstructorArgs(file) {
         let args = '';
 
@@ -95,9 +100,9 @@ class TSLocaleKeysFunctionBuilder {
         return `I${functionName.charAt(0).toUpperCase()}${functionName.slice(1)}`;
     }
 
-    unwrapUnnecessary$value(localeKeys, originalKeys) {
+    unwrapUnnecessary$value(localeKeys) {
         let localeKeysUnwrapped = Object.assign({}, localeKeys);
-        Object.assign(originalKeys).forEach((path) => {
+        Object.assign(this.localeKeyNames).forEach((path) => {
             const current = objectPath.get(localeKeysUnwrapped, path);
 
             if (typeof current === 'object' &&
@@ -106,7 +111,7 @@ class TSLocaleKeysFunctionBuilder {
                 const numberOfKeysInObject = Object.keys(current).length;
 
                 if (numberOfKeysInObject === 1 ) {
-                    localeKeysUnwrapped[path] = current.$value;
+                    objectPath.set(localeKeysUnwrapped, path, current.$value);
                 }
             }
         });
@@ -114,21 +119,21 @@ class TSLocaleKeysFunctionBuilder {
         return localeKeysUnwrapped;
     };
 
-    getLocaleKeys(allKeys) {
+    getLocaleKeys() {
         let localeKeys = {};
         const wrapValueWithPlaceholder = key => `<-- value wrapper --${key}-->`;
 
         if (this.nested) {
-            allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, wrapValueWithPlaceholder(key)));
-            localeKeys = this.unwrapUnnecessary$value(localeKeys, allKeys);
+            this.localeKeyNames.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, wrapValueWithPlaceholder(key)));
+            localeKeys = this.unwrapUnnecessary$value(localeKeys);
         } else {
-            allKeys.forEach(key => localeKeys[key] = wrapValueWithPlaceholder(key));
+            this.localeKeyNames.forEach(key => localeKeys[key] = wrapValueWithPlaceholder(key));
         }
 
         return localeKeys;
     }
 
-    async get(allKeys) {
+    async get() {
         let templateFile;
         try {
             const readFile = util.promisify(fs.readFile);
@@ -137,7 +142,7 @@ class TSLocaleKeysFunctionBuilder {
             console.error(err);
         }
 
-        const localeKeys = this.getLocaleKeys(allKeys);
+        const localeKeys = this.getLocaleKeys();
 
         templateFile = templateFile.replace(/\bLocaleKeysTemplate\b/g, this.functionName.trim());
         templateFile = templateFile.replace(/\bILocaleKeysTemplate\b/g, this.getInterfaceName(this.functionName.trim()));
