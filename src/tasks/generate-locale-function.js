@@ -4,39 +4,17 @@ const fs = require('fs');
 const objectPath = require("object-path");
 const shell = require('shelljs');
 
-const unwrapUnnecessary$value = function (localeKeys, allKeys) {
-    const localeKeysUnwrapped = Object.assign({}, localeKeys);
-    Object.assign(allKeys).forEach((path) => {
-        const current = objectPath.get(localeKeysUnwrapped, path);
-        if (typeof current === 'object' &&
-            Object.keys(current).length === 1 &&
-            typeof current.$value === 'string') {
-            objectPath.set(localeKeysUnwrapped, path, current.$value);
-        }
-    });
-
-    return localeKeysUnwrapped;
-};
-
 async function generateLocaleFunction({input, output, functionName, nested, withTranslation, showTranslations}) {
     if (!input) {
         console.error('\033[31m', 'generateJsFile: expected argument \'--input\'');
         process.exit(1);
     }
     const localeKeysJSON = await loadJsonFile(input);
-    let localeKeys = {};
-
     const allKeys = Object.keys(localeKeysJSON);
-    if (nested) {
-        allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, key));
-        localeKeys = unwrapUnnecessary$value(localeKeys, allKeys);
-    } else {
-        allKeys.forEach(key => localeKeys[key] = key);
-    }
 
-    const tsFunctionBuilder = new TSLocaleKeysFunctionBuilder({withTranslation, localeKeysJSON, showTranslations});
+    const tsFunctionBuilder = new TSLocaleKeysFunctionBuilder({nested, withTranslation, localeKeysJSON, showTranslations, functionName});
 
-    const finalFunction = await tsFunctionBuilder.get(localeKeys, functionName);
+    const finalFunction = await tsFunctionBuilder.get(allKeys);
 
     if (!fs.existsSync(output)) {
         shell.mkdir('-p', output);

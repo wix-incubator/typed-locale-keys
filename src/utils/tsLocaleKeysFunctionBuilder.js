@@ -7,10 +7,12 @@ const translateFunction = 'translate';
 
 class TSLocaleKeysFunctionBuilder {
 
-    constructor({withTranslation, showTranslations, localeKeysJSON}) {
+    constructor({nested, withTranslation, showTranslations, localeKeysJSON, functionName}) {
         this.localeKeysJSON = localeKeysJSON;
         this.withTranslation = withTranslation;
+        this.nested = nested;
         this.showTranslations = showTranslations;
+        this.functionName = functionName;
     }
 
     getArgumentsType(keyContent) {
@@ -105,20 +107,50 @@ class TSLocaleKeysFunctionBuilder {
         return `I${functionName.charAt(0).toUpperCase()}${functionName.slice(1)}`;
     }
 
-    async get(srcObj, functionName) {
-        let templateFilte;
+    unwrapUnnecessary$value(localeKeys, originalKeys) {
+        const localeKeysUnwrapped = Object.assign({}, localeKeys);
+        Object.assign(originalKeys).forEach((path) => {
+            const current = objectPath.get(localeKeysUnwrapped, path);
+            if (typeof current === 'object' &&
+                Object.keys(current).length === 1 &&
+                typeof current.$value === 'string') {
+                objectPath.set(localeKeysUnwrapped, path, current.$value);
+            }
+        });
+
+        return localeKeysUnwrapped;
+    };
+
+
+    getLocaleKeys(allKeys) {
+        let localeKeys = {};
+
+        if (this.nested) {
+            allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, key));
+            localeKeys = this.unwrapUnnecessary$value(localeKeys, allKeys);
+        } else {
+            allKeys.forEach(key => localeKeys[key] = key);
+        }
+
+        return localeKeys;
+    }
+
+    async get(allKeys) {
+        let templateFile;
         try {
             const readFile = util.promisify(fs.readFile);
-            templateFilte = await readFile(require.resolve('../templates/localeKeysFunctionTemplate.ts'), 'utf-8');
+            templateFile = await readFile(require.resolve('../templates/localeKeysFunctionTemplate.ts'), 'utf-8');
         } catch (err) {
             console.error(err);
         }
 
-        templateFilte = templateFilte.replace(/\bLocaleKeysTemplate\b/g, functionName.trim());
-        templateFilte = templateFilte.replace(/\bILocaleKeysTemplate\b/g, this.getInterfaceName(functionName.trim()));
-        templateFilte = templateFilte.replace('/* constructor args */', this.getConstructorArgs());
-        templateFilte = templateFilte.replace('/* placeholder: keys here */', this.getKeys(srcObj));
-        return templateFilte;
+        const localeKeys = this.getLocaleKeys(allKeys);
+
+        templateFile = templateFile.replace(/\bLocaleKeysTemplate\b/g, this.functionName.trim());
+        templateFile = templateFile.replace(/\bILocaleKeysTemplate\b/g, this.getInterfaceName(this.functionName.trim()));
+        templateFile = templateFile.replace('/* constructor args */', this.getConstructorArgs());
+        templateFile = templateFile.replace('/* placeholder: keys here */', this.getKeys(localeKeys));
+        return templateFile;
     }
 }
 
