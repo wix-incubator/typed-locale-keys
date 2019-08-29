@@ -64,20 +64,8 @@ class TSLocaleKeysFunctionBuilder {
         return functionValue;
     }
 
-    convertValues(srcObj) {
-        if(typeof srcObj === 'string') {
-            return `<-- value wrapper --${srcObj}-->`
-        }
-
-        Object.keys(srcObj).forEach(key => srcObj[key] = this.convertValues(srcObj[key]));
-
-        return srcObj;
-    }
-
     getKeys(srcObj) {
         const indent = '    ';
-
-        const convertedValues = this.convertValues(srcObj);
 
         const stringifiedObject = stringifyObject(srcObj, {
             indent,
@@ -108,28 +96,33 @@ class TSLocaleKeysFunctionBuilder {
     }
 
     unwrapUnnecessary$value(localeKeys, originalKeys) {
-        const localeKeysUnwrapped = Object.assign({}, localeKeys);
+        let localeKeysUnwrapped = Object.assign({}, localeKeys);
         Object.assign(originalKeys).forEach((path) => {
             const current = objectPath.get(localeKeysUnwrapped, path);
+
             if (typeof current === 'object' &&
-                Object.keys(current).length === 1 &&
-                typeof current.$value === 'string') {
-                objectPath.set(localeKeysUnwrapped, path, current.$value);
+                typeof current.$value === 'string' &&
+                Object.keys(current).length === 1) {
+                const numberOfKeysInObject = Object.keys(current).length;
+
+                if (numberOfKeysInObject === 1 ) {
+                    localeKeysUnwrapped[path] = current.$value;
+                }
             }
         });
 
         return localeKeysUnwrapped;
     };
 
-
     getLocaleKeys(allKeys) {
         let localeKeys = {};
+        const wrapValueWithPlaceholder = key => `<-- value wrapper --${key}-->`;
 
         if (this.nested) {
-            allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, key));
+            allKeys.forEach((key) => objectPath.set(localeKeys, `${key}.$value`, wrapValueWithPlaceholder(key)));
             localeKeys = this.unwrapUnnecessary$value(localeKeys, allKeys);
         } else {
-            allKeys.forEach(key => localeKeys[key] = key);
+            allKeys.forEach(key => localeKeys[key] = wrapValueWithPlaceholder(key));
         }
 
         return localeKeys;
