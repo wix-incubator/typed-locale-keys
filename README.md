@@ -23,11 +23,11 @@ const localeKeys = LocaleKeys(i18nConf.t.bind(i18nConf));
 ```
 
 #### <u>in root component ONLY</u>
-add `@translate`. it adds the `wait` logic that prevents rendering prior loading all keys
+add `@withTranslation`. it adds the `wait` logic that prevents rendering prior loading all keys
 ```typescript
-import {translate} from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
-@translate
+@withTranslation
 export class App extends React.Component<any> {
     // ... //
 }
