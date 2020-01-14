@@ -79,7 +79,8 @@ export function fullExample(translate: Function) {
 
 ```
 
-configuration area `package.json`:
+## configuration
+`package.json`:
 ```javascript
 "typedLocaleKeys": {
     "entries": {
@@ -93,7 +94,7 @@ configuration area `package.json`:
 },
 ```
 
-more options:
+## more options:
 
 <img src="images/caporal-usage.jpg" alt="drawing" width="100%"/>
 
