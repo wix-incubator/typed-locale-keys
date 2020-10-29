@@ -13,7 +13,7 @@ program
     .option('-t, --translate [bool]', 'should add translate function. NOTE: will wrap value with function', program.BOOLEAN, true, false)
     .option('--showTranslations [bool]', 'add translations as function\'s comment', program.BOOLEAN, true, false)
     .option('--functionName [name]', 'Generated function name', program.STRING, 'LocaleKeys', false)
-    .option('--singleCurlyBraces [bool]', 'Use single curly braces', program.BOOL, false, false)
+    .option('--singleCurlyBraces [bool]', 'Use single curly braces', program.BOOL, undefined, false)
     .action(async ({source}, {output, functionName, nested, translate, showTranslations, singleCurlyBraces}) => {
         const entryFilesByFunctionName = {};
         const packageJSON = await loadJsonFile('package.json');
@@ -32,6 +32,10 @@ program
                 output: entryOutput,
             };
         });
+
+        if (singleCurlyBraces == undefined && configuration.singleCurlyBraces !== undefined) {
+            singleCurlyBraces = configuration.singleCurlyBraces
+        }
 
         if (source) {
             entryFilesByFunctionName[functionName] = {
