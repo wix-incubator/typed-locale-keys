@@ -7,20 +7,33 @@ const translateFunction = 'translate';
 
 class TSLocaleKeysFunctionBuilder {
 
-    constructor({nested, withTranslation, showTranslations, localeKeysJSON, functionName}) {
+    constructor({nested, withTranslation, showTranslations, singleCurlyBraces, localeKeysJSON, functionName}) {
         this.localeKeysJSON = localeKeysJSON;
         this.localeKeyNames = Object.keys(localeKeysJSON);
         this.withTranslation = withTranslation;
         this.nested = nested;
         this.showTranslations = showTranslations;
+        this.singleCurlyBraces = singleCurlyBraces;
         this.functionName = functionName;
+    }
+
+    getParamWrapper() {
+        let prefix, sufix;
+        if (this.singleCurlyBraces) {
+            prefix = '{';
+            sufix = '}';
+        } else {
+            prefix = '{{';
+            sufix = '}}';
+        }
+
+        return new RegExp(prefix + '[^}]+' + sufix, "g");
     }
 
     getArgumentsType(keyContent) {
         let argumentsDeclaration = '';
-        const getParamWrapper = /{{[^}]+}}/g;
         const gettingParam = /[a-z0-9A-Z_$.]+/;
-        const argumentsWrappers = keyContent.match(getParamWrapper);
+        const argumentsWrappers = keyContent.match(this.getParamWrapper());
 
         if (argumentsWrappers) {
             let options = {};

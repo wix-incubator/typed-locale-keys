@@ -33,6 +33,11 @@ export class App extends React.Component<any> {
 }
 ```
 
+#### <u>Parameters curly braces</u>
+default is double curly braces. To use single mode pass:
+
+`tlk codegen --singleCurlyBraces`
+
 ## Example
 
 input: `messages_en.json`:
