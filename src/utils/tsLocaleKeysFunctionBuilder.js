@@ -4,10 +4,12 @@ const objectPath = require("object-path");
 const stringifyObject = require("stringify-object");
 
 const translateFunction = 'translate';
+const readFile = util.promisify(fs.readFile);
+const getFileContent = (filePath) => readFile(require.resolve(filePath), 'utf-8')
 
 class TSLocaleKeysFunctionBuilder {
 
-    constructor({nested, withTranslation, showTranslations, singleCurlyBraces, localeKeysJSON, functionName}) {
+    constructor({nested, withTranslation, showTranslations, singleCurlyBraces, localeKeysJSON, functionName, reactHook}) {
         this.localeKeysJSON = localeKeysJSON;
         this.localeKeyNames = Object.keys(localeKeysJSON);
         this.withTranslation = withTranslation;
@@ -15,6 +17,7 @@ class TSLocaleKeysFunctionBuilder {
         this.showTranslations = showTranslations;
         this.singleCurlyBraces = singleCurlyBraces;
         this.functionName = functionName;
+        this.reactHook = reactHook;
     }
 
     getParamWrapper() {
@@ -149,8 +152,7 @@ class TSLocaleKeysFunctionBuilder {
     async get() {
         let templateFile;
         try {
-            const readFile = util.promisify(fs.readFile);
-            templateFile = await readFile(require.resolve('../templates/localeKeysFunctionTemplate.ts'), 'utf-8');
+            templateFile = await getFileContent('../templates/localeKeysFunction.template.ts');
         } catch (err) {
             console.error(err);
         }
@@ -161,6 +163,19 @@ class TSLocaleKeysFunctionBuilder {
         templateFile = templateFile.replace(/\bILocaleKeysTemplate\b/g, this.getInterfaceName(this.functionName.trim()));
         templateFile = templateFile.replace('/* constructor args */', this.getConstructorArgs());
         templateFile = templateFile.replace('/* placeholder: keys here */', this.getKeys(localeKeys));
+
+        if (this.reactHook) {
+            try {
+                templateFile = templateFile.replace('/* placeholder: react import here */', await getFileContent('../templates/reactImport.fragment.ts'));
+                templateFile = templateFile.replace('/* placeholder: react hook here */', await getFileContent('../templates/reactHook.fragment.tsx'));
+            } catch (e) {
+                console.error(err);
+            }
+        } else {
+            templateFile = templateFile.replace('/* placeholder: react import here */\n', '');
+            templateFile = templateFile.replace('\n\n/* placeholder: react hook here */', '');
+        }
+
         return templateFile;
     }
 }

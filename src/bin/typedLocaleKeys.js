@@ -14,7 +14,8 @@ program
     .option('--showTranslations [bool]', 'add translations as function\'s comment', program.BOOLEAN, true, false)
     .option('--functionName [name]', 'Generated function name', program.STRING, 'LocaleKeys', false)
     .option('--singleCurlyBraces [bool]', 'Use single curly braces', program.BOOL, undefined, false)
-    .action(async ({source}, {output, functionName, nested, translate, showTranslations, singleCurlyBraces}) => {
+    .option('--reactHook [bool]', 'Generate React bindings (Provider and hook)', program.BOOL, undefined, false)
+    .action(async ({source}, {output, functionName, nested, translate, showTranslations, singleCurlyBraces, reactHook}) => {
         const entryFilesByFunctionName = {};
         const packageJSON = await loadJsonFile('package.json');
         const configuration = Object.assign({}, {primaryOutput: './dist'}, packageJSON.typedLocaleKeys);
@@ -37,6 +38,10 @@ program
             singleCurlyBraces = configuration.singleCurlyBraces
         }
 
+        if (reactHook == undefined && configuration.reactHook !== undefined) {
+            reactHook = configuration.reactHook;
+        }
+
         if (source) {
             entryFilesByFunctionName[functionName] = {
                 source,
@@ -54,7 +59,8 @@ program
                 nested,
                 withTranslation: translate,
                 showTranslations,
-                singleCurlyBraces
+                singleCurlyBraces,
+                reactHook
             });
         })
     });
