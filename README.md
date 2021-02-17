@@ -89,6 +89,53 @@ export function fullExample(translate: Function) {
     };
 }
 /* tslint:enable */
+```
+
+output with React Hook:
+```tsx
+/* tslint:disable */
+/* eslint-disable */
+import React, {createContext, useContext, FC,} from 'react';
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+
+export function LocaleKeys(translate: Function) {
+    return {
+        app: {
+            title: () => translate('app.title') /* Hello World! */
+        }
+    };
+}
+
+const LocaleKeysContext = createContext({} as ILocaleKeys);
+
+export const useLocaleKeys = () => useContext(LocaleKeysContext);
+
+export const LocaleKeysProvider: FC<{
+    localeKeys?: ILocaleKeys;
+    translateFn?: Function;
+}> = ({
+    localeKeys,
+    translateFn,
+    children
+}) => {
+    const value = typeof translateFn === 'function'
+        ? LocaleKeys(translateFn)
+        : localeKeys;
+
+    if (!value) {
+        throw new Error('You must provide localeKeys or translateFn');
+    }
+
+    return (
+        <LocaleKeysContext.Provider value={value}>
+            {children}
+        </LocaleKeysContext.Provider>
+    )
+};
+
+/* eslint-enable  */
+/* tslint:enable */
 
 ```
 
@@ -105,10 +152,11 @@ export function fullExample(translate: Function) {
     },
     "primaryOutput": "./dist", // fallback output (after cli's `--output` fallback)
     "singleCurlyBraces" : false //optional field. default is false
+    "reactHook": false //optional field. default is false
 },
 ```
 
 ## more options:
 
-<img src="images/caporal-usage.jpg" alt="drawing" width="100%"/>
+<img src="images/caporal-usage.png" alt="drawing" width="100%"/>
 
