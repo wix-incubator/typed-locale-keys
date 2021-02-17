@@ -33,7 +33,7 @@ export class App extends React.Component<any> {
 }
 ```
 
-#### <u>Parameters curly braces</u>
+#### <u>Read interpolation arguments using single curly instead of of double</u>
 default is double curly braces. To use single mode pass:
 
 `tlk codegen --singleCurlyBraces`

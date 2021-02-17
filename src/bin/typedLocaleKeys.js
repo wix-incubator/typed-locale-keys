@@ -13,7 +13,7 @@ program
     .option('-t, --translate [bool]', 'should add translate function. NOTE: will wrap value with function', program.BOOLEAN, true, false)
     .option('--showTranslations [bool]', 'add translations as function\'s comment', program.BOOLEAN, true, false)
     .option('--functionName [name]', 'Generated function name', program.STRING, 'LocaleKeys', false)
-    .option('--singleCurlyBraces [bool]', 'Use single curly braces', program.BOOL, undefined, false)
+    .option('--singleCurlyBraces [bool]', 'Read interpolation arguments using single curly instead of of double', program.BOOL, undefined, false)
     .option('--reactHook [bool]', 'Generate React bindings (Provider and hook)', program.BOOL, undefined, false)
     .action(async ({source}, {output, functionName, nested, translate, showTranslations, singleCurlyBraces, reactHook}) => {
         const entryFilesByFunctionName = {};
