@@ -1,7 +1,26 @@
-const LocaleKeysContext = createContext<ILocaleKeys>({} as ILocaleKeys);
+const LocaleKeysContext = createContext({} as ILocaleKeysTemplate);
 
-export const useLocaleKeys = () => useContext(LocaleKeysContext);
+export const useLocaleKeysTemplate = () => useContext(LocaleKeysContext);
 
-export const LocaleKeysProvider: FC<{localeKeys: ILocaleKeys}> = ({localeKeys, children}) => (
-  <LocaleKeysContext.Provider value={localeKeys}>{children}</LocaleKeysContext.Provider>
-);
+export const LocaleKeysProviderTemplate: FC<{
+    localeKeys?: ILocaleKeysTemplate;
+    translateFn?: Function;
+}> = ({
+    localeKeys,
+    translateFn,
+    children
+}) => {
+    const value = typeof translateFn === 'function'
+        ? LocaleKeysTemplate(translateFn)
+        : localeKeys;
+
+    if (!value) {
+        throw new Error('You must provide localeKeys or translateFn');
+    }
+
+    return (
+        <LocaleKeysContext.Provider value={value}>
+            {children}
+        </LocaleKeysContext.Provider>
+    )
+};

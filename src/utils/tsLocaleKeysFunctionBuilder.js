@@ -16,7 +16,7 @@ class TSLocaleKeysFunctionBuilder {
         this.nested = nested;
         this.showTranslations = showTranslations;
         this.singleCurlyBraces = singleCurlyBraces;
-        this.functionName = functionName;
+        this.functionName = functionName.trim();
         this.reactHook = reactHook;
     }
 
@@ -112,8 +112,8 @@ class TSLocaleKeysFunctionBuilder {
         return args.trim();
     }
 
-    getInterfaceName(functionName) {
-        return `I${functionName.charAt(0).toUpperCase()}${functionName.slice(1)}`;
+    getCapitalizedFunctionName() {
+        return `${this.functionName.charAt(0).toUpperCase()}${this.functionName.slice(1)}`
     }
 
     unwrapUnnecessary$value(localeKeys) {
@@ -151,29 +151,32 @@ class TSLocaleKeysFunctionBuilder {
 
     async get() {
         let templateFile;
+
         try {
             templateFile = await getFileContent('../templates/localeKeysFunction.template.ts');
+
+            templateFile = templateFile.replace(
+                '/* placeholder: react import here */',
+                this.reactHook ? await getFileContent('../templates/reactImport.fragment.ts') : ''
+            );
+            templateFile = templateFile.replace(
+                '/* placeholder: react hook here */',
+                this.reactHook ? await getFileContent('../templates/reactHook.fragment.tsx') : ''
+            );
+
+            if (this.reactHook) {
+                templateFile = templateFile.replace(/\buseLocaleKeysTemplate\b/g, `use${this.getCapitalizedFunctionName()}`);
+                templateFile = templateFile.replace(/\bLocaleKeysProviderTemplate\b/g, `${this.getCapitalizedFunctionName()}Provider`);
+            }
+
+            const localeKeys = this.getLocaleKeys();
+
+            templateFile = templateFile.replace(/\bLocaleKeysTemplate\b/g, this.functionName);
+            templateFile = templateFile.replace(/\bILocaleKeysTemplate\b/g, `I${this.getCapitalizedFunctionName()}`);
+            templateFile = templateFile.replace('/* constructor args */', this.getConstructorArgs());
+            templateFile = templateFile.replace('/* placeholder: keys here */', this.getKeys(localeKeys));
         } catch (err) {
             console.error(err);
-        }
-
-        const localeKeys = this.getLocaleKeys();
-
-        templateFile = templateFile.replace(/\bLocaleKeysTemplate\b/g, this.functionName.trim());
-        templateFile = templateFile.replace(/\bILocaleKeysTemplate\b/g, this.getInterfaceName(this.functionName.trim()));
-        templateFile = templateFile.replace('/* constructor args */', this.getConstructorArgs());
-        templateFile = templateFile.replace('/* placeholder: keys here */', this.getKeys(localeKeys));
-
-        if (this.reactHook) {
-            try {
-                templateFile = templateFile.replace('/* placeholder: react import here */', await getFileContent('../templates/reactImport.fragment.ts'));
-                templateFile = templateFile.replace('/* placeholder: react hook here */', await getFileContent('../templates/reactHook.fragment.tsx'));
-            } catch (e) {
-                console.error(err);
-            }
-        } else {
-            templateFile = templateFile.replace('/* placeholder: react import here */\n', '');
-            templateFile = templateFile.replace('\n\n/* placeholder: react hook here */', '');
         }
 
         return templateFile;
