@@ -65,7 +65,9 @@ output:
 /* tslint:disable */
 export type IFullExample = ReturnType<typeof fullExample>;
 
-export function fullExample(translate: Function) {
+type AbstractTranslateFunction = (key: string) => string;
+
+export function fullExample<F extends AbstractTranslateFunction>(translate: F) {
     return {
         home: {
             header: {
@@ -99,7 +101,9 @@ import React, {createContext, useContext, FC,} from 'react';
 
 export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 
-export function LocaleKeys(translate: Function) {
+type AbstractTranslateFunction = (key: string) => string;
+
+export function LocaleKeys<F extends AbstractTranslateFunction>(translate: F) {
     return {
         app: {
             title: () => translate('app.title') /* Hello World! */
@@ -113,7 +117,7 @@ export const useLocaleKeys = () => useContext(LocaleKeysContext);
 
 export const LocaleKeysProvider: FC<{
     localeKeys?: ILocaleKeys;
-    translateFn?: Function;
+    translateFn?: AbstractTranslateFunction;
 }> = ({
     localeKeys,
     translateFn,

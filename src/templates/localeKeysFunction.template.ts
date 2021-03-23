@@ -3,7 +3,9 @@
 /* placeholder: react import here */
 export type ILocaleKeysTemplate = ReturnType<typeof LocaleKeysTemplate>;
 
-export function LocaleKeysTemplate(/* constructor args */) {
+type AbstractTranslateFunction = (...args: any[]) => string;
+
+export function LocaleKeysTemplate/* constructor type args */(/* constructor args */) {
     return /* placeholder: keys here */;
 }
 

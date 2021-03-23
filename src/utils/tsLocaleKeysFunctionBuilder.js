@@ -102,14 +102,12 @@ class TSLocaleKeysFunctionBuilder {
         return this.stringifyObject(rawLocaleKeys)
     }
 
-    getConstructorArgs(file) {
-        let args = '';
+    getConstructorArgs() {
+        return (this.withTranslation ? `${translateFunction}: F` : '').trim();
+    }
 
-        if (this.withTranslation) {
-            args += `${translateFunction}: Function`;
-        }
-
-        return args.trim();
+    getConstructorTypeArgs() {
+        return (this.withTranslation ?  '<F extends AbstractTranslateFunction>' : '').trim();
     }
 
     getCapitalizedFunctionName() {
@@ -174,6 +172,7 @@ class TSLocaleKeysFunctionBuilder {
             templateFile = templateFile.replace(/\bLocaleKeysTemplate\b/g, this.functionName);
             templateFile = templateFile.replace(/\bILocaleKeysTemplate\b/g, `I${this.getCapitalizedFunctionName()}`);
             templateFile = templateFile.replace('/* constructor args */', this.getConstructorArgs());
+            templateFile = templateFile.replace('/* constructor type args */', this.getConstructorTypeArgs());
             templateFile = templateFile.replace('/* placeholder: keys here */', this.getKeys(localeKeys));
         } catch (err) {
             console.error(err);

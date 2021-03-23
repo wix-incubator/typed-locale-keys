@@ -4,7 +4,7 @@ export const useLocaleKeysTemplate = () => useContext(LocaleKeysContext);
 
 export const LocaleKeysProviderTemplate: FC<{
     localeKeys?: ILocaleKeysTemplate;
-    translateFn?: Function;
+    translateFn?: AbstractTranslateFunction;
 }> = ({
     localeKeys,
     translateFn,
