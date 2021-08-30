@@ -42,6 +42,7 @@
   "license": "MIT",
   "dependencies": {
     "caporal": "^1.1.0",
+    "flat": "^5.0.2",
     "load-json-file": "^5.1.0",
     "object-path": "^0.11.4",
     "shelljs": "^0.8.3",
