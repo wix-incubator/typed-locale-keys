@@ -13,7 +13,8 @@
   }],
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "pretest": "ts-node tests/genTypeTests.ts",
+    "test": "tsc --noEmit && jest"
   },
   "dependencies": {
     "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
@@ -31,6 +32,7 @@
     "yargs": "^17.1.1"
   },
   "devDependencies": {
+    "i18next": "^20.6.1",
     "simple-git-hooks": "^2.6.1"
   },
   "keywords": [

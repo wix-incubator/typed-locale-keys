@@ -16,6 +16,7 @@ export interface Options {
   outDir: string;
   interpolationSuffix?: string;
   interpolationPrefix?: string;
+  translationFunctionTypeImport?: string;
 }
 
 interface NestedLocaleValues {
@@ -23,7 +24,13 @@ interface NestedLocaleValues {
 }
 
 export class Generator {
-  private translationFnName = 'tFn';
+  private readonly translationFnName = 'tFn';
+
+  private readonly translationFnTypeName = 'TFn';
+
+  private readonly factoryName = 'localeKeys';
+
+  private readonly resultTypeName = 'LocaleKeys';
 
   private readonly project = new Project({
     manipulationSettings: {
@@ -57,9 +64,31 @@ export class Generator {
 
     localeKeysFile.addStatements(['/* eslint-disable */']);
 
+    if (this.options.translationFunctionTypeImport) {
+      const [moduleSpecifier, namedImport] =
+        this.options.translationFunctionTypeImport.split('#');
+
+      localeKeysFile.addImportDeclaration({
+        kind: StructureKind.ImportDeclaration,
+        isTypeOnly: true,
+        namedImports: namedImport
+          ? [`${namedImport} as ${this.translationFnTypeName}`]
+          : [],
+        namespaceImport: !namedImport ? this.translationFnTypeName : undefined,
+        moduleSpecifier
+      });
+    }
+
     const objectStr = this.writeObjectAsStr(await this.sourceFile);
 
     localeKeysFile.addFunction(this.buildLocaleKeysFn(objectStr));
+
+    localeKeysFile.addTypeAlias({
+      kind: StructureKind.TypeAlias,
+      name: this.resultTypeName,
+      type: `ReturnType<typeof ${this.factoryName}>`,
+      isExported: true
+    });
 
     await localeKeysFile.save();
   }
@@ -69,17 +98,22 @@ export class Generator {
 
     const generalFn: FunctionDeclarationStructure = {
       kind: StructureKind.Function,
-      name: 'localeKeys',
+      name: this.factoryName,
       isExported: true,
-      typeParameters: [
-        {
-          name: genericName
-        }
-      ],
+      typeParameters: this.options.translationFunctionTypeImport
+        ? []
+        : [
+            {
+              name: genericName,
+              constraint: `string`
+            }
+          ],
       parameters: [
         {
           name: this.translationFnName,
-          type: `(...args: unknown[]) => ${genericName}`
+          type: this.options.translationFunctionTypeImport
+            ? this.translationFnTypeName
+            : `(...args: unknown[]) => ${genericName}`
         }
       ],
       statements: `return ${objectStr};`

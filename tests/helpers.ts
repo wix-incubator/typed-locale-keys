@@ -1,5 +1,11 @@
 import { Generator, Options } from '../src/Generator';
 
+export function importResults<R>(path: string): R {
+  // eslint-disable-next-line import/extensions,@typescript-eslint/no-unsafe-return,@typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return import(path);
+}
+
 export function defaultSpy(): jest.Mock {
   return jest.fn().mockImplementation((arg) => `transformed -> ${arg}`);
 }
@@ -18,6 +24,5 @@ export async function generateResult<L>(
 
   await generator.generate();
 
-  // eslint-disable-next-line import/extensions,@typescript-eslint/no-unsafe-return
-  return import(`./__generated__/${namespace}/localeKeys`);
+  return importResults(`./__generated__/${namespace}/localeKeys`);
 }
