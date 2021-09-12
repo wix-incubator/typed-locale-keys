@@ -1,10 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as util from 'util';
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
 
 import { unflatten } from 'flat';
 import {
-  CodeBlockWriter,
   FunctionDeclarationStructure,
   IndentationText,
   Project,
@@ -58,15 +57,15 @@ export class Generator {
 
     localeKeysFile.addStatements(['/* eslint-disable */']);
 
-    const writer = this.visitObject(await this.sourceFile);
+    const objectStr = this.writeObjectAsStr(await this.sourceFile);
 
-    localeKeysFile.addFunction(this.buildLocaleKeysFn(writer));
+    localeKeysFile.addFunction(this.buildLocaleKeysFn(objectStr));
 
     await localeKeysFile.save();
   }
 
-  private buildLocaleKeysFn(writer: CodeBlockWriter) {
-    const genericName = 'F';
+  private buildLocaleKeysFn(objectStr: string) {
+    const genericName = 'R';
 
     const generalFn: FunctionDeclarationStructure = {
       kind: StructureKind.Function,
@@ -74,18 +73,22 @@ export class Generator {
       isExported: true,
       typeParameters: [
         {
-          name: genericName,
-          constraint: '(...args: unknown[]) => unknown'
+          name: genericName
         }
       ],
-      parameters: [{ name: this.translationFnName, type: genericName }],
-      statements: `return ${writer.toString()};`
+      parameters: [
+        {
+          name: this.translationFnName,
+          type: `(...args: unknown[]) => ${genericName}`
+        }
+      ],
+      statements: `return ${objectStr};`
     };
 
     return generalFn;
   }
 
-  private visitObject(nestedValue: NestedLocaleValues, keyPrefix = '') {
+  private writeObjectAsStr(nestedValue: NestedLocaleValues, keyPrefix = '') {
     const writer = this.project.createWriter();
 
     writer.inlineBlock(() => {
@@ -97,14 +100,14 @@ export class Generator {
         if (typeof value === 'string') {
           valueToSet = this.buildFunction(localeKey, value);
         } else {
-          valueToSet = this.visitObject(value, localeKey).toString();
+          valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
         writer.writeLine(`${key}: ${valueToSet},`);
       });
     });
 
-    return writer;
+    return writer.toString();
   }
 
   private buildFunction(key: string, value: string): string {
