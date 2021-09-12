@@ -1,19 +1,34 @@
 {
   "name": "typed-locale-keys",
-  "version": "2.0.0",
-  "description": "generates and manages locale keys",
-  "main": "./src/bin/typedLocaleKeys.js",
-  "scripts": {
-    "generate": "node ./src/bin/typedLocaleKeys.js codegen",
-    "generate:flat": "node ./src/bin/typedLocaleKeys.js codegen --n false",
-    "generate:noFunction": "node ./src/bin/typedLocaleKeys.js codegen --t false",
-    "generate:noTranslations": "node ./src/bin/typedLocaleKeys.js codegen --showTranslations false",
-    "generate:functionName": "node ./src/bin/typedLocaleKeys.js codegen ./tests/locale/with_path_en.json --functionName SomeName",
-    "build": ":",
-    "test": ":"
+  "version": "3.0.0",
+  "description": "Generates typed object to provide translations",
+  "main": "index.js",
+  "author": {
+    "name": "Guy Wargzaer",
+    "email": "guyw@wix.com"
   },
-  "bin": {
-    "tlk": "./src/bin/typedLocaleKeys.js"
+  "contributors": [{
+    "name": "Tit Kovalenko",
+    "email": "t.a.kvlnk@gmail.com"
+  }],
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
+    "@types/jest": "^27.0.1",
+    "eslint": "^7.32.0",
+    "jest": "^27.1.1",
+    "prettier": "^2.4.0",
+    "ts-jest": "^27.0.5",
+    "ts-morph": "^12.0.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3",
+    "yargs": "^17.1.1"
+  },
+  "devDependencies": {
+    "simple-git-hooks": "^2.6.1"
   },
   "keywords": [
     "i18n",
@@ -22,39 +37,12 @@
     "locale",
     "typescript"
   ],
-  "private": false,
-  "publishConfig": {
-    "versionBumpStrategy": "patch",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "author": {
-    "name": "Guy Wargzaer",
-    "email": "guyw@wix.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wix-incubator/typed-locale-keys.git"
-  },
   "homepage": "https://github.com/wix-incubator/typed-locale-keys#readme",
   "bugs": {
     "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
   },
-  "license": "MIT",
-  "dependencies": {
-    "caporal": "^1.1.0",
-    "load-json-file": "^5.1.0",
-    "object-path": "^0.11.4",
-    "shelljs": "^0.8.3",
-    "stringify-object": "^3.3.0"
-  },
-  "typedLocaleKeys": {
-    "entries": {
-      "galleryKeys": {
-        "source": "./tests/locale/messages_en.json",
-        "output": "./dist/gallery"
-      },
-      "commonKeys": "./tests/locale/sub/messages_en.json",
-      "fullExample": "./tests/locale/full_example.json"
-    }
+  "publishConfig": {
+    "versionBumpStrategy": "patch",
+    "registry": "https://registry.npmjs.org/"
   }
 }
