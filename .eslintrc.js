@@ -5,6 +5,7 @@ module.exports = {
     project: './tsconfig.json'
   },
   rules: {
+    '@typescript-eslint/no-explicit-any': [2],
     'import/prefer-default-export': 0,
     'import/no-default-export': 1
   }

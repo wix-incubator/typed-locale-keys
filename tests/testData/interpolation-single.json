@@ -1,0 +1,8 @@
+{
+  "common": {
+    "loggedIn": {
+      "message": "Hey, {username}, you have successfully logged in!"
+    }
+  },
+  "readingWarning": "{reader} reads message from {writer}"
+}
