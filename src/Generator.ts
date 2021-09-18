@@ -17,6 +17,7 @@ export interface Options {
   interpolationSuffix?: string;
   interpolationPrefix?: string;
   translationFunctionTypeImport?: string;
+  showTranslations?: boolean;
 }
 
 interface NestedLocaleValues {
@@ -134,7 +135,10 @@ export class Generator {
 
         if (typeof value === 'string') {
           valueToSet = this.buildFunction(localeKey, value);
-          comment = ` /* ${value} */`;
+
+          if (this.options.showTranslations) {
+            comment = ` /* ${value} */`;
+          }
         } else {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         }
