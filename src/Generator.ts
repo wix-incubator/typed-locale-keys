@@ -130,14 +130,16 @@ export class Generator {
         const localeKey = [keyPrefix, key].filter(Boolean).join('.');
 
         let valueToSet: string;
+        let comment = '';
 
         if (typeof value === 'string') {
           valueToSet = this.buildFunction(localeKey, value);
+          comment = ` /* ${value} */`;
         } else {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
-        writer.writeLine(`${key}: ${valueToSet},`);
+        writer.writeLine(`${key}: ${valueToSet},${comment}`);
       });
     });
 
