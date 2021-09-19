@@ -13,10 +13,11 @@
   }],
   "license": "MIT",
   "scripts": {
-    "pretest": "ts-node tests/genTypeTests.ts",
+    "pretest": "rimraf tests/__generated__ && ts-node tests/pregenerate.ts",
     "test": "tsc --noEmit && jest"
   },
   "dependencies": {
+    "@testing-library/react": "^12.1.0",
     "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
     "@types/flat": "^5.0.2",
     "@types/jest": "^27.0.1",
@@ -24,6 +25,9 @@
     "flat": "^5.0.2",
     "jest": "^27.1.1",
     "prettier": "^2.4.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
     "ts-essentials": "^8.1.0",
     "ts-jest": "^27.0.5",
     "ts-morph": "^12.0.0",

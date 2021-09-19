@@ -1,47 +1,31 @@
-import path from 'path';
-
 import {
   Project,
-  ScriptKind,
+  SourceFile,
   StructureKind,
   VariableDeclarationKind
 } from 'ts-morph';
 
 import type { NestedLocaleValues, Options } from './Generator';
 
-export class HookFileGenerator {
+export class ReactWriter {
   constructor(
     private readonly options: Options,
     private readonly project: Project,
-    private readonly sourceFile: Promise<NestedLocaleValues>
+    private readonly sourceFile: Promise<NestedLocaleValues>,
+    private readonly resultFile: SourceFile
   ) {}
 
-  public async generate(): Promise<void> {
-    const hookFile = this.project.createSourceFile(
-      path.join(this.options.outDir, 'useLocaleKeys.tsx'),
-      '',
-      {
-        overwrite: true,
-        scriptKind: ScriptKind.TSX
-      }
-    );
-
-    hookFile.addStatements(['/* eslint-disable */']);
-
-    hookFile.addImportDeclarations([
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async write(): Promise<void> {
+    this.resultFile.addImportDeclarations([
       {
         kind: StructureKind.ImportDeclaration,
         moduleSpecifier: 'react',
         defaultImport: 'React'
-      },
-      {
-        kind: StructureKind.ImportDeclaration,
-        namedImports: ['LocaleKeys', 'localeKeys'],
-        moduleSpecifier: './localeKeys'
       }
     ]);
 
-    hookFile.addVariableStatements([
+    this.resultFile.addVariableStatements([
       {
         kind: StructureKind.VariableStatement,
         declarationKind: VariableDeclarationKind.Const,
@@ -72,12 +56,10 @@ export class HookFileGenerator {
         declarations: [
           {
             name: 'useLocaleKeys',
-            initializer: `React.useContext(localeKeysContext)`
+            initializer: `() => React.useContext(localeKeysContext)`
           }
         ]
       }
     ]);
-
-    await hookFile.save();
   }
 }

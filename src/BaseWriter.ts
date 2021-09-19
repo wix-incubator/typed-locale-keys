@@ -1,10 +1,13 @@
-import path from 'path';
-
-import { FunctionDeclarationStructure, Project, StructureKind } from 'ts-morph';
+import {
+  FunctionDeclarationStructure,
+  Project,
+  SourceFile,
+  StructureKind
+} from 'ts-morph';
 
 import type { NestedLocaleValues, Options } from './Generator';
 
-export class BaseFileGenerator {
+export class BaseWriter {
   private readonly translationFnName = 'tFn';
 
   private readonly translationFnTypeName = 'TFn';
@@ -23,25 +26,18 @@ export class BaseFileGenerator {
   constructor(
     private readonly options: Options,
     private readonly project: Project,
-    private readonly sourceFile: Promise<NestedLocaleValues>
+    private readonly sourceFile: Promise<NestedLocaleValues>,
+    private readonly resultFile: SourceFile
   ) {}
 
-  public async generate(): Promise<void> {
-    const localeKeysFile = this.project.createSourceFile(
-      path.join(this.options.outDir, 'localeKeys.ts'),
-      '',
-      {
-        overwrite: true
-      }
-    );
-
-    localeKeysFile.addStatements(['/* eslint-disable */']);
+  public async write(): Promise<void> {
+    this.resultFile.addStatements(['/* eslint-disable */']);
 
     if (this.options.translationFunctionTypeImport) {
       const [moduleSpecifier, namedImport] =
         this.options.translationFunctionTypeImport.split('#');
 
-      localeKeysFile.addImportDeclaration({
+      this.resultFile.addImportDeclaration({
         kind: StructureKind.ImportDeclaration,
         isTypeOnly: true,
         namedImports: namedImport
@@ -54,16 +50,14 @@ export class BaseFileGenerator {
 
     const objectStr = this.writeObjectAsStr(await this.sourceFile);
 
-    localeKeysFile.addFunction(this.buildLocaleKeysFn(objectStr));
+    this.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
 
-    localeKeysFile.addTypeAlias({
+    this.resultFile.addTypeAlias({
       kind: StructureKind.TypeAlias,
       name: this.resultTypeName,
       type: `ReturnType<typeof ${this.factoryName}>`,
       isExported: true
     });
-
-    await localeKeysFile.save();
   }
 
   private buildLocaleKeysFn(objectStr: string) {

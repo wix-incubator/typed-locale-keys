@@ -18,11 +18,13 @@ export async function generateResult<L>(
 }> {
   const generator = new Generator({
     srcFile: `tests/testData/${namespace}.json`,
-    outDir: `tests/__generated__/${namespace}/`,
+    outDir: `tests/__generated__/runtime-generation/${namespace}/`,
     ...params
   });
 
   await generator.generate();
 
-  return importResults(`./__generated__/${namespace}/localeKeys`);
+  return importResults(
+    `./__generated__/runtime-generation/${namespace}/localeKeys`
+  );
 }
