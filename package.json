@@ -2,19 +2,24 @@
   "name": "typed-locale-keys",
   "version": "3.0.0",
   "description": "Generates typed object to provide translations",
-  "main": "index.js",
+  "bin": {
+    "tlk": "dist/bin.js"
+  },
   "author": {
     "name": "Guy Wargzaer",
     "email": "guyw@wix.com"
   },
-  "contributors": [{
-    "name": "Tit Kovalenko",
-    "email": "t.a.kvlnk@gmail.com"
-  }],
+  "contributors": [
+    {
+      "name": "Tit Kovalenko",
+      "email": "t.a.kvlnk@gmail.com"
+    }
+  ],
   "license": "MIT",
   "scripts": {
     "pretest": "rimraf tests/__generated__ && ts-node tests/pregenerate.ts",
-    "test": "tsc --noEmit && jest"
+    "test": "tsc --noEmit && jest",
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
