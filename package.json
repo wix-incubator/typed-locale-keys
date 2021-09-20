@@ -34,8 +34,10 @@
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.0",
+    "@types/child-process-promise": "^2.2.2",
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.21",
+    "child-process-promise": "^2.2.1",
     "eslint": "^7.32.0",
     "i18next": "^20.6.1",
     "prettier": "^2.4.0",
@@ -59,5 +61,17 @@
   "publishConfig": {
     "versionBumpStrategy": "patch",
     "registry": "https://registry.npmjs.org/"
+  },
+  "typedLocaleKeys": {
+    "entries": {
+      "interpolationSingle": {
+        "source": "./tests/sources/interpolation-single.json",
+        "output": "./__generated__/cli/interpSingle"
+      },
+      "commonKeys": "./tests/sources/nested.json"
+    },
+    "primaryOutput": "./tests/__generated__/cli/primary",
+    "singleCurlyBraces": true,
+    "reactHook": true
   }
 }
