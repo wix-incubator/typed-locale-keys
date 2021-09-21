@@ -1,0 +1,6 @@
+{
+  "common": {
+    "hello": "Hello!",
+    "myName": "My name is {{name}}"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "typedLocaleKeys": {
+    "entries": {
+      "messages": {
+        "source": "./locales/objCase.json",
+        "output": "./__generated__/"
+      },
+      "commonKeys": "./locales/strCase.json"
+    }
+  }
+}

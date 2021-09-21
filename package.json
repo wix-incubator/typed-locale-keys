@@ -17,7 +17,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "pretest": "rimraf tests/__generated__ && ts-node tests/pregenerate.ts",
+    "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli/*/dist && ts-node tests/pregenerate.ts",
     "test": "tsc --noEmit && jest",
     "build": "tsc -p tsconfig.build.json"
   },
@@ -61,17 +61,5 @@
   "publishConfig": {
     "versionBumpStrategy": "patch",
     "registry": "https://registry.npmjs.org/"
-  },
-  "typedLocaleKeys": {
-    "entries": {
-      "interpolationSingle": {
-        "source": "./tests/sources/interpolation-single.json",
-        "output": "./__generated__/cli/interpSingle"
-      },
-      "commonKeys": "./tests/sources/nested.json"
-    },
-    "primaryOutput": "./tests/__generated__/cli/primary",
-    "singleCurlyBraces": true,
-    "reactHook": true
   }
 }

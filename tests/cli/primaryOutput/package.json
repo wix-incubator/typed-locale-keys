@@ -1,0 +1,8 @@
+{
+  "typedLocaleKeys": {
+    "entries": {
+      "commonKeys": "./source.json"
+    },
+    "primaryOutput": "./dist/__generated__"
+  }
+}
