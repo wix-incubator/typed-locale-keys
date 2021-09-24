@@ -1,15 +1,11 @@
 import { Driver } from './driver';
 
 interface ResultOne {
-  localeKeys: (fn: () => string) => {
-    common: { hello: () => string; myName: (data: { name: string }) => string };
-  };
+  common: { hello: () => string; myName: (data: { name: string }) => string };
 }
 
 interface ResultTwo {
-  localeKeys: (fn: () => string) => {
-    model: { user: { id: () => string } };
-  };
+  model: { user: { id: () => string } };
 }
 
 test('should generate from entries in .typedlocalekeysrc.json', async () => {
@@ -19,13 +15,13 @@ test('should generate from entries in .typedlocalekeysrc.json', async () => {
 
   await driver.when.runsCodegenCommand();
 
-  const { localeKeys: objCase } =
-    await driver.get.importedGeneratedResults<ResultOne>(
-      '__generated__/localeKeys'
-    );
+  const { localeKeys: objCase } = await driver.get.generatedResults<ResultOne>(
+    '__generated__/localeKeys'
+  );
 
-  const { localeKeys: strCase } =
-    await driver.get.importedGeneratedResults<ResultTwo>('dist/localeKeys');
+  const { localeKeys: strCase } = await driver.get.generatedResults<ResultTwo>(
+    'dist/localeKeys'
+  );
 
   expect(typeof objCase(() => '').common.hello).toBe('function');
   expect(typeof strCase(() => '').model.user.id).toBe('function');
@@ -38,7 +34,7 @@ test('should generate in location of primaryOutput from package.json', async () 
 
   await driver.when.runsCodegenCommand();
 
-  const { localeKeys } = await driver.get.importedGeneratedResults<ResultOne>(
+  const { localeKeys } = await driver.get.generatedResults<ResultOne>(
     'dist/__generated__/localeKeys'
   );
 
@@ -55,9 +51,7 @@ test('should apply params from package.json', async () => {
   });
 
   const { useLocaleKeys, localeKeys } =
-    await driver.get.importedGeneratedResults<ResultOne>(
-      '__generated__/localeKeys'
-    );
+    await driver.get.generatedResults<ResultOne>('__generated__/localeKeys');
 
   expect(typeof useLocaleKeys).toBe('function');
 
@@ -83,7 +77,7 @@ test('should override params in package.json with cli args', async () => {
   });
 
   const { useLocaleKeys, localeKeys } =
-    await driver.get.importedGeneratedResults<ResultOne>('dist/localeKeys');
+    await driver.get.generatedResults<ResultOne>('dist/localeKeys');
 
   expect(useLocaleKeys).toBeUndefined();
 

@@ -7,20 +7,27 @@ import {
   LocaleKeysProvider,
   useLocaleKeys
 } from './__generated__/pregenerated/react/localeKeys';
-import { generateResult } from './helpers';
+import { Driver } from './driver';
 
 const namespace = 'react';
 let importResult: Record<string, unknown>;
 
+let driver: Driver;
+
 beforeAll(async () => {
-  importResult = await generateResult<{
+  driver = new Driver();
+  driver.given.namespace('react');
+
+  await driver.when.generatesResult({
+    reactBindings: true
+  });
+
+  importResult = await driver.get.generatedResults<{
     common: {
       create(): string;
     };
     model: { user: { id(): string } };
-  }>(namespace, {
-    reactBindings: true
-  });
+  }>();
 });
 
 test('ts file is not generated', () => {

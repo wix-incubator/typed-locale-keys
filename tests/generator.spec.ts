@@ -1,14 +1,19 @@
-import { defaultSpy, generateResult } from './helpers';
+import { Driver } from './driver';
+import { defaultSpy } from './helpers';
 
 test('nested data', async () => {
-  const namespace = 'nested';
+  const driver = new Driver();
 
-  const { localeKeys } = await generateResult<{
+  driver.given.namespace('nested');
+
+  await driver.when.generatesResult();
+
+  const { localeKeys } = await driver.get.generatedResults<{
     common: {
       create(): string;
     };
     model: { user: { id(): string } };
-  }>(namespace);
+  }>();
 
   const result = localeKeys(defaultSpy());
 
@@ -17,9 +22,13 @@ test('nested data', async () => {
 });
 
 test('flat data', async () => {
-  const namespace = 'flat';
+  const driver = new Driver();
 
-  const { localeKeys } = await generateResult<{
+  driver.given.namespace('flat');
+
+  await driver.when.generatesResult();
+
+  const { localeKeys } = await driver.get.generatedResults<{
     common: {
       cancel(): string;
     };
@@ -28,7 +37,7 @@ test('flat data', async () => {
         name(): string;
       };
     };
-  }>(namespace);
+  }>();
 
   const result = localeKeys(defaultSpy());
 
@@ -37,14 +46,16 @@ test('flat data', async () => {
 });
 
 test('data interpolation double quote', async () => {
-  const namespace = 'interpolation-double';
+  const driver = new Driver();
+  driver.given.namespace('interpolation-double');
+  await driver.when.generatesResult();
 
-  const { localeKeys } = await generateResult<{
+  const { localeKeys } = await driver.get.generatedResults<{
     common: {
       greeting(params: { name: unknown }): string;
       invitation(params: { first: unknown; second: unknown }): string;
     };
-  }>(namespace);
+  }>();
 
   const spy = jest
     .fn()
@@ -69,19 +80,22 @@ test('data interpolation double quote', async () => {
 });
 
 test('data interpolation single quote', async () => {
-  const namespace = 'interpolation-single';
+  const driver = new Driver();
+  driver.given.namespace('interpolation-single');
 
-  const { localeKeys } = await generateResult<{
+  await driver.when.generatesResult({
+    interpolationSuffix: '}',
+    interpolationPrefix: '{'
+  });
+
+  const { localeKeys } = await driver.get.generatedResults<{
     common: {
       loggedIn: {
         message(data: { username: unknown }): string;
       };
     };
     readingWarning(data: { reader: unknown; writer: string }): string;
-  }>(namespace, {
-    interpolationSuffix: '}',
-    interpolationPrefix: '{'
-  });
+  }>();
 
   const spy = jest
     .fn()
