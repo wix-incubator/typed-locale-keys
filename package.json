@@ -17,7 +17,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-sandbox/*/dist && ts-node tests/pregenerate.ts",
+    "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist && ts-node tests/pregenerate.ts",
     "test": "tsc --noEmit && jest",
     "build": "tsc -p tsconfig.build.json"
   },
