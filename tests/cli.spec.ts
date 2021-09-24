@@ -15,7 +15,7 @@ interface ResultTwo {
 test('should generate from entries in package.json', async () => {
   const driver = new Driver();
 
-  driver.given.cwd('tests/cli/entries');
+  driver.given.cwd('tests/cli-sandbox/entries');
 
   await driver.when.runsCodegenCommand();
 
@@ -34,7 +34,7 @@ test('should generate from entries in package.json', async () => {
 test('should generate in location of primaryOutput', async () => {
   const driver = new Driver();
 
-  driver.given.cwd('tests/cli/primaryOutput');
+  driver.given.cwd('tests/cli-sandbox/primaryOutput');
 
   await driver.when.runsCodegenCommand();
 
@@ -48,7 +48,7 @@ test('should generate in location of primaryOutput', async () => {
 test('should apply params from package json', async () => {
   const driver = new Driver();
 
-  driver.given.cwd('tests/cli/packageJsonBooleans');
+  driver.given.cwd('tests/cli-sandbox/packageJsonBooleans');
 
   await driver.when.runsCodegenCommand({
     source: 'source.json'
@@ -70,10 +70,10 @@ test('should apply params from package json', async () => {
   expect(tFnMock).toHaveBeenCalledTimes(1);
 });
 
-test('should override params in package json with cli args', async () => {
+test('should override params in package json with cli-sandbox args', async () => {
   const driver = new Driver();
 
-  driver.given.cwd('tests/cli/overridePackageJson');
+  driver.given.cwd('tests/cli-sandbox/overridePackageJson');
 
   await driver.when.runsCodegenCommand({
     source: 'source.json',
