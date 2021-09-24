@@ -12,7 +12,7 @@ interface ResultTwo {
   };
 }
 
-test('should generate from entries in package.json', async () => {
+test('should generate from entries in .typedlocalekeysrc.json', async () => {
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-sandbox/entries');

@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
-import path from 'path';
-
+import { cosmiconfig } from 'cosmiconfig';
 import yargs from 'yargs';
 
 import { hideBin } from 'yargs/helpers';
 
 import { Generator } from './Generator';
 
-export interface PackageJsonConfig {
+export interface Config {
   entries: {
     [key: string]:
       | string
@@ -73,21 +72,21 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
 );
 
 void (async () => {
-  const packageJson = (await import(
-    path.resolve(process.cwd(), 'package.json')
-  )) as { typedLocaleKeys?: PackageJsonConfig };
+  const config = (await cosmiconfig('typedLocaleKeys').search())?.config as
+    | Config
+    | undefined;
 
   const {
     argv: {
-      output = packageJson.typedLocaleKeys?.primaryOutput ?? './dist',
-      reactHook = packageJson.typedLocaleKeys?.reactHook,
-      singleCurlyBraces = packageJson.typedLocaleKeys?.singleCurlyBraces,
+      output = config?.primaryOutput ?? './dist',
+      reactHook = config?.reactHook,
+      singleCurlyBraces = config?.singleCurlyBraces,
       source,
       showTranslations
     }
   } = cliDefinition;
 
-  const entries = Object.values(packageJson.typedLocaleKeys?.entries ?? {});
+  const entries = Object.values(config?.entries ?? {});
 
   if (source) {
     entries.push({ source, output });

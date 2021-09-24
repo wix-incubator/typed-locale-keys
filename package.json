@@ -24,6 +24,7 @@
   "dependencies": {
     "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
     "@types/flat": "^5.0.2",
+    "cosmiconfig": "^7.0.1",
     "flat": "^5.0.2",
     "jest": "^27.1.1",
     "ts-essentials": "^8.1.0",
