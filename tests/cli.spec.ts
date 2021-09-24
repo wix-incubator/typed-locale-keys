@@ -31,7 +31,7 @@ test('should generate from entries in .typedlocalekeysrc.json', async () => {
   expect(typeof strCase(() => '').model.user.id).toBe('function');
 });
 
-test('should generate in location of primaryOutput', async () => {
+test('should generate in location of primaryOutput from package.json', async () => {
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/primaryOutput');
@@ -45,7 +45,7 @@ test('should generate in location of primaryOutput', async () => {
   expect(typeof localeKeys(() => '').common.hello).toBe('function');
 });
 
-test('should apply params from package json', async () => {
+test('should apply params from package.json', async () => {
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/packageJsonBooleans');
@@ -70,7 +70,7 @@ test('should apply params from package json', async () => {
   expect(tFnMock).toHaveBeenCalledTimes(1);
 });
 
-test('should override params in package json with cli-configs-sandbox args', async () => {
+test('should override params in package.json with cli args', async () => {
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/overridePackageJson');
