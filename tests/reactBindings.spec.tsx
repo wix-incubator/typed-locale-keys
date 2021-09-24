@@ -18,7 +18,7 @@ beforeAll(async () => {
   driver = new Driver();
   driver.given.namespace('react');
 
-  await driver.when.generatesResult({
+  await driver.when.runsCodegenCommand({
     reactBindings: true
   });
 
@@ -42,12 +42,6 @@ test('hook and provider should be defined in file', () => {
 });
 
 test('provider and hook should call translation function and return its result', () => {
-  const tFn = jest
-    .fn()
-    .mockImplementation(
-      (key, options) => `KEY: "${key}"; OPTIONS: "${JSON.stringify(options)}"`
-    );
-
   const testId = 'some-translated-text';
 
   const SomeText = () => {
@@ -61,12 +55,14 @@ test('provider and hook should call translation function and return its result',
   };
 
   const renderResult = render(
-    <LocaleKeysProvider tFn={tFn}>
+    <LocaleKeysProvider tFn={driver.get.defaultTranslationFn()}>
       <SomeText />
     </LocaleKeysProvider>
   );
 
   expect(renderResult.getByTestId(testId).innerHTML).toContain(
-    'KEY: "common.loggedIn.message"; OPTIONS: "{"username":"Bruce"}"'
+    driver.get.expectedTranslationOf('common.loggedIn.message', {
+      username: 'Bruce'
+    })
   );
 });

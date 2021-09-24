@@ -1,12 +1,11 @@
 import { Driver } from './driver';
-import { defaultSpy } from './helpers';
 
 test('nested data', async () => {
   const driver = new Driver();
 
   driver.given.namespace('nested');
 
-  await driver.when.generatesResult();
+  await driver.when.runsCodegenCommand();
 
   const { localeKeys } = await driver.get.generatedResults<{
     common: {
@@ -15,10 +14,14 @@ test('nested data', async () => {
     model: { user: { id(): string } };
   }>();
 
-  const result = localeKeys(defaultSpy());
+  const result = localeKeys(driver.get.defaultTranslationFn());
 
-  expect(result.common.create()).toBe(`transformed -> common.create`);
-  expect(result.model.user.id()).toBe(`transformed -> model.user.id`);
+  expect(result.common.create()).toBe(
+    driver.get.expectedTranslationOf('common.create')
+  );
+  expect(result.model.user.id()).toBe(
+    driver.get.expectedTranslationOf('model.user.id')
+  );
 });
 
 test('flat data', async () => {
@@ -26,7 +29,7 @@ test('flat data', async () => {
 
   driver.given.namespace('flat');
 
-  await driver.when.generatesResult();
+  await driver.when.runsCodegenCommand();
 
   const { localeKeys } = await driver.get.generatedResults<{
     common: {
@@ -39,16 +42,20 @@ test('flat data', async () => {
     };
   }>();
 
-  const result = localeKeys(defaultSpy());
+  const result = localeKeys(driver.get.defaultTranslationFn());
 
-  expect(result.common.cancel()).toBe(`transformed -> common.cancel`);
-  expect(result.model.player.name()).toBe(`transformed -> model.player.name`);
+  expect(result.common.cancel()).toBe(
+    driver.get.expectedTranslationOf('common.cancel')
+  );
+  expect(result.model.player.name()).toBe(
+    driver.get.expectedTranslationOf('model.player.name')
+  );
 });
 
 test('data interpolation double quote', async () => {
   const driver = new Driver();
   driver.given.namespace('interpolation-double');
-  await driver.when.generatesResult();
+  await driver.when.runsCodegenCommand();
 
   const { localeKeys } = await driver.get.generatedResults<{
     common: {
@@ -57,25 +64,17 @@ test('data interpolation double quote', async () => {
     };
   }>();
 
-  const spy = jest
-    .fn()
-    .mockImplementationOnce(
-      (key, { name }) => `transformed -> ${key}; name: ${name} !!!`
-    );
-
-  const result = localeKeys(spy);
+  const result = localeKeys(driver.get.defaultTranslationFn());
 
   expect(result.common.greeting({ name: 'John' })).toBe(
-    `transformed -> common.greeting; name: John !!!`
-  );
-
-  spy.mockImplementationOnce(
-    (key, { first, second }) =>
-      `transformed -> ${key}; first: ${first}; second: ${second} !`
+    driver.get.expectedTranslationOf('common.greeting', { name: 'John' })
   );
 
   expect(result.common.invitation({ first: 'One', second: 'Two' })).toBe(
-    `transformed -> common.invitation; first: One; second: Two !`
+    driver.get.expectedTranslationOf('common.invitation', {
+      first: 'One',
+      second: 'Two'
+    })
   );
 });
 
@@ -83,9 +82,8 @@ test('data interpolation single quote', async () => {
   const driver = new Driver();
   driver.given.namespace('interpolation-single');
 
-  await driver.when.generatesResult({
-    interpolationSuffix: '}',
-    interpolationPrefix: '{'
+  await driver.when.runsCodegenCommand({
+    singleCurlyBraces: true
   });
 
   const { localeKeys } = await driver.get.generatedResults<{
@@ -97,24 +95,18 @@ test('data interpolation single quote', async () => {
     readingWarning(data: { reader: unknown; writer: string }): string;
   }>();
 
-  const spy = jest
-    .fn()
-    .mockImplementationOnce(
-      (key, { username }) => `transformed -> ${key}; username: ${username} !!!`
-    );
-
-  const result = localeKeys(spy);
+  const result = localeKeys(driver.get.defaultTranslationFn());
 
   expect(result.common.loggedIn.message({ username: 'Boss' })).toBe(
-    `transformed -> common.loggedIn.message; username: Boss !!!`
-  );
-
-  spy.mockImplementationOnce(
-    (key, { reader, writer }) =>
-      `transformed -> ${key}; reader: ${reader}; writer: ${writer} !!`
+    driver.get.expectedTranslationOf('common.loggedIn.message', {
+      username: 'Boss'
+    })
   );
 
   expect(result.readingWarning({ reader: 'Alice', writer: 'Bob' })).toBe(
-    `transformed -> readingWarning; reader: Alice; writer: Bob !!`
+    driver.get.expectedTranslationOf('readingWarning', {
+      reader: 'Alice',
+      writer: 'Bob'
+    })
   );
 });

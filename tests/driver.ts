@@ -1,8 +1,8 @@
 import path from 'path';
 
 import { spawn } from 'child-process-promise';
+import jsonStringify from 'fast-json-stable-stringify';
 
-import { Generator, Options } from '../src/Generator';
 import { CliParams } from '../src/bin';
 
 type GeneratedModule<R, N extends string = 'localeKeys'> = {
@@ -15,6 +15,11 @@ export class Driver {
   private cwd: string = process.cwd();
 
   private namespace: string | undefined;
+
+  private defaultTranslateFn = (key: string, options?: unknown) =>
+    options ? `KEY: ${key}; OPTIONS: ${jsonStringify(options)}` : `KEY: ${key}`;
+
+  private tFnSpy = jest.fn().mockImplementation(this.defaultTranslateFn);
 
   private importResults<R, N extends string>(modulePath: string) {
     const moduleIdentifier = path.resolve(this.cwd, modulePath);
@@ -33,17 +38,22 @@ export class Driver {
   };
 
   when = {
-    runsCodegenCommand: async ({
-      source,
-      ...params
-    }: Partial<CliParams> = {}): Promise<void> => {
+    runsCodegenCommand: async (
+      params: Partial<CliParams> = {}
+    ): Promise<void> => {
+      const {
+        source = `tests/sources/${this.namespace}.json`,
+        output = `tests/__generated__/runtime-generation/${this.namespace}/`,
+        ...rest
+      } = params;
+
       await spawn(
         `ts-node`,
         [
           path.resolve(process.cwd(), 'src/bin.ts'),
           'codegen',
           source as string,
-          ...Object.entries(params).flatMap(([key, value]) => [
+          ...Object.entries({ output, ...rest }).flatMap(([key, value]) => [
             `--${key}`,
             (value as string).toString()
           ])
@@ -52,19 +62,11 @@ export class Driver {
           cwd: this.cwd
         }
       );
-    },
-    generatesResult: async (params: Partial<Options> = {}): Promise<void> => {
-      const generator = new Generator({
-        srcFile: `tests/sources/${this.namespace}.json`,
-        outDir: `tests/__generated__/runtime-generation/${this.namespace}/`,
-        ...params
-      });
-
-      await generator.generate();
     }
   };
 
   get = {
+    defaultTranslationFn: (): jest.Mock => this.tFnSpy,
     generatedResults: <R, N extends string = 'localeKeys'>(
       modulePath?: string
     ): Promise<GeneratedModule<R, N>> => {
@@ -79,6 +81,8 @@ export class Driver {
       }
 
       return this.importResults<R, N>(modulePath);
-    }
+    },
+    expectedTranslationOf: (key: string, options?: Record<string, unknown>) =>
+      this.defaultTranslateFn(key, options)
   };
 }
