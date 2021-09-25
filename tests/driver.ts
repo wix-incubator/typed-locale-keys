@@ -42,8 +42,12 @@ export class Driver {
       params: Partial<CliParams> = {}
     ): Promise<void> => {
       const {
-        source = `tests/sources/${this.namespace}.json`,
-        output = `tests/__generated__/runtime-generation/${this.namespace}/`,
+        source = this.namespace
+          ? `tests/sources/${this.namespace}.json`
+          : undefined,
+        output = this.namespace
+          ? `tests/__generated__/runtime-generation/${this.namespace}/`
+          : undefined,
         ...rest
       } = params;
 
@@ -53,10 +57,9 @@ export class Driver {
           path.resolve(process.cwd(), 'src/bin.ts'),
           'codegen',
           source as string,
-          ...Object.entries({ output, ...rest }).flatMap(([key, value]) => [
-            `--${key}`,
-            (value as string).toString()
-          ])
+          ...Object.entries({ output, ...rest }).flatMap(([key, value]) =>
+            value != null ? [`--${key}`, value.toString()] : []
+          )
         ],
         {
           cwd: this.cwd

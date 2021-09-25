@@ -19,7 +19,7 @@ beforeAll(async () => {
   driver.given.namespace('react');
 
   await driver.when.runsCodegenCommand({
-    reactBindings: true
+    reactHook: true
   });
 
   importResult = await driver.get.generatedResults<{
