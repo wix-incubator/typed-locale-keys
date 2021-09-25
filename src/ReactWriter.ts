@@ -5,19 +5,24 @@ import {
   VariableDeclarationKind
 } from 'ts-morph';
 
-import type { NestedLocaleValues, Options } from './Generator';
+import type {
+  Options as GeneratorOptions,
+  NestedLocaleValues
+} from './Generator';
+import { DEFAULT_TYPE_NAME } from './constants';
+
+export interface Options extends GeneratorOptions {
+  project: Project;
+  sourceFile: Promise<NestedLocaleValues>;
+  resultFile: SourceFile;
+}
 
 export class ReactWriter {
-  constructor(
-    private readonly options: Options,
-    private readonly project: Project,
-    private readonly sourceFile: Promise<NestedLocaleValues>,
-    private readonly resultFile: SourceFile
-  ) {}
+  constructor(private readonly options: Options) {}
 
   // eslint-disable-next-line @typescript-eslint/require-await
   public async write(): Promise<void> {
-    this.resultFile.addImportDeclarations([
+    this.options.resultFile.addImportDeclarations([
       {
         kind: StructureKind.ImportDeclaration,
         moduleSpecifier: 'react',
@@ -25,14 +30,14 @@ export class ReactWriter {
       }
     ]);
 
-    this.resultFile.addVariableStatements([
+    this.options.resultFile.addVariableStatements([
       {
         kind: StructureKind.VariableStatement,
         declarationKind: VariableDeclarationKind.Const,
         declarations: [
           {
             name: 'localeKeysContext',
-            initializer: 'React.createContext({} as LocaleKeys)'
+            initializer: `React.createContext({} as ${DEFAULT_TYPE_NAME})`
           }
         ]
       },
@@ -44,8 +49,7 @@ export class ReactWriter {
           {
             name: 'LocaleKeysProvider',
             type: 'React.FC<{ tFn(...args: unknown[]): string }>',
-            initializer:
-              '({ tFn, children }) => <localeKeysContext.Provider value={localeKeys(tFn)}>{children}</localeKeysContext.Provider>'
+            initializer: `({ tFn, children }) => <localeKeysContext.Provider value={${this.options.functionName}(tFn)}>{children}</localeKeysContext.Provider>`
           }
         ]
       },

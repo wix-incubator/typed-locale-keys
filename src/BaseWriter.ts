@@ -5,16 +5,22 @@ import {
   StructureKind
 } from 'ts-morph';
 
-import type { NestedLocaleValues, Options } from './Generator';
+import type {
+  Options as GeneratorOptions,
+  NestedLocaleValues
+} from './Generator';
+import { DEFAULT_TYPE_NAME } from './constants';
+
+export interface Options extends GeneratorOptions {
+  project: Project;
+  sourceFile: Promise<NestedLocaleValues>;
+  resultFile: SourceFile;
+}
 
 export class BaseWriter {
   private readonly translationFnName = 'tFn';
 
   private readonly translationFnTypeName = 'TFn';
-
-  private readonly factoryName = 'localeKeys';
-
-  private readonly resultTypeName = 'LocaleKeys';
 
   private get interpolation() {
     return {
@@ -23,21 +29,16 @@ export class BaseWriter {
     };
   }
 
-  constructor(
-    private readonly options: Options,
-    private readonly project: Project,
-    private readonly sourceFile: Promise<NestedLocaleValues>,
-    private readonly resultFile: SourceFile
-  ) {}
+  constructor(private readonly options: Options) {}
 
   public async write(): Promise<void> {
-    this.resultFile.addStatements(['/* eslint-disable */']);
+    this.options.resultFile.addStatements(['/* eslint-disable */']);
 
     if (this.options.translationFunctionTypeImport) {
       const [moduleSpecifier, namedImport] =
         this.options.translationFunctionTypeImport.split('#');
 
-      this.resultFile.addImportDeclaration({
+      this.options.resultFile.addImportDeclaration({
         kind: StructureKind.ImportDeclaration,
         isTypeOnly: true,
         namedImports: namedImport
@@ -48,14 +49,14 @@ export class BaseWriter {
       });
     }
 
-    const objectStr = this.writeObjectAsStr(await this.sourceFile);
+    const objectStr = this.writeObjectAsStr(await this.options.sourceFile);
 
-    this.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
+    this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
 
-    this.resultFile.addTypeAlias({
+    this.options.resultFile.addTypeAlias({
       kind: StructureKind.TypeAlias,
-      name: this.resultTypeName,
-      type: `ReturnType<typeof ${this.factoryName}>`,
+      name: DEFAULT_TYPE_NAME,
+      type: `ReturnType<typeof ${this.options.functionName}>`,
       isExported: true
     });
   }
@@ -65,7 +66,7 @@ export class BaseWriter {
 
     const generalFn: FunctionDeclarationStructure = {
       kind: StructureKind.Function,
-      name: this.factoryName,
+      name: this.options.functionName,
       isExported: true,
       typeParameters: this.options.translationFunctionTypeImport
         ? []
@@ -90,7 +91,7 @@ export class BaseWriter {
   }
 
   private writeObjectAsStr(nestedValue: NestedLocaleValues, keyPrefix = '') {
-    const writer = this.project.createWriter();
+    const writer = this.options.project.createWriter();
 
     writer.inlineBlock(() => {
       Object.entries(nestedValue).forEach(([key, value]) => {

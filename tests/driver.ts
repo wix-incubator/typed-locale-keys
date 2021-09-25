@@ -70,7 +70,7 @@ export class Driver {
 
   get = {
     defaultTranslationFn: (): jest.Mock => this.tFnSpy,
-    generatedResults: <R, N extends string = 'localeKeys'>(
+    generatedResults: <R, N extends string = 'LocaleKeys'>(
       modulePath?: string
     ): Promise<GeneratedModule<R, N>> => {
       if (this.namespace) {

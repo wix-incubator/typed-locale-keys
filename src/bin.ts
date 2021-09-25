@@ -81,6 +81,7 @@ void (async () => {
       output = config?.primaryOutput ?? './dist',
       reactHook = config?.reactHook,
       singleCurlyBraces = config?.singleCurlyBraces,
+      functionName,
       source,
       showTranslations
     }
@@ -97,9 +98,10 @@ void (async () => {
       srcFile: typeof entry === 'string' ? entry : entry.source,
       outDir: typeof entry !== 'string' && entry.output ? entry.output : output,
       reactBindings: reactHook,
-      showTranslations,
       interpolationPrefix: singleCurlyBraces ? '{' : '{{',
-      interpolationSuffix: singleCurlyBraces ? '}' : '}}'
+      interpolationSuffix: singleCurlyBraces ? '}' : '}}',
+      showTranslations,
+      functionName
     }).generate()
   );
 

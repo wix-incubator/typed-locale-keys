@@ -2,29 +2,27 @@
 import { TFunction } from 'i18next';
 
 import {
-  LocaleKeys,
-  localeKeys
-} from './__generated__/pregenerated/general/localeKeys';
+  ILocaleKeys,
+  LocaleKeys
+} from './__generated__/pregenerated/general/LocaleKeys';
 import {
-  LocaleKeys as LocaleKeysTypedFn,
-  localeKeys as localeKeysTypedFn
-} from './__generated__/pregenerated/type-fn/localeKeys';
+  ILocaleKeys as ILocaleKeysTypedFn,
+  LocaleKeys as LocaleKeysTypedFn
+} from './__generated__/pregenerated/type-fn/LocaleKeys';
 
-const str: string = localeKeys((() => '') as TFunction).common.loggedIn.message(
+const str: string = LocaleKeys((() => '') as TFunction).common.loggedIn.message(
   {
     username: 'John'
   }
 );
 
-const otherStr: string = localeKeysTypedFn(() => '').readingWarning({
+const otherStr: string = LocaleKeysTypedFn(() => '').readingWarning({
   reader: 'Alice',
   writer: 'Bob'
 });
 
-const someVal: string = 'someval' as ReturnType<
-  LocaleKeys['common']['loggedIn']['message']
->;
+const someVal: ReturnType<ILocaleKeys['common']['loggedIn']['message']> =
+  'someval';
 
-const someOtherVal: string = 'someval' as ReturnType<
-  LocaleKeysTypedFn['readingWarning']
->;
+const someOtherVal: ReturnType<ILocaleKeysTypedFn['readingWarning']> =
+  'someval';

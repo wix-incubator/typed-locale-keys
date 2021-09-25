@@ -7,6 +7,7 @@ import { IndentationText, Project, QuoteKind, ScriptKind } from 'ts-morph';
 
 import { BaseWriter } from './BaseWriter';
 import { ReactWriter } from './ReactWriter';
+import { DEFAULT_FN_NAME } from './constants';
 
 export interface Options {
   srcFile: string;
@@ -16,6 +17,7 @@ export interface Options {
   translationFunctionTypeImport?: string;
   showTranslations?: boolean;
   reactBindings?: boolean;
+  functionName?: string;
 }
 
 export interface NestedLocaleValues {
@@ -30,6 +32,10 @@ export class Generator {
     }
   });
 
+  private get functionName() {
+    return this.options.functionName ?? DEFAULT_FN_NAME;
+  }
+
   private readonly sourceFile = util
     .promisify(fs.readFile)(this.options.srcFile, 'utf-8')
     .then((json) => JSON.parse(json) as NestedLocaleValues)
@@ -41,7 +47,7 @@ export class Generator {
     const resultFile = this.project.createSourceFile(
       path.join(
         this.options.outDir,
-        `localeKeys.${this.options.reactBindings ? 'tsx' : 'ts'}`
+        `${this.functionName}.${this.options.reactBindings ? 'tsx' : 'ts'}`
       ),
       '',
       {
@@ -50,20 +56,22 @@ export class Generator {
       }
     );
 
-    await new BaseWriter(
-      this.options,
-      this.project,
-      this.sourceFile,
+    await new BaseWriter({
+      ...this.options,
+      project: this.project,
+      sourceFile: this.sourceFile,
+      functionName: this.functionName,
       resultFile
-    ).write();
+    }).write();
 
     if (this.options.reactBindings) {
-      await new ReactWriter(
-        this.options,
-        this.project,
-        this.sourceFile,
+      await new ReactWriter({
+        ...this.options,
+        project: this.project,
+        sourceFile: this.sourceFile,
+        functionName: this.functionName,
         resultFile
-      ).write();
+      }).write();
     }
 
     await resultFile.save();

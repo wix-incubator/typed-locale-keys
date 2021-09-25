@@ -15,12 +15,12 @@ test('should generate from entries in .typedlocalekeysrc.json', async () => {
 
   await driver.when.runsCodegenCommand();
 
-  const { localeKeys: objCase } = await driver.get.generatedResults<ResultOne>(
-    '__generated__/localeKeys'
+  const { LocaleKeys: objCase } = await driver.get.generatedResults<ResultOne>(
+    '__generated__/LocaleKeys'
   );
 
-  const { localeKeys: strCase } = await driver.get.generatedResults<ResultTwo>(
-    'dist/localeKeys'
+  const { LocaleKeys: strCase } = await driver.get.generatedResults<ResultTwo>(
+    'dist/LocaleKeys'
   );
 
   expect(typeof objCase(() => '').common.hello).toBe('function');
@@ -34,11 +34,11 @@ test('should generate in location of primaryOutput from package.json', async () 
 
   await driver.when.runsCodegenCommand();
 
-  const { localeKeys } = await driver.get.generatedResults<ResultOne>(
-    'dist/__generated__/localeKeys'
+  const { LocaleKeys } = await driver.get.generatedResults<ResultOne>(
+    'dist/__generated__/LocaleKeys'
   );
 
-  expect(typeof localeKeys(() => '').common.hello).toBe('function');
+  expect(typeof LocaleKeys(() => '').common.hello).toBe('function');
 });
 
 test('should apply params from package.json', async () => {
@@ -50,15 +50,15 @@ test('should apply params from package.json', async () => {
     source: 'source.json'
   });
 
-  const { useLocaleKeys, localeKeys } =
-    await driver.get.generatedResults<ResultOne>('__generated__/localeKeys');
+  const { useLocaleKeys, LocaleKeys } =
+    await driver.get.generatedResults<ResultOne>('__generated__/LocaleKeys');
 
   expect(typeof useLocaleKeys).toBe('function');
 
   const tFnMock = jest.fn();
   const name = 'John';
 
-  localeKeys(tFnMock).common.myName({ name });
+  LocaleKeys(tFnMock).common.myName({ name });
 
   expect(tFnMock).toHaveBeenCalledWith('common.myName', { name });
   expect(tFnMock).toHaveBeenCalledTimes(1);
@@ -76,15 +76,15 @@ test('should override params in package.json with cli args', async () => {
     showTranslations: false
   });
 
-  const { useLocaleKeys, localeKeys } =
-    await driver.get.generatedResults<ResultOne>('dist/localeKeys');
+  const { useLocaleKeys, LocaleKeys } =
+    await driver.get.generatedResults<ResultOne>('dist/LocaleKeys');
 
   expect(useLocaleKeys).toBeUndefined();
 
   const tFnMock = jest.fn();
   const name = 'John';
 
-  localeKeys(tFnMock).common.myName({ name });
+  LocaleKeys(tFnMock).common.myName({ name });
 
   expect(tFnMock).toHaveBeenCalledWith('common.myName', { name });
   expect(tFnMock).toHaveBeenCalledTimes(1);

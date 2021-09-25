@@ -6,7 +6,7 @@ import React from 'react';
 import {
   LocaleKeysProvider,
   useLocaleKeys
-} from './__generated__/pregenerated/react/localeKeys';
+} from './__generated__/pregenerated/react/LocaleKeys';
 import { Driver } from './driver';
 
 const namespace = 'react';
