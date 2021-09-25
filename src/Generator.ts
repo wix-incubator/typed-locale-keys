@@ -12,12 +12,12 @@ import { DEFAULT_FN_NAME } from './constants';
 export interface Options {
   srcFile: string;
   outDir: string;
+  functionName: string;
   interpolationSuffix?: string;
   interpolationPrefix?: string;
   translationFunctionTypeImport?: string;
   showTranslations?: boolean;
   reactBindings?: boolean;
-  functionName?: string;
 }
 
 export interface NestedLocaleValues {

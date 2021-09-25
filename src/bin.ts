@@ -6,6 +6,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { Generator } from './Generator';
+import { DEFAULT_FN_NAME } from './constants';
 
 export interface Config {
   entries: {
@@ -58,7 +59,7 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
       .option('functionName', {
         type: 'string',
         describe: 'Generated function name',
-        default: 'LocaleKeys'
+        default: DEFAULT_FN_NAME
       })
       .option('singleCurlyBraces', {
         type: 'boolean',
@@ -87,21 +88,21 @@ void (async () => {
     }
   } = cliDefinition;
 
-  const entries = Object.values(config?.entries ?? {});
+  const entries = Object.entries(config?.entries ?? {});
 
   if (source) {
-    entries.push({ source, output });
+    entries.push([functionName, { source, output }]);
   }
 
-  const promises = entries.map((entry) =>
+  const promises = entries.map(([key, value]) =>
     new Generator({
-      srcFile: typeof entry === 'string' ? entry : entry.source,
-      outDir: typeof entry !== 'string' && entry.output ? entry.output : output,
+      srcFile: typeof value === 'string' ? value : value.source,
+      outDir: typeof value !== 'string' && value.output ? value.output : output,
       reactBindings: reactHook,
       interpolationPrefix: singleCurlyBraces ? '{' : '{{',
       interpolationSuffix: singleCurlyBraces ? '}' : '}}',
       showTranslations,
-      functionName
+      functionName: key
     }).generate()
   );
 
