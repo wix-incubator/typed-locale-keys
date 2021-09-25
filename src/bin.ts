@@ -6,7 +6,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { Generator } from './Generator';
-import { DEFAULT_FN_NAME } from './constants';
+import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from './constants';
 
 export interface Config {
   entries: {
@@ -79,7 +79,7 @@ void (async () => {
 
   const {
     argv: {
-      output = config?.primaryOutput ?? './dist',
+      output = config?.primaryOutput ?? DEFAULT_OUTPUT,
       reactHook = config?.reactHook,
       singleCurlyBraces = config?.singleCurlyBraces,
       functionName,
