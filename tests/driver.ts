@@ -1,4 +1,7 @@
+import fs from 'fs';
 import path from 'path';
+
+import util from 'util';
 
 import { spawn } from 'child-process-promise';
 import jsonStringify from 'fast-json-stable-stringify';
@@ -10,6 +13,8 @@ type GeneratedModule<R, N extends string = 'localeKeys'> = {
 } & {
   useLocaleKeys: () => R;
 };
+
+const readFile = util.promisify(fs.readFile);
 
 export class Driver {
   private cwd: string = process.cwd();
@@ -73,19 +78,29 @@ export class Driver {
     generatedResults: <R, N extends string = 'LocaleKeys'>(
       modulePath?: string
     ): Promise<GeneratedModule<R, N>> => {
-      if (this.namespace) {
-        return this.importResults<R, N>(
-          `tests/__generated__/runtime-generation/${this.namespace}/localeKeys`
-        );
-      }
-
-      if (!modulePath) {
+      if (!this.namespace && !modulePath) {
         throw Error('namespace must be given or modulePath provided');
       }
 
-      return this.importResults<R, N>(modulePath);
+      return this.importResults<R, N>(
+        modulePath ??
+          `tests/__generated__/runtime-generation/${this.namespace}/LocaleKeys`
+      );
     },
-    expectedTranslationOf: (key: string, options?: Record<string, unknown>) =>
-      this.defaultTranslateFn(key, options)
+    expectedTranslationOf: (
+      key: string,
+      options?: Record<string, unknown>
+    ): string => this.defaultTranslateFn(key, options),
+    generatedResultsAsStr: async (filePath?: string): Promise<string> => {
+      if (!this.namespace && !filePath) {
+        throw Error('namespace must be given or filePath provided');
+      }
+
+      return readFile(
+        filePath ??
+          `tests/__generated__/runtime-generation/${this.namespace}/LocaleKeys.ts`,
+        'utf8'
+      );
+    }
   };
 }

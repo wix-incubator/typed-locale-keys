@@ -113,10 +113,10 @@ test('data interpolation single quote', async () => {
 
 test('custom function name', async () => {
   const driver = new Driver();
+  driver.given.namespace('fn-name');
 
   await driver.when.runsCodegenCommand({
     source: 'tests/sources/default.json',
-    output: 'tests/__generated__/fn-name/',
     functionName: 'customFnName'
   });
 
@@ -130,7 +130,7 @@ test('custom function name', async () => {
       readingWarning(data: { reader: unknown; writer: string }): string;
     },
     'customFnName'
-  >('tests/__generated__/fn-name/customFnName');
+  >('tests/__generated__/runtime-generation/fn-name/customFnName');
 
   expect(customFnName).not.toBeUndefined();
 
@@ -145,6 +145,40 @@ test('custom function name', async () => {
   );
 });
 
-test.todo('add translated value as a comment');
+test('add translated value as a comment', async () => {
+  const driver = new Driver();
+  driver.given.namespace('comments');
+
+  await driver.when.runsCodegenCommand({
+    source: 'tests/sources/default.json'
+  });
+
+  const resultStr = await driver.get.generatedResultsAsStr();
+
+  expect(resultStr).toContain(
+    '/* Hey, {{username}}, you have successfully logged in! */'
+  );
+  expect(resultStr).toContain('/* {{reader}} reads message from {{writer}} */');
+});
+
+test('not add translated value as a comment', async () => {
+  const driver = new Driver();
+
+  driver.given.namespace('no-comments');
+
+  await driver.when.runsCodegenCommand({
+    source: 'tests/sources/default.json',
+    showTranslations: false
+  });
+
+  const resultStr = await driver.get.generatedResultsAsStr();
+
+  expect(resultStr).not.toContain(
+    '/* Hey, {{username}}, you have successfully logged in! */'
+  );
+  expect(resultStr).not.toContain(
+    '/* {{reader}} reads message from {{writer}} */'
+  );
+});
 
 test.todo('values as translation keys without translation function');
