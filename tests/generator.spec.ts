@@ -181,4 +181,28 @@ test('not add translated value as a comment', async () => {
   );
 });
 
-test.todo('values as translation keys without translation function');
+test('values as translation keys without translation function', async () => {
+  const driver = new Driver();
+  driver.given.namespace('no-transl-fn');
+
+  await driver.when.runsCodegenCommand({
+    source: 'tests/sources/default.json',
+    translate: false
+  });
+
+  const { LocaleKeys } = (await driver.get.generatedResults()) as unknown as {
+    LocaleKeys(): {
+      common: {
+        loggedIn: {
+          message: string;
+        };
+      };
+      readingWarning: string;
+    };
+  };
+
+  const localeKeys = LocaleKeys();
+
+  expect(localeKeys.common.loggedIn.message).toEqual('common.loggedIn.message');
+  expect(localeKeys.readingWarning).toEqual('readingWarning');
+});
