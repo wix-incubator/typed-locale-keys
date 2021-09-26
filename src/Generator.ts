@@ -18,6 +18,7 @@ export interface Options {
   translationFunctionTypeImport?: string;
   showTranslations?: boolean;
   reactBindings?: boolean;
+  translationFn?: boolean;
 }
 
 export interface NestedLocaleValues {
@@ -34,6 +35,10 @@ export class Generator {
 
   private get functionName() {
     return this.options.functionName ?? DEFAULT_FN_NAME;
+  }
+
+  private get translateFn() {
+    return this.options.translationFn ?? true;
   }
 
   private readonly sourceFile = util

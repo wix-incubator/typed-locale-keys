@@ -84,7 +84,8 @@ void (async () => {
       singleCurlyBraces = config?.singleCurlyBraces,
       functionName,
       source,
-      showTranslations
+      showTranslations,
+      translate
     }
   } = cliDefinition;
 
@@ -102,7 +103,8 @@ void (async () => {
       interpolationPrefix: singleCurlyBraces ? '{' : '{{',
       interpolationSuffix: singleCurlyBraces ? '}' : '}}',
       showTranslations,
-      functionName: key
+      functionName: key,
+      translationFn: translate
     }).generate()
   );
 
