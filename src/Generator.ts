@@ -66,6 +66,7 @@ export class Generator {
       project: this.project,
       sourceFile: this.sourceFile,
       functionName: this.functionName,
+      translationFn: this.translateFn,
       resultFile
     }).write();
 
@@ -75,6 +76,7 @@ export class Generator {
         project: this.project,
         sourceFile: this.sourceFile,
         functionName: this.functionName,
+        translationFn: this.translateFn,
         resultFile
       }).write();
     }

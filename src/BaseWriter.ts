@@ -101,7 +101,9 @@ export class BaseWriter {
         let comment = '';
 
         if (typeof value === 'string') {
-          valueToSet = this.buildFunction(localeKey, value);
+          valueToSet = this.options.translationFn
+            ? this.buildFunction(localeKey, value)
+            : `'${localeKey}'`;
 
           if (this.options.showTranslations) {
             comment = ` /* ${value} */`;
