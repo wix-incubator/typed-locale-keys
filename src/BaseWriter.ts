@@ -9,12 +9,12 @@ import type {
   Options as GeneratorOptions,
   NestedLocaleValues
 } from './Generator';
-import { DEFAULT_TYPE_NAME } from './constants';
 
 export interface Options extends GeneratorOptions {
   project: Project;
   sourceFile: Promise<NestedLocaleValues>;
   resultFile: SourceFile;
+  typeName: string;
 }
 
 export class BaseWriter {
@@ -55,7 +55,7 @@ export class BaseWriter {
 
     this.options.resultFile.addTypeAlias({
       kind: StructureKind.TypeAlias,
-      name: DEFAULT_TYPE_NAME,
+      name: this.options.typeName,
       type: `ReturnType<typeof ${this.options.functionName}>`,
       isExported: true
     });

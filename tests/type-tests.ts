@@ -2,6 +2,10 @@
 import { TFunction } from 'i18next';
 
 import {
+  CustomFnName,
+  customFnName
+} from './__generated__/pregenerated/fn-name-dynamic/customFnName';
+import {
   ILocaleKeys,
   LocaleKeys
 } from './__generated__/pregenerated/general/LocaleKeys';
@@ -29,3 +33,12 @@ const someOtherVal: ReturnType<ILocaleKeysTypedFn['readingWarning']> =
   'someval';
 
 const noFn: string = LocaleKeysNoFn().common.loggedIn.message;
+
+const keys: CustomFnName = {
+  common: {
+    loggedIn: {
+      message: 'foo'
+    }
+  },
+  readingWarning: 'buz'
+};

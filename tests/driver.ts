@@ -8,10 +8,14 @@ import jsonStringify from 'fast-json-stable-stringify';
 
 import { CliParams } from '../src/bin';
 
-type GeneratedModule<R, N extends string = 'localeKeys'> = {
+type GeneratedModule<
+  R,
+  N extends string = 'localeKeys',
+  H extends string = 'useLocaleKeys'
+> = {
   [key in N]: (fn: CallableFunction) => R;
 } & {
-  useLocaleKeys: () => R;
+  [key in H]: () => R;
 };
 
 const readFile = util.promisify(fs.readFile);
@@ -26,11 +30,13 @@ export class Driver {
 
   private tFnSpy = jest.fn().mockImplementation(this.defaultTranslateFn);
 
-  private importResults<R, N extends string>(modulePath: string) {
+  private importResults<R, N extends string, H extends string>(
+    modulePath: string
+  ) {
     const moduleIdentifier = path.resolve(this.cwd, modulePath);
 
     // eslint-disable-next-line import/extensions,@typescript-eslint/no-unsafe-return,@typescript-eslint/ban-ts-comment
-    return import(moduleIdentifier) as Promise<GeneratedModule<R, N>>;
+    return import(moduleIdentifier) as Promise<GeneratedModule<R, N, H>>;
   }
 
   given = {
@@ -75,14 +81,18 @@ export class Driver {
 
   get = {
     defaultTranslationFn: (): jest.Mock => this.tFnSpy,
-    generatedResults: <R, N extends string = 'LocaleKeys'>(
+    generatedResults: <
+      R,
+      N extends string = 'LocaleKeys',
+      H extends string = 'useLocaleKeys'
+    >(
       modulePath?: string
-    ): Promise<GeneratedModule<R, N>> => {
+    ): Promise<GeneratedModule<R, N, H>> => {
       if (!this.namespace && !modulePath) {
         throw Error('namespace must be given or modulePath provided');
       }
 
-      return this.importResults<R, N>(
+      return this.importResults<R, N, H>(
         modulePath ??
           `tests/__generated__/runtime-generation/${this.namespace}/LocaleKeys`
       );

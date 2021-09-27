@@ -7,7 +7,8 @@ import { IndentationText, Project, QuoteKind, ScriptKind } from 'ts-morph';
 
 import { BaseWriter } from './BaseWriter';
 import { ReactWriter } from './ReactWriter';
-import { DEFAULT_FN_NAME } from './constants';
+import { DEFAULT_FN_NAME, DEFAULT_TYPE_NAME } from './constants';
+import { capitalize, isCapitalized } from './utils';
 
 export interface Options {
   srcFile: string;
@@ -19,6 +20,7 @@ export interface Options {
   showTranslations?: boolean;
   reactBindings?: boolean;
   translationFn?: boolean;
+  dynamicNaming?: boolean;
 }
 
 export interface NestedLocaleValues {
@@ -39,6 +41,20 @@ export class Generator {
 
   private get translateFn() {
     return this.options.translationFn ?? true;
+  }
+
+  private get typeName() {
+    let name = DEFAULT_TYPE_NAME;
+
+    const isPascalCased = isCapitalized(this.options.functionName);
+
+    if (this.options.dynamicNaming && this.options.functionName) {
+      name = isPascalCased
+        ? `I${this.options.functionName}`
+        : capitalize(this.options.functionName);
+    }
+
+    return name;
   }
 
   private readonly sourceFile = util
@@ -67,6 +83,7 @@ export class Generator {
       sourceFile: this.sourceFile,
       functionName: this.functionName,
       translationFn: this.translateFn,
+      typeName: this.typeName,
       resultFile
     }).write();
 
@@ -77,6 +94,7 @@ export class Generator {
         sourceFile: this.sourceFile,
         functionName: this.functionName,
         translationFn: this.translateFn,
+        typeName: this.typeName,
         resultFile
       }).write();
     }

@@ -58,8 +58,15 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
       })
       .option('functionName', {
         type: 'string',
+        alias: 'f',
         describe: 'Generated function name',
         default: DEFAULT_FN_NAME
+      })
+      .option('dynamicNaming', {
+        type: 'boolean',
+        alias: 'd',
+        describe:
+          'Also modify type and react bindings names following functionName value'
       })
       .option('singleCurlyBraces', {
         type: 'boolean',
@@ -85,7 +92,8 @@ void (async () => {
       functionName,
       source,
       showTranslations,
-      translate
+      translate,
+      dynamicNaming
     }
   } = cliDefinition;
 
@@ -103,6 +111,7 @@ void (async () => {
       interpolationPrefix: singleCurlyBraces ? '{' : '{{',
       interpolationSuffix: singleCurlyBraces ? '}' : '}}',
       showTranslations,
+      dynamicNaming,
       functionName: key,
       translationFn: translate
     }).generate()

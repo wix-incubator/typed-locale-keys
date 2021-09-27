@@ -9,15 +9,18 @@ import type {
   Options as GeneratorOptions,
   NestedLocaleValues
 } from './Generator';
-import { DEFAULT_TYPE_NAME } from './constants';
+import { capitalize } from './utils';
 
 export interface Options extends GeneratorOptions {
   project: Project;
   sourceFile: Promise<NestedLocaleValues>;
   resultFile: SourceFile;
+  typeName: string;
 }
 
 export class ReactWriter {
+  private contextName = 'LocaleKeysContext';
+
   constructor(private readonly options: Options) {}
 
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -30,14 +33,16 @@ export class ReactWriter {
       }
     ]);
 
+    const capitalFnName = capitalize(this.options.functionName);
+
     this.options.resultFile.addVariableStatements([
       {
         kind: StructureKind.VariableStatement,
         declarationKind: VariableDeclarationKind.Const,
         declarations: [
           {
-            name: 'localeKeysContext',
-            initializer: `React.createContext({} as ${DEFAULT_TYPE_NAME})`
+            name: this.contextName,
+            initializer: `React.createContext({} as ${this.options.typeName})`
           }
         ]
       },
@@ -47,9 +52,11 @@ export class ReactWriter {
         isExported: true,
         declarations: [
           {
-            name: 'LocaleKeysProvider',
+            name: this.options.dynamicNaming
+              ? `${capitalFnName}Provider`
+              : 'LocaleKeysProvider',
             type: 'React.FC<{ tFn(...args: unknown[]): string }>',
-            initializer: `({ tFn, children }) => <localeKeysContext.Provider value={${this.options.functionName}(tFn)}>{children}</localeKeysContext.Provider>`
+            initializer: `({ tFn, children }) => <${this.contextName}.Provider value={${this.options.functionName}(tFn)}>{children}</${this.contextName}.Provider>`
           }
         ]
       },
@@ -59,8 +66,10 @@ export class ReactWriter {
         isExported: true,
         declarations: [
           {
-            name: 'useLocaleKeys',
-            initializer: `() => React.useContext(localeKeysContext)`
+            name: this.options.dynamicNaming
+              ? `use${capitalFnName}`
+              : 'useLocaleKeys',
+            initializer: `() => React.useContext(${this.contextName})`
           }
         ]
       }
