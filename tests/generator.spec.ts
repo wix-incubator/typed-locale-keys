@@ -237,3 +237,33 @@ test('values as translation keys without translation function', async () => {
   expect(localeKeys.common.loggedIn.message).toEqual('common.loggedIn.message');
   expect(localeKeys.readingWarning).toEqual('readingWarning');
 });
+
+test('flatten result', async () => {
+  const driver = new Driver();
+  driver.given.namespace('flatten');
+
+  await driver.when.runsCodegenCommand({
+    source: 'tests/sources/default.json',
+    nested: false
+  });
+
+  const { LocaleKeys } = await driver.get.generatedResults<{
+    'common.loggedIn.message': (data: { username: string }) => string;
+    readingWarning: (data: { reader: string; writer: string }) => string;
+  }>();
+
+  const localeKeys = LocaleKeys(driver.get.defaultTranslationFn());
+
+  expect(localeKeys['common.loggedIn.message']({ username: 'Boss' })).toBe(
+    driver.get.expectedTranslationOf('common.loggedIn.message', {
+      username: 'Boss'
+    })
+  );
+
+  expect(localeKeys.readingWarning({ reader: 'Alice', writer: 'Bob' })).toBe(
+    driver.get.expectedTranslationOf('readingWarning', {
+      reader: 'Alice',
+      writer: 'Bob'
+    })
+  );
+});

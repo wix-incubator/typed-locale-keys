@@ -21,6 +21,7 @@ export interface Options {
   reactBindings?: boolean;
   translationFn?: boolean;
   dynamicNaming?: boolean;
+  flatten?: boolean;
 }
 
 export interface NestedLocaleValues {

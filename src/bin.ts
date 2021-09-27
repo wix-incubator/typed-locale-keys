@@ -93,7 +93,8 @@ void (async () => {
       source,
       showTranslations,
       translate,
-      dynamicNaming
+      dynamicNaming,
+      nested
     }
   } = cliDefinition;
 
@@ -113,7 +114,8 @@ void (async () => {
       showTranslations,
       dynamicNaming,
       functionName: key,
-      translationFn: translate
+      translationFn: translate,
+      flatten: !nested
     }).generate()
   );
 

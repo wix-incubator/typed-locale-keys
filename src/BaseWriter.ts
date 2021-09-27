@@ -1,3 +1,4 @@
+import { flatten } from 'flat';
 import {
   FunctionDeclarationStructure,
   Project,
@@ -49,7 +50,11 @@ export class BaseWriter {
       });
     }
 
-    const objectStr = this.writeObjectAsStr(await this.options.sourceFile);
+    const source = await this.options.sourceFile;
+
+    const objectStr = this.writeObjectAsStr(
+      this.options.flatten ? flatten(source) : source
+    );
 
     this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
 
@@ -116,7 +121,9 @@ export class BaseWriter {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
-        writer.writeLine(`${key}: ${valueToSet},${comment}`);
+        writer.writeLine(
+          `${key.includes('.') ? `'${key}'` : key}: ${valueToSet},${comment}`
+        );
       });
     });
 
