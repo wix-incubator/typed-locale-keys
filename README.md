@@ -65,7 +65,7 @@ output:
 /* tslint:disable */
 export type IFullExample = ReturnType<typeof fullExample>;
 
-type AbstractTranslateFunction = (key: string) => string;
+type AbstractTranslateFunction = (...args: any[]) => string | object | Array<string | object> | undefined | null;
 
 export function fullExample<F extends AbstractTranslateFunction>(translate: F) {
     return {
@@ -101,7 +101,7 @@ import React, {createContext, useContext, FC,} from 'react';
 
 export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 
-type AbstractTranslateFunction = (key: string) => string;
+type AbstractTranslateFunction = (...args: any[]) => string | object | Array<string | object> | undefined | null;
 
 export function LocaleKeys<F extends AbstractTranslateFunction>(translate: F) {
     return {
