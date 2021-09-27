@@ -18,9 +18,9 @@ export interface Options extends GeneratorOptions {
 }
 
 export class BaseWriter {
-  private readonly translationFnName = 'tFn';
+  private readonly translationFnName = 't';
 
-  private readonly translationFnTypeName = 'TFn';
+  private readonly translationFnTypeName = 'T';
 
   private get interpolation() {
     return {
@@ -68,22 +68,26 @@ export class BaseWriter {
       kind: StructureKind.Function,
       name: this.options.functionName,
       isExported: true,
-      typeParameters: this.options.translationFunctionTypeImport
-        ? []
-        : [
+      typeParameters:
+        this.options.translationFunctionTypeImport ||
+        !this.options.translationFn
+          ? []
+          : [
+              {
+                name: genericName,
+                constraint: `string`
+              }
+            ],
+      parameters: this.options.translationFn
+        ? [
             {
-              name: genericName,
-              constraint: `string`
+              name: this.translationFnName,
+              type: this.options.translationFunctionTypeImport
+                ? this.translationFnTypeName
+                : `(...args: unknown[]) => ${genericName}`
             }
-          ],
-      parameters: [
-        {
-          name: this.translationFnName,
-          type: this.options.translationFunctionTypeImport
-            ? this.translationFnTypeName
-            : `(...args: unknown[]) => ${genericName}`
-        }
-      ],
+          ]
+        : [],
       statements: `return ${objectStr};`
     };
 

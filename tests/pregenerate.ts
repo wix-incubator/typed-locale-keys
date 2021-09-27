@@ -22,6 +22,12 @@ void (async () => {
       reactBindings: true,
       translationFunctionTypeImport: 'i18next#TFunction',
       functionName
+    }).generate(),
+    new Generator({
+      srcFile: `tests/sources/typeTests.json`,
+      outDir: `tests/__generated__/pregenerated/no-fn/`,
+      translationFn: false,
+      functionName
     }).generate()
   ]);
 })();

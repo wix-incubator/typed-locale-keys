@@ -5,6 +5,7 @@ import {
   ILocaleKeys,
   LocaleKeys
 } from './__generated__/pregenerated/general/LocaleKeys';
+import { LocaleKeys as LocaleKeysNoFn } from './__generated__/pregenerated/no-fn/LocaleKeys';
 import {
   ILocaleKeys as ILocaleKeysTypedFn,
   LocaleKeys as LocaleKeysTypedFn
@@ -26,3 +27,5 @@ const someVal: ReturnType<ILocaleKeys['common']['loggedIn']['message']> =
 
 const someOtherVal: ReturnType<ILocaleKeysTypedFn['readingWarning']> =
   'someval';
+
+const noFn: string = LocaleKeysNoFn().common.loggedIn.message;
