@@ -21,7 +21,7 @@ export interface Options extends GeneratorOptions {
 export class BaseWriter {
   private readonly translationFnName = 't';
 
-  private readonly translationFnTypeName = 'T';
+  private readonly translationFnTypeName = 'TFunction';
 
   private get interpolation() {
     return {

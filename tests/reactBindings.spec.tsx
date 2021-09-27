@@ -4,6 +4,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import {
+  LocaleKeys,
   LocaleKeysProvider,
   useLocaleKeys
 } from './__generated__/pregenerated/react/LocaleKeys';
@@ -30,6 +31,18 @@ beforeAll(async () => {
   }>();
 });
 
+const testId = 'some-translated-text';
+
+const SomeText = () => {
+  const localeKeys = useLocaleKeys();
+
+  return (
+    <div data-testid={testId}>
+      {localeKeys.common.loggedIn.message({ username: 'Bruce' })}
+    </div>
+  );
+};
+
 test('ts file is not generated', () => {
   expect(fs.existsSync(`tests/__generated__/${namespace}/localeKeys.ts`)).toBe(
     false
@@ -42,20 +55,24 @@ test('hook and provider should be defined in file', () => {
 });
 
 test('provider and hook should call translation function and return its result', () => {
-  const testId = 'some-translated-text';
-
-  const SomeText = () => {
-    const localeKeys = useLocaleKeys();
-
-    return (
-      <div data-testid={testId}>
-        {localeKeys.common.loggedIn.message({ username: 'Bruce' })}
-      </div>
-    );
-  };
-
   const renderResult = render(
-    <LocaleKeysProvider tFn={driver.get.defaultTranslationFn()}>
+    <LocaleKeysProvider translateFn={driver.get.defaultTranslationFn()}>
+      <SomeText />
+    </LocaleKeysProvider>
+  );
+
+  expect(renderResult.getByTestId(testId).innerHTML).toContain(
+    driver.get.expectedTranslationOf('common.loggedIn.message', {
+      username: 'Bruce'
+    })
+  );
+});
+
+test('provider and hook should call translation function and return its result when localeKeys passed as prop', () => {
+  const renderResult = render(
+    <LocaleKeysProvider
+      localeKeys={LocaleKeys(driver.get.defaultTranslationFn())}
+    >
       <SomeText />
     </LocaleKeysProvider>
   );

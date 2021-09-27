@@ -21,6 +21,10 @@ export interface Options extends GeneratorOptions {
 export class ReactWriter {
   private contextName = 'LocaleKeysContext';
 
+  private readonly translateFnProp = 'translateFn';
+
+  private readonly localeKeysProp = 'localeKeys';
+
   constructor(private readonly options: Options) {}
 
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -34,6 +38,8 @@ export class ReactWriter {
     ]);
 
     const capitalFnName = capitalize(this.options.functionName);
+
+    const writer = this.options.project.createWriter();
 
     this.options.resultFile.addVariableStatements([
       {
@@ -55,8 +61,20 @@ export class ReactWriter {
             name: this.options.dynamicNaming
               ? `${capitalFnName}Provider`
               : 'LocaleKeysProvider',
-            type: 'React.FC<{ tFn(...args: unknown[]): string }>',
-            initializer: `({ tFn, children }) => <${this.contextName}.Provider value={${this.options.functionName}(tFn)}>{children}</${this.contextName}.Provider>`
+            type: `React.FC<{ ${this.translateFnProp}?(...args: unknown[]): string; ${this.localeKeysProp}?: ${this.options.typeName} }>`,
+            initializer: `({ ${this.translateFnProp}, ${
+              this.localeKeysProp
+            }, children }) => ${writer.inlineBlock(() => {
+              writer.writeLine(
+                `if (!${this.translateFnProp} && !${this.localeKeysProp}) { throw new Error('Either ${this.translateFnProp} or ${this.localeKeysProp} must be provided') }`
+              );
+              writer.writeLine(
+                `const value = (typeof ${this.translateFnProp} === 'function' ? ${this.options.functionName}(${this.translateFnProp}) : ${this.localeKeysProp}) as ${this.options.typeName}`
+              );
+              writer.writeLine(
+                `return <${this.contextName}.Provider value={value}>{children}</${this.contextName}.Provider>;`
+              );
+            })}`
           }
         ]
       },
