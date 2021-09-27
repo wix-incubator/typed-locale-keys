@@ -121,9 +121,9 @@ export class BaseWriter {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
-        writer.writeLine(
-          `${key.includes('.') ? `'${key}'` : key}: ${valueToSet},${comment}`
-        );
+        const keyToSet = key.includes('.') ? `'${key}'` : key;
+
+        writer.writeLine(`${keyToSet}: ${valueToSet},${comment}`);
       });
     });
 
