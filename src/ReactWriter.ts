@@ -9,6 +9,7 @@ import type {
   Options as GeneratorOptions,
   NestedLocaleValues
 } from './Generator';
+import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 import { capitalize } from './utils';
 
 export interface Options extends GeneratorOptions {
@@ -24,6 +25,8 @@ export class ReactWriter {
   private readonly translateFnProp = 'translateFn';
 
   private readonly localeKeysProp = 'localeKeys';
+
+  private readonly translationFnTypeName = IMPORTED_TRANSLATION_FN_TYPE_NAME;
 
   constructor(private readonly options: Options) {}
 
@@ -61,7 +64,11 @@ export class ReactWriter {
             name: this.options.dynamicNaming
               ? `${capitalFnName}Provider`
               : 'LocaleKeysProvider',
-            type: `React.FC<{ ${this.translateFnProp}?(...args: unknown[]): string; ${this.localeKeysProp}?: ${this.options.typeName} }>`,
+            type: `React.FC<{ ${this.translateFnProp}?: ${
+              this.options.translationFunctionTypeImport
+                ? this.translationFnTypeName
+                : `(...args: unknown[]) => string`
+            }; ${this.localeKeysProp}?: ${this.options.typeName} }>`,
             initializer: `({ ${this.translateFnProp}, ${
               this.localeKeysProp
             }, children }) => ${writer.inlineBlock(() => {

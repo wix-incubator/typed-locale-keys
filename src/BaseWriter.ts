@@ -10,6 +10,7 @@ import type {
   Options as GeneratorOptions,
   NestedLocaleValues
 } from './Generator';
+import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 
 export interface Options extends GeneratorOptions {
   project: Project;
@@ -21,7 +22,7 @@ export interface Options extends GeneratorOptions {
 export class BaseWriter {
   private readonly translationFnName = 't';
 
-  private readonly translationFnTypeName = 'TFunction';
+  private readonly translationFnTypeName = IMPORTED_TRANSLATION_FN_TYPE_NAME;
 
   private get interpolation() {
     return {
