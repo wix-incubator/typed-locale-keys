@@ -24,11 +24,9 @@
   "dependencies": {
     "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
     "@types/flat": "^5.0.2",
-    "@types/lodash.set": "^4.3.6",
     "cosmiconfig": "^7.0.1",
     "flat": "^5.0.2",
     "jest": "^27.1.1",
-    "lodash.set": "^4.3.2",
     "ts-essentials": "^8.1.0",
     "ts-morph": "^12.0.0",
     "ts-node": "^10.2.1",

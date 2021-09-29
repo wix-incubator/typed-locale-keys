@@ -82,12 +82,12 @@ test('exotic keys', async () => {
   );
 });
 
-test.skip('root key', async () => {
+test('root key', async () => {
   const driver = new Driver();
 
   driver.given.namespace('root-key');
 
-  await driver.when.runsGenerator();
+  await driver.when.runsCodegenCommand();
 
   const { LocaleKeys } = await driver.get.generatedResults<{
     home: {
@@ -109,13 +109,17 @@ test.skip('root key', async () => {
 
   expect(result.home.$value()).toBe(driver.get.expectedTranslationOf('home'));
   expect(result.home.nested.$value()).toBe(
-    driver.get.expectedTranslationOf('home.key')
+    driver.get.expectedTranslationOf('home.nested')
   );
   expect(result.home.nested.deep()).toBe(
-    driver.get.expectedTranslationOf('home.key.deep')
+    driver.get.expectedTranslationOf('home.nested.deep')
   );
-  expect(result.common.nested.$value()).toBe('common.nested');
-  expect(result.common.nested.deep()).toBe('common.nested.deep');
+  expect(result.common.nested.$value()).toBe(
+    driver.get.expectedTranslationOf('common.nested')
+  );
+  expect(result.common.nested.deep()).toBe(
+    driver.get.expectedTranslationOf('common.nested.deep')
+  );
 });
 
 test('data interpolation double quote', async () => {

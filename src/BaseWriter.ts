@@ -1,4 +1,4 @@
-import { flatten } from 'flat';
+import { unflatten } from 'flat';
 import {
   FunctionDeclarationStructure,
   Project,
@@ -23,6 +23,10 @@ export class BaseWriter {
   private readonly translationFnName = 't';
 
   private readonly translationFnTypeName = IMPORTED_TRANSLATION_FN_TYPE_NAME;
+
+  private readonly keySeparator = '.';
+
+  private readonly rootKey = '$value';
 
   private get interpolation() {
     return {
@@ -53,9 +57,7 @@ export class BaseWriter {
 
     const source = await this.options.sourceFile;
 
-    const objectStr = this.writeObjectAsStr(
-      this.options.flatten ? flatten(source) : source
-    );
+    const objectStr = this.writeObjectAsStr(source);
 
     this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
 
@@ -100,12 +102,35 @@ export class BaseWriter {
     return generalFn;
   }
 
-  private writeObjectAsStr(nestedValue: NestedLocaleValues, keyPrefix = '') {
+  private writeObjectAsStr(flatValue: NestedLocaleValues, keyPrefix = '') {
     const writer = this.options.project.createWriter();
 
+    const flatKeys = Object.keys(flatValue);
+
+    let objectToHandle: NestedLocaleValues = Object.fromEntries(
+      Object.entries(flatValue).map(([key, value]) => {
+        const isParentKey = flatKeys.some(
+          (flatKey) => new RegExp(`${key}\..+`).test(flatKey) // eslint-disable-line no-useless-escape
+        );
+
+        if (isParentKey) {
+          return [[key, this.rootKey].join(this.keySeparator), value];
+        }
+
+        return [key, value];
+      })
+    );
+
+    objectToHandle = this.options.flatten
+      ? objectToHandle
+      : unflatten(objectToHandle);
+
     writer.inlineBlock(() => {
-      Object.entries(nestedValue).forEach(([key, value]) => {
-        const localeKey = [keyPrefix, key].filter(Boolean).join('.');
+      Object.entries(objectToHandle).forEach(([key, value]) => {
+        const localeKey =
+          key === this.rootKey
+            ? keyPrefix
+            : [keyPrefix, key].filter(Boolean).join('.');
 
         let valueToSet: string;
         let comment = '';

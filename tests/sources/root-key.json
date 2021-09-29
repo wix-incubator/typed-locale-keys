@@ -3,6 +3,7 @@
   "home.nested": "Level 1 nested",
   "home.nested.deep": "Level 2 nested",
   "common": {
+    "nested": "Mixed nesting root",
     "nested.deep": "Mixed nesting"
   }
 }

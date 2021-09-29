@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import util from 'util';
 
-import { unflatten } from 'flat';
+import { flatten } from 'flat';
 import { IndentationText, Project, QuoteKind, ScriptKind } from 'ts-morph';
 
 import { BaseWriter } from './BaseWriter';
@@ -61,7 +61,7 @@ export class Generator {
   private readonly sourceFile = util
     .promisify(fs.readFile)(this.options.srcFile, 'utf-8')
     .then((json) => JSON.parse(json) as NestedLocaleValues)
-    .then((json) => unflatten(json) as NestedLocaleValues);
+    .then((json) => flatten(json) as NestedLocaleValues);
 
   constructor(private options: Options) {}
 
