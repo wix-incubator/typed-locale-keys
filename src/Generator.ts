@@ -92,7 +92,6 @@ export class Generator {
       await new ReactWriter({
         ...this.options,
         project: this.project,
-        sourceFile: this.sourceFile,
         functionName: this.functionName,
         translationFn: this.translateFn,
         typeName: this.typeName,

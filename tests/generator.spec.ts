@@ -52,6 +52,72 @@ test('flat data', async () => {
   );
 });
 
+test('exotic keys', async () => {
+  const driver = new Driver();
+
+  driver.given.namespace('exotic-keys');
+
+  await driver.when.runsCodegenCommand();
+
+  const { LocaleKeys } = await driver.get.generatedResults<{
+    home: {
+      key: {
+        'with-dash'(): string;
+        '$dollar'(): string;
+        '#hashed'(): string;
+      };
+    };
+  }>();
+
+  const result = LocaleKeys(driver.get.defaultTranslationFn());
+
+  expect(result.home.key['with-dash']()).toBe(
+    driver.get.expectedTranslationOf('home.key.with-dash')
+  );
+  expect(result.home.key.$dollar()).toBe(
+    driver.get.expectedTranslationOf('home.key.$dollar')
+  );
+  expect(result.home.key['#hashed']()).toBe(
+    driver.get.expectedTranslationOf('home.key.#hashed')
+  );
+});
+
+test.skip('root key', async () => {
+  const driver = new Driver();
+
+  driver.given.namespace('root-key');
+
+  await driver.when.runsGenerator();
+
+  const { LocaleKeys } = await driver.get.generatedResults<{
+    home: {
+      $value(): string;
+      nested: {
+        $value(): string;
+        deep(): string;
+      };
+    };
+    common: {
+      nested: {
+        $value(): string;
+        deep(): string;
+      };
+    };
+  }>();
+
+  const result = LocaleKeys(driver.get.defaultTranslationFn());
+
+  expect(result.home.$value()).toBe(driver.get.expectedTranslationOf('home'));
+  expect(result.home.nested.$value()).toBe(
+    driver.get.expectedTranslationOf('home.key')
+  );
+  expect(result.home.nested.deep()).toBe(
+    driver.get.expectedTranslationOf('home.key.deep')
+  );
+  expect(result.common.nested.$value()).toBe('common.nested');
+  expect(result.common.nested.deep()).toBe('common.nested.deep');
+});
+
 test('data interpolation double quote', async () => {
   const driver = new Driver();
   driver.given.namespace('interpolation-double');

@@ -5,16 +5,12 @@ import {
   VariableDeclarationKind
 } from 'ts-morph';
 
-import type {
-  Options as GeneratorOptions,
-  NestedLocaleValues
-} from './Generator';
+import type { Options as GeneratorOptions } from './Generator';
 import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 import { capitalize } from './utils';
 
 export interface Options extends GeneratorOptions {
   project: Project;
-  sourceFile: Promise<NestedLocaleValues>;
   resultFile: SourceFile;
   typeName: string;
 }

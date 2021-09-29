@@ -122,7 +122,7 @@ export class BaseWriter {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
-        const keyToSet = key.includes('.') ? `'${key}'` : key;
+        const keyToSet = /([^A-z0-9]|^[0-9])/.test(key) ? `'${key}'` : key;
 
         writer.writeLine(`${keyToSet}: ${valueToSet},${comment}`);
       });

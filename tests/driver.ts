@@ -6,7 +6,9 @@ import util from 'util';
 import { spawn } from 'child-process-promise';
 import jsonStringify from 'fast-json-stable-stringify';
 
+import { Generator } from '../src/Generator';
 import { CliParams } from '../src/bin';
+import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from '../src/constants';
 
 type GeneratedModule<
   R,
@@ -39,6 +41,16 @@ export class Driver {
     return import(moduleIdentifier) as Promise<GeneratedModule<R, N, H>>;
   }
 
+  private get namespacedSource() {
+    return this.namespace ? `tests/sources/${this.namespace}.json` : undefined;
+  }
+
+  private get namespacedOutput() {
+    return this.namespace
+      ? `tests/__generated__/runtime-generation/${this.namespace}/`
+      : undefined;
+  }
+
   given = {
     cwd: (cwd: string): void => {
       this.cwd = cwd;
@@ -53,12 +65,8 @@ export class Driver {
       params: Partial<CliParams> = {}
     ): Promise<void> => {
       const {
-        source = this.namespace
-          ? `tests/sources/${this.namespace}.json`
-          : undefined,
-        output = this.namespace
-          ? `tests/__generated__/runtime-generation/${this.namespace}/`
-          : undefined,
+        source = this.namespacedSource,
+        output = this.namespacedOutput,
         ...rest
       } = params;
 
@@ -67,7 +75,7 @@ export class Driver {
         [
           path.resolve(process.cwd(), 'src/bin.ts'),
           'codegen',
-          source as string,
+          source ?? '',
           ...Object.entries({ output, ...rest }).flatMap(([key, value]) =>
             value != null ? [`--${key}`, value.toString()] : []
           )
@@ -76,6 +84,32 @@ export class Driver {
           cwd: this.cwd
         }
       );
+    },
+    runsGenerator: async (params: Partial<CliParams> = {}): Promise<void> => {
+      const {
+        source: srcFile = this.namespacedSource ?? 'tests/sources/default.json',
+        output: outDir = this.namespacedOutput ?? DEFAULT_OUTPUT,
+        translate: translationFn = true,
+        functionName = DEFAULT_FN_NAME,
+        nested = true,
+        showTranslations = true,
+        reactHook: reactBindings,
+        singleCurlyBraces,
+        dynamicNaming
+      } = params;
+
+      await new Generator({
+        srcFile,
+        outDir,
+        reactBindings,
+        interpolationPrefix: singleCurlyBraces ? '{' : '{{',
+        interpolationSuffix: singleCurlyBraces ? '}' : '}}',
+        showTranslations,
+        dynamicNaming,
+        functionName,
+        translationFn,
+        flatten: !nested
+      }).generate();
     }
   };
 
