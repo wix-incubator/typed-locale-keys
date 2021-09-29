@@ -26,7 +26,7 @@ export type CliParams = typeof cliDefinition['argv'];
 
 const cliDefinition = yargs(hideBin(process.argv)).command(
   'codegen [source]',
-  'Generates a class from the keys of a locale.json file',
+  'Generates a factory from the keys of a locale.json file',
   (y) =>
     y
       .positional('source', {
