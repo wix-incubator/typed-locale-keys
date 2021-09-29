@@ -36,7 +36,7 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
       .option('output', {
         type: 'string',
         alias: 'o',
-        describe: 'Distribution directory for generated class'
+        describe: 'Distribution directory for generated factory'
       })
       .option('nested', {
         type: 'boolean',

@@ -19,7 +19,8 @@
   "scripts": {
     "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist && ts-node tests/pregenerate.ts",
     "test": "tsc --noEmit && jest",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json",
+    "generate-readme": "ts-node scripts/generateReadme.ts"
   },
   "dependencies": {
     "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",

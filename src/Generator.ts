@@ -63,9 +63,7 @@ export class Generator {
     .then((json) => JSON.parse(json) as NestedLocaleValues)
     .then((json) => flatten(json) as NestedLocaleValues);
 
-  constructor(private options: Options) {}
-
-  public async generate(): Promise<void> {
+  private async writeResultFile() {
     const resultFile = this.project.createSourceFile(
       path.join(
         this.options.outDir,
@@ -99,6 +97,20 @@ export class Generator {
       }).write();
     }
 
+    return resultFile;
+  }
+
+  constructor(private options: Options) {}
+
+  public async generate(): Promise<void> {
+    const resultFile = await this.writeResultFile();
+
     await resultFile.save();
+  }
+
+  public async generateAsText(): Promise<string> {
+    const resultFile = await this.writeResultFile();
+
+    return resultFile.getFullText();
   }
 }
