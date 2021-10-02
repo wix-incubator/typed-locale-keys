@@ -147,7 +147,7 @@ export class BaseWriter {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
-        const keyToSet = /([^A-z0-9]|^[0-9])/.test(key) ? `'${key}'` : key;
+        const keyToSet = /([^A-z0-9_$]|^[0-9])/.test(key) ? `'${key}'` : key;
 
         writer.writeLine(`${keyToSet}: ${valueToSet},${comment}`);
       });
