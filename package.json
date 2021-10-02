@@ -2,20 +2,6 @@
   "name": "typed-locale-keys",
   "version": "3.0.0",
   "description": "Generates typed object to provide translations",
-  "bin": {
-    "tlk": "dist/bin.js"
-  },
-  "author": {
-    "name": "Guy Wargzaer",
-    "email": "guyw@wix.com"
-  },
-  "contributors": [
-    {
-      "name": "Tit Kovalenko",
-      "email": "t.a.kvlnk@gmail.com"
-    }
-  ],
-  "license": "MIT",
   "scripts": {
     "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist && ts-node tests/pregenerate.ts",
     "test": "tsc --noEmit && jest",
@@ -33,6 +19,9 @@
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3",
     "yargs": "^17.1.1"
+  },
+  "bin": {
+    "tlk": "dist/bin.js"
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.0",
@@ -58,12 +47,28 @@
     "locale",
     "typescript"
   ],
+  "private": false,
+  "publishConfig": {
+    "versionBumpStrategy": "patch",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "author": {
+    "name": "Guy Wargzaer",
+    "email": "guyw@wix.com"
+  },
+  "contributors": [
+    {
+      "name": "Tit Kovalenko",
+      "email": "t.a.kvlnk@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-incubator/typed-locale-keys.git"
+  },
   "homepage": "https://github.com/wix-incubator/typed-locale-keys#readme",
   "bugs": {
     "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
   },
-  "publishConfig": {
-    "versionBumpStrategy": "patch",
-    "registry": "https://registry.npmjs.org/"
-  }
+  "license": "MIT"
 }
