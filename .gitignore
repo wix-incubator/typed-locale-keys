@@ -3,3 +3,4 @@ node_modules
 dist
 *.log
 __generated__
+coverage
