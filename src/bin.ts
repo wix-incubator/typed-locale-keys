@@ -80,9 +80,11 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
 );
 
 void (async () => {
-  const config = (await cosmiconfig('typedLocaleKeys').search())?.config as
-    | Config
-    | undefined;
+  const config = (
+    await cosmiconfig('typedlocalekeys', {
+      packageProp: 'typedLocaleKeys',
+    }).search()
+  )?.config as Config | undefined;
 
   const {
     argv: {

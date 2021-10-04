@@ -8,7 +8,7 @@ interface ResultTwo {
   model: { user: { id: () => string } };
 }
 
-test('should generate from entries in .typedLocaleKeysrc.json', async () => {
+test('should generate from entries in .typedlocalekeysrc.json', async () => {
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/entries');
