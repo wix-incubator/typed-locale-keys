@@ -1,0 +1,10 @@
+{
+  "common": {
+    "create": "Create"
+  },
+  "model": {
+    "user": {
+      "id": "ID"
+    }
+  }
+}

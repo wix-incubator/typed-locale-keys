@@ -1,0 +1,7 @@
+{
+  "typedLocaleKeys": {
+    "reactHook": true,
+    "singleCurlyBraces": true,
+    "primaryOutput": "./dist/__generated__"
+  }
+}

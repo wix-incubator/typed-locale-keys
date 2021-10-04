@@ -1,19 +1,44 @@
 {
   "name": "typed-locale-keys",
   "version": "2.0.0",
-  "description": "generates and manages locale keys",
-  "main": "./src/bin/typedLocaleKeys.js",
+  "description": "Generates typed object to provide translations",
   "scripts": {
-    "generate": "node ./src/bin/typedLocaleKeys.js codegen",
-    "generate:flat": "node ./src/bin/typedLocaleKeys.js codegen --n false",
-    "generate:noFunction": "node ./src/bin/typedLocaleKeys.js codegen --t false",
-    "generate:noTranslations": "node ./src/bin/typedLocaleKeys.js codegen --showTranslations false",
-    "generate:functionName": "node ./src/bin/typedLocaleKeys.js codegen ./tests/locale/with_path_en.json --functionName SomeName",
-    "build": ":",
-    "test": ":"
+    "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist && ts-node tests/pregenerate.ts",
+    "test": "tsc --noEmit && jest -i",
+    "build": "tsc -p tsconfig.build.json",
+    "generate-readme": "ts-node scripts/generateReadme.ts"
+  },
+  "dependencies": {
+    "@tkvlnk/configs": "git+https://github.com/tkvlnk/configs.git#2.1.8",
+    "@types/flat": "^5.0.2",
+    "cosmiconfig": "^7.0.1",
+    "flat": "^5.0.2",
+    "jest": "^27.1.1",
+    "ts-essentials": "^8.1.0",
+    "ts-morph": "^12.0.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3",
+    "yargs": "^17.1.1"
   },
   "bin": {
-    "tlk": "./src/bin/typedLocaleKeys.js"
+    "tlk": "dist/bin.js"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^12.1.0",
+    "@types/child-process-promise": "^2.2.2",
+    "@types/jest": "^27.0.1",
+    "@types/react": "^17.0.21",
+    "child-process-promise": "^2.2.1",
+    "eslint": "^7.32.0",
+    "fast-json-stable-stringify": "^2.1.0",
+    "handlebars": "^4.7.7",
+    "i18next": "^20.6.1",
+    "prettier": "^2.4.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "simple-git-hooks": "^2.6.1",
+    "ts-jest": "^27.0.5"
   },
   "keywords": [
     "i18n",
@@ -31,6 +56,12 @@
     "name": "Guy Wargzaer",
     "email": "guyw@wix.com"
   },
+  "contributors": [
+    {
+      "name": "Tit Kovalenko",
+      "email": "t.a.kvlnk@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wix-incubator/typed-locale-keys.git"
@@ -39,22 +70,5 @@
   "bugs": {
     "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
   },
-  "license": "MIT",
-  "dependencies": {
-    "caporal": "^1.1.0",
-    "load-json-file": "^5.1.0",
-    "object-path": "^0.11.4",
-    "shelljs": "^0.8.3",
-    "stringify-object": "^3.3.0"
-  },
-  "typedLocaleKeys": {
-    "entries": {
-      "galleryKeys": {
-        "source": "./tests/locale/messages_en.json",
-        "output": "./dist/gallery"
-      },
-      "commonKeys": "./tests/locale/sub/messages_en.json",
-      "fullExample": "./tests/locale/full_example.json"
-    }
-  }
+  "license": "MIT"
 }

@@ -1,3 +1,6 @@
-dist
 node_modules
 .idea
+dist
+*.log
+__generated__
+coverage

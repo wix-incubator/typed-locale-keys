@@ -1,0 +1,6 @@
+{
+  "common": {
+    "greeting": "Hello, {{name}}!",
+    "invitation": "{{first}}, invited {{second}} to be friends."
+  }
+}

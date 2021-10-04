@@ -1,0 +1,5 @@
+{
+  "home.key.with-dash": "I am with dash",
+  "home.key.$dollar": "I am started with dollar sign",
+  "home.key.#hashed": "I am started with hashbang"
+}

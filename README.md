@@ -1,6 +1,6 @@
 # Typed-Local-Keys
 
-generate typescript code from locale keys JSON.
+Generate typescript code from locale keys JSON.
 
 
 ### Getting Started
@@ -11,36 +11,27 @@ tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 
 ## How to use
 
-#### <u>in `package.json`</u>
-add to `scripts`
+### In `package.json`
+
+Add to `scripts`
+
 ```javascript
 "pretest": "tlk codegen [ENTRY-DIRECTORY]/messages_en.json [OUTPUT-DIRECTORY]",
 ```
 
-#### <u>initialize generated file with translate function</u>
+### Initialize generated file with translate function
 ```javascript
 const localeKeys = LocaleKeys(i18nConf.t.bind(i18nConf));
 ```
 
-#### <u>in root component ONLY</u>
-add `@withTranslation`. it adds the `wait` logic that prevents rendering prior loading all keys
-```typescript
-import { withTranslation } from 'react-i18next';
-
-@withTranslation
-export class App extends React.Component<any> {
-    // ... //
-}
-```
-
-#### <u>Read interpolation arguments using single curly instead of of double</u>
+### Read interpolation arguments using single curly instead of of double
 default is double curly braces. To use single mode pass:
 
-`tlk codegen --singleCurlyBraces`
+`$ tlk codegen --singleCurlyBraces`
 
-or setting in configuration 
+or setting in configuration
 `package.json`:
-```javascript
+```json
 "typedLocaleKeys": {
     "singleCurlyBraces" : true //optional field. default is false
 },
@@ -50,98 +41,69 @@ or setting in configuration
 
 input: `messages_en.json`:
 
-```javascript
+```json
 {
-  "home.header": "header",
-  "home.header.title": "{{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}}",
-  "home.header.subtitle": "this is my hello world",
-  "home-empty.body.header": "on this app you will do nothing",
-  "home.body.description.#phone.$value": "this describes the meaningless apps"
+  "common": {
+    "loggedIn": {
+      "message": "Hey, {{username}}, you have successfully logged in!"
+    }
+  },
+  "readingWarning": "{{reader}} reads message from {{writer}}"
 }
+
 ```
 
 output:
 ```typescript
-/* tslint:disable */
-export type IFullExample = ReturnType<typeof fullExample>;
-
-export function fullExample(translate: Function) {
-    return {
-        home: {
-            header: {
-                $value: () => translate('home.header') /* header */,
-                title: (options: { greeting: any, person: { firstName: any, lastName: any }, date: any }) => translate('home.header.title', options) /* {{greeting}} {{person.firstName }} {{ person.lastName }} today is {{date, DD/MM/YYYY}} */,
-                subtitle: () => translate('home.header.subtitle') /* this is my hello world */
-            },
-            body: {
-                description: {
-                    '#phone': {
-                        $value: () => translate('home.body.description.#phone.$value') /* this describes the meaningless apps */
-                    }
-                }
-            }
-        },
-        'home-empty': {
-            body: {
-                header: () => translate('home-empty.body.header') /* on this app you will do nothing */
-            }
-        }
-    };
+/* eslint-disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      loggedIn: {
+        message: (data: Record<'username', unknown>) => t('common.loggedIn.message', data),
+      },
+    },
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => t('readingWarning', data),
+  };
 }
-/* tslint:enable */
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+
 ```
 
 output with React Hook:
 ```tsx
-/* tslint:disable */
 /* eslint-disable */
-import React, {createContext, useContext, FC,} from 'react';
+import React from 'react';
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      loggedIn: {
+        message: (data: Record<'username', unknown>) => t('common.loggedIn.message', data),
+      },
+    },
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => t('readingWarning', data),
+  };
+}
 
 export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 
-export function LocaleKeys(translate: Function) {
-    return {
-        app: {
-            title: () => translate('app.title') /* Hello World! */
-        }
-    };
-}
-
-const LocaleKeysContext = createContext({} as ILocaleKeys);
-
-export const useLocaleKeys = () => useContext(LocaleKeysContext);
-
-export const LocaleKeysProvider: FC<{
-    localeKeys?: ILocaleKeys;
-    translateFn?: Function;
-}> = ({
-    localeKeys,
-    translateFn,
-    children
-}) => {
-    const value = typeof translateFn === 'function'
-        ? LocaleKeys(translateFn)
-        : localeKeys;
-
-    if (!value) {
-        throw new Error('You must provide localeKeys or translateFn');
-    }
-
-    return (
-        <LocaleKeysContext.Provider value={value}>
-            {children}
-        </LocaleKeysContext.Provider>
-    )
-};
-
-/* eslint-enable  */
-/* tslint:enable */
+const LocaleKeysContext = React.createContext({} as ILocaleKeys);
+export const LocaleKeysProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ILocaleKeys }> = ({ translateFn, localeKeys, children }) => {
+    if (!translateFn && !localeKeys) { throw new Error('Either translateFn or localeKeys must be provided') }
+    const value = (typeof translateFn === 'function' ? LocaleKeys(translateFn) : localeKeys) as ILocaleKeys
+    return <LocaleKeysContext.Provider value={value}>{children}</LocaleKeysContext.Provider>;
+  };
+export const useLocaleKeys = () => React.useContext(LocaleKeysContext);
 
 ```
 
-## configuration
-`package.json`:
-```javascript
+## Configuration file
+
+To read the configuration file [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) is used so it supports files like
+`.typedlocalekeysrc.json`, `typedlocalekeys.config.js`, `package.json` etc.:
+```json
 "typedLocaleKeys": {
     "entries": {
       "GalleryKeys": {
@@ -156,7 +118,33 @@ export const LocaleKeysProvider: FC<{
 },
 ```
 
-## more options:
+## More options:
 
-<img src="images/caporal-usage.png" alt="drawing" width="100%"/>
+```shell
+$ tlk codegen --help
+
+
+Generates a class from the keys of a locale.json file
+
+Positionals:
+  source  Locale JSON file path                                         [string]
+
+Options:
+      --help               Show help                                   [boolean]
+      --version            Show version number                         [boolean]
+  -o, --output             Distribution directory for generated factory [string]
+  -n, --nested             Should create nested object [boolean] [default: true]
+  -t, --translate          Should add translate function. NOTE: will wrap value
+                           with function               [boolean] [default: true]
+      --showTranslations   Add translations as function's comment
+                                                       [boolean] [default: true]
+  -f, --functionName       Generated function name
+                                                [string] [default: "LocaleKeys"]
+  -d, --dynamicNaming      Also modify type and react bindings names following
+                           functionName value                          [boolean]
+      --singleCurlyBraces  Read interpolation arguments using single curly
+                           instead of double                           [boolean]
+      --reactHook          Generate React bindings (Provider and hook) [boolean]
+
+```
 
