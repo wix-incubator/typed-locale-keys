@@ -14,7 +14,7 @@ void (async () => {
   const template = Handlebars.compile(
     await readFile('scripts/README.template.md', 'utf8'),
     {
-      noEscape: true
+      noEscape: true,
     }
   );
 
@@ -25,17 +25,17 @@ void (async () => {
     new Generator({
       srcFile,
       outDir: '',
-      functionName: DEFAULT_FN_NAME
+      functionName: DEFAULT_FN_NAME,
     }).generateAsText(),
     new Generator({
       srcFile,
       outDir: '',
       functionName: DEFAULT_FN_NAME,
-      reactBindings: true
+      reactBindings: true,
     }).generateAsText(),
-    exec(`ts-node src/bin.ts codegen --help`).then(({ stdout }) =>
+    exec('ts-node src/bin.ts codegen --help').then(({ stdout }) =>
       stdout.replace(/[^\n]+/, '$ tlk codegen --help\n')
-    )
+    ),
   ]);
 
   await writeFile(
@@ -44,7 +44,7 @@ void (async () => {
       source,
       output,
       outputReact,
-      cliHelp
+      cliHelp,
     })
   );
 })();

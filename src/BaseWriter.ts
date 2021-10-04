@@ -3,12 +3,12 @@ import {
   FunctionDeclarationStructure,
   Project,
   SourceFile,
-  StructureKind
+  StructureKind,
 } from 'ts-morph';
 
 import type {
   Options as GeneratorOptions,
-  NestedLocaleValues
+  NestedLocaleValues,
 } from './Generator';
 import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 
@@ -31,7 +31,7 @@ export class BaseWriter {
   private get interpolation() {
     return {
       prefix: this.options.interpolationPrefix ?? '{{',
-      suffix: this.options.interpolationSuffix ?? '}}'
+      suffix: this.options.interpolationSuffix ?? '}}',
     };
   }
 
@@ -51,7 +51,7 @@ export class BaseWriter {
           ? [`${namedImport} as ${this.translationFnTypeName}`]
           : [],
         namespaceImport: !namedImport ? this.translationFnTypeName : undefined,
-        moduleSpecifier
+        moduleSpecifier,
       });
     }
 
@@ -65,7 +65,7 @@ export class BaseWriter {
       kind: StructureKind.TypeAlias,
       name: this.options.typeName,
       type: `ReturnType<typeof ${this.options.functionName}>`,
-      isExported: true
+      isExported: true,
     });
   }
 
@@ -83,8 +83,8 @@ export class BaseWriter {
           : [
               {
                 name: genericName,
-                constraint: `string`
-              }
+                constraint: 'string',
+              },
             ],
       parameters: this.options.translationFn
         ? [
@@ -92,11 +92,11 @@ export class BaseWriter {
               name: this.translationFnName,
               type: this.options.translationFunctionTypeImport
                 ? this.translationFnTypeName
-                : `(...args: unknown[]) => ${genericName}`
-            }
+                : `(...args: unknown[]) => ${genericName}`,
+            },
           ]
         : [],
-      statements: `return ${objectStr};`
+      statements: `return ${objectStr};`,
     };
 
     return generalFn;

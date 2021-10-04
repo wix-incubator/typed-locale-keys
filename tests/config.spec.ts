@@ -49,7 +49,7 @@ test('should apply params from package.json', async () => {
   driver.given.cwd('tests/cli-configs-sandbox/packageJsonBooleans');
 
   await driver.when.runsCodegenCommand({
-    source: 'source.json'
+    source: 'source.json',
   });
 
   const { useLocaleKeys, LocaleKeys } =
@@ -75,7 +75,7 @@ test('should override params in package.json with cli args', async () => {
     source: 'source.json',
     output: 'dist',
     reactHook: false,
-    showTranslations: false
+    showTranslations: false,
   });
 
   const { useLocaleKeys, LocaleKeys } =

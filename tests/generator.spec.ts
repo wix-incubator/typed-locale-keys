@@ -143,7 +143,7 @@ test('data interpolation double quote', async () => {
   expect(result.common.invitation({ first: 'One', second: 'Two' })).toBe(
     driver.get.expectedTranslationOf('common.invitation', {
       first: 'One',
-      second: 'Two'
+      second: 'Two',
     })
   );
 });
@@ -153,7 +153,7 @@ test('data interpolation single quote', async () => {
   driver.given.namespace('interpolation-single');
 
   await driver.when.runsCodegenCommand({
-    singleCurlyBraces: true
+    singleCurlyBraces: true,
   });
 
   const { LocaleKeys } = await driver.get.generatedResults<{
@@ -169,14 +169,14 @@ test('data interpolation single quote', async () => {
 
   expect(result.common.loggedIn.message({ username: 'Boss' })).toBe(
     driver.get.expectedTranslationOf('common.loggedIn.message', {
-      username: 'Boss'
+      username: 'Boss',
     })
   );
 
   expect(result.readingWarning({ reader: 'Alice', writer: 'Bob' })).toBe(
     driver.get.expectedTranslationOf('readingWarning', {
       reader: 'Alice',
-      writer: 'Bob'
+      writer: 'Bob',
     })
   );
 });
@@ -187,7 +187,7 @@ test('custom function name', async () => {
 
   await driver.when.runsCodegenCommand({
     source: 'tests/sources/default.json',
-    functionName: 'customFnName'
+    functionName: 'customFnName',
   });
 
   const { customFnName } = await driver.get.generatedResults<
@@ -206,11 +206,11 @@ test('custom function name', async () => {
 
   expect(
     customFnName(driver.get.defaultTranslationFn()).common.loggedIn.message({
-      username: 'Alice'
+      username: 'Alice',
     })
   ).toBe(
     driver.get.expectedTranslationOf('common.loggedIn.message', {
-      username: 'Alice'
+      username: 'Alice',
     })
   );
 });
@@ -223,7 +223,7 @@ test('custom function name and dynamic naming', async () => {
     source: 'tests/sources/default.json',
     functionName: 'customDynamicFnName',
     dynamicNaming: true,
-    reactHook: true
+    reactHook: true,
   });
 
   const { customDynamicFnName, useCustomDynamicFnName } =
@@ -251,7 +251,7 @@ test('add translated value as a comment', async () => {
   driver.given.namespace('comments');
 
   await driver.when.runsCodegenCommand({
-    source: 'tests/sources/default.json'
+    source: 'tests/sources/default.json',
   });
 
   const resultStr = await driver.get.generatedResultsAsStr();
@@ -269,7 +269,7 @@ test('not add translated value as a comment', async () => {
 
   await driver.when.runsCodegenCommand({
     source: 'tests/sources/default.json',
-    showTranslations: false
+    showTranslations: false,
   });
 
   const resultStr = await driver.get.generatedResultsAsStr();
@@ -288,11 +288,11 @@ test('values as translation keys without translation function', async () => {
 
   await driver.when.runsCodegenCommand({
     source: 'tests/sources/default.json',
-    translate: false
+    translate: false,
   });
 
   const { LocaleKeys } = (await driver.get.generatedResults()) as unknown as {
-    LocaleKeys(): {
+    LocaleKeys: () => {
       common: {
         loggedIn: {
           message: string;
@@ -314,7 +314,7 @@ test('flatten result', async () => {
 
   await driver.when.runsCodegenCommand({
     source: 'tests/sources/default.json',
-    nested: false
+    nested: false,
   });
 
   const { LocaleKeys } = await driver.get.generatedResults<{
@@ -326,14 +326,14 @@ test('flatten result', async () => {
 
   expect(localeKeys['common.loggedIn.message']({ username: 'Boss' })).toBe(
     driver.get.expectedTranslationOf('common.loggedIn.message', {
-      username: 'Boss'
+      username: 'Boss',
     })
   );
 
   expect(localeKeys.readingWarning({ reader: 'Alice', writer: 'Bob' })).toBe(
     driver.get.expectedTranslationOf('readingWarning', {
       reader: 'Alice',
-      writer: 'Bob'
+      writer: 'Bob',
     })
   );
 });

@@ -6,35 +6,35 @@ void (async () => {
 
   await Promise.all([
     new Generator({
-      srcFile: `tests/sources/typeTests.json`,
-      outDir: `tests/__generated__/pregenerated/general/`,
-      functionName
+      srcFile: 'tests/sources/typeTests.json',
+      outDir: 'tests/__generated__/pregenerated/general/',
+      functionName,
     }).generate(),
     new Generator({
-      srcFile: `tests/sources/typeTests.json`,
-      outDir: `tests/__generated__/pregenerated/type-fn/`,
+      srcFile: 'tests/sources/typeTests.json',
+      outDir: 'tests/__generated__/pregenerated/type-fn/',
       translationFunctionTypeImport: 'i18next#TFunction',
-      functionName
+      functionName,
     }).generate(),
     new Generator({
-      srcFile: `tests/sources/typeTests.json`,
-      outDir: `tests/__generated__/pregenerated/react/`,
+      srcFile: 'tests/sources/typeTests.json',
+      outDir: 'tests/__generated__/pregenerated/react/',
       reactBindings: true,
       translationFunctionTypeImport: 'i18next#TFunction',
-      functionName
+      functionName,
     }).generate(),
     new Generator({
-      srcFile: `tests/sources/typeTests.json`,
-      outDir: `tests/__generated__/pregenerated/no-fn/`,
+      srcFile: 'tests/sources/typeTests.json',
+      outDir: 'tests/__generated__/pregenerated/no-fn/',
       translationFn: false,
-      functionName
+      functionName,
     }).generate(),
     new Generator({
-      srcFile: `tests/sources/typeTests.json`,
-      outDir: `tests/__generated__/pregenerated/fn-name-dynamic/`,
+      srcFile: 'tests/sources/typeTests.json',
+      outDir: 'tests/__generated__/pregenerated/fn-name-dynamic/',
       translationFn: false,
       functionName: 'customFnName',
-      dynamicNaming: true
-    }).generate()
+      dynamicNaming: true,
+    }).generate(),
   ]);
 })();

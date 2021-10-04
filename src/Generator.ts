@@ -32,8 +32,8 @@ export class Generator {
   private readonly project = new Project({
     manipulationSettings: {
       indentationText: IndentationText.TwoSpaces,
-      quoteKind: QuoteKind.Single
-    }
+      quoteKind: QuoteKind.Single,
+    },
   });
 
   private get functionName() {
@@ -58,10 +58,10 @@ export class Generator {
     return name;
   }
 
-  private readonly sourceFile = util
+  private readonly sourceFile: Promise<Record<string, string>> = util
     .promisify(fs.readFile)(this.options.srcFile, 'utf-8')
     .then((json) => JSON.parse(json) as NestedLocaleValues)
-    .then((json) => flatten(json) as NestedLocaleValues);
+    .then((json) => flatten(json));
 
   private async writeResultFile() {
     const resultFile = this.project.createSourceFile(
@@ -72,7 +72,7 @@ export class Generator {
       '',
       {
         overwrite: true,
-        scriptKind: this.options.reactBindings ? ScriptKind.TSX : ScriptKind.TS
+        scriptKind: this.options.reactBindings ? ScriptKind.TSX : ScriptKind.TS,
       }
     );
 
@@ -83,7 +83,7 @@ export class Generator {
       functionName: this.functionName,
       translationFn: this.translateFn,
       typeName: this.typeName,
-      resultFile
+      resultFile,
     }).write();
 
     if (this.options.reactBindings) {
@@ -93,7 +93,7 @@ export class Generator {
         functionName: this.functionName,
         translationFn: this.translateFn,
         typeName: this.typeName,
-        resultFile
+        resultFile,
       }).write();
     }
 

@@ -2,7 +2,7 @@ import {
   Project,
   SourceFile,
   StructureKind,
-  VariableDeclarationKind
+  VariableDeclarationKind,
 } from 'ts-morph';
 
 import type { Options as GeneratorOptions } from './Generator';
@@ -32,8 +32,8 @@ export class ReactWriter {
       {
         kind: StructureKind.ImportDeclaration,
         moduleSpecifier: 'react',
-        defaultImport: 'React'
-      }
+        defaultImport: 'React',
+      },
     ]);
 
     const capitalFnName = capitalize(this.options.functionName);
@@ -47,9 +47,9 @@ export class ReactWriter {
         declarations: [
           {
             name: this.contextName,
-            initializer: `React.createContext({} as ${this.options.typeName})`
-          }
-        ]
+            initializer: `React.createContext({} as ${this.options.typeName})`,
+          },
+        ],
       },
       {
         kind: StructureKind.VariableStatement,
@@ -63,23 +63,25 @@ export class ReactWriter {
             type: `React.FC<{ ${this.translateFnProp}?: ${
               this.options.translationFunctionTypeImport
                 ? this.translationFnTypeName
-                : `(...args: unknown[]) => string`
+                : '(...args: unknown[]) => string'
             }; ${this.localeKeysProp}?: ${this.options.typeName} }>`,
             initializer: `({ ${this.translateFnProp}, ${
               this.localeKeysProp
-            }, children }) => ${writer.inlineBlock(() => {
-              writer.writeLine(
-                `if (!${this.translateFnProp} && !${this.localeKeysProp}) { throw new Error('Either ${this.translateFnProp} or ${this.localeKeysProp} must be provided') }`
-              );
-              writer.writeLine(
-                `const value = (typeof ${this.translateFnProp} === 'function' ? ${this.options.functionName}(${this.translateFnProp}) : ${this.localeKeysProp}) as ${this.options.typeName}`
-              );
-              writer.writeLine(
-                `return <${this.contextName}.Provider value={value}>{children}</${this.contextName}.Provider>;`
-              );
-            })}`
-          }
-        ]
+            }, children }) => ${writer
+              .inlineBlock(() => {
+                writer.writeLine(
+                  `if (!${this.translateFnProp} && !${this.localeKeysProp}) { throw new Error('Either ${this.translateFnProp} or ${this.localeKeysProp} must be provided') }`
+                );
+                writer.writeLine(
+                  `const value = (typeof ${this.translateFnProp} === 'function' ? ${this.options.functionName}(${this.translateFnProp}) : ${this.localeKeysProp}) as ${this.options.typeName}`
+                );
+                writer.writeLine(
+                  `return <${this.contextName}.Provider value={value}>{children}</${this.contextName}.Provider>;`
+                );
+              })
+              .toString()}`,
+          },
+        ],
       },
       {
         kind: StructureKind.VariableStatement,
@@ -90,10 +92,10 @@ export class ReactWriter {
             name: this.options.dynamicNaming
               ? `use${capitalFnName}`
               : 'useLocaleKeys',
-            initializer: `() => React.useContext(${this.contextName})`
-          }
-        ]
-      }
+            initializer: `() => React.useContext(${this.contextName})`,
+          },
+        ],
+      },
     ]);
   }
 }

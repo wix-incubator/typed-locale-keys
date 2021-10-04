@@ -57,7 +57,7 @@ export class Driver {
     },
     namespace: (namespace: string): void => {
       this.namespace = namespace;
-    }
+    },
   };
 
   when = {
@@ -71,17 +71,17 @@ export class Driver {
       } = params;
 
       await spawn(
-        `ts-node`,
+        'ts-node',
         [
           path.resolve(process.cwd(), 'src/bin.ts'),
           'codegen',
           source ?? '',
           ...Object.entries({ output, ...rest }).flatMap(([key, value]) =>
             value != null ? [`--${key}`, value.toString()] : []
-          )
+          ),
         ],
         {
-          cwd: this.cwd
+          cwd: this.cwd,
         }
       );
     },
@@ -95,7 +95,7 @@ export class Driver {
         showTranslations = true,
         reactHook: reactBindings,
         singleCurlyBraces,
-        dynamicNaming
+        dynamicNaming,
       } = params;
 
       await new Generator({
@@ -108,9 +108,9 @@ export class Driver {
         dynamicNaming,
         functionName,
         translationFn,
-        flatten: !nested
+        flatten: !nested,
       }).generate();
-    }
+    },
   };
 
   get = {
@@ -128,7 +128,9 @@ export class Driver {
 
       return this.importResults<R, N, H>(
         modulePath ??
-          `tests/__generated__/runtime-generation/${this.namespace}/LocaleKeys`
+          `tests/__generated__/runtime-generation/${
+            this.namespace as string
+          }/LocaleKeys`
       );
     },
     expectedTranslationOf: (
@@ -142,9 +144,11 @@ export class Driver {
 
       return readFile(
         filePath ??
-          `tests/__generated__/runtime-generation/${this.namespace}/LocaleKeys.ts`,
+          `tests/__generated__/runtime-generation/${
+            this.namespace as string
+          }/LocaleKeys.ts`,
         'utf8'
       );
-    }
+    },
   };
 }

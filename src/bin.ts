@@ -31,51 +31,51 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
     y
       .positional('source', {
         type: 'string',
-        describe: 'Locale JSON file path'
+        describe: 'Locale JSON file path',
       })
       .option('output', {
         type: 'string',
         alias: 'o',
-        describe: 'Distribution directory for generated factory'
+        describe: 'Distribution directory for generated factory',
       })
       .option('nested', {
         type: 'boolean',
         describe: 'Should create nested object',
         alias: 'n',
-        default: true
+        default: true,
       })
       .option('translate', {
         type: 'boolean',
         alias: 't',
         default: true,
         describe:
-          'Should add translate function. NOTE: will wrap value with function'
+          'Should add translate function. NOTE: will wrap value with function',
       })
       .option('showTranslations', {
         type: 'boolean',
-        describe: `Add translations as function's comment`,
-        default: true
+        describe: "Add translations as function's comment",
+        default: true,
       })
       .option('functionName', {
         type: 'string',
         alias: 'f',
         describe: 'Generated function name',
-        default: DEFAULT_FN_NAME
+        default: DEFAULT_FN_NAME,
       })
       .option('dynamicNaming', {
         type: 'boolean',
         alias: 'd',
         describe:
-          'Also modify type and react bindings names following functionName value'
+          'Also modify type and react bindings names following functionName value',
       })
       .option('singleCurlyBraces', {
         type: 'boolean',
         describe:
-          'Read interpolation arguments using single curly instead of double'
+          'Read interpolation arguments using single curly instead of double',
       })
       .option('reactHook', {
         type: 'boolean',
-        describe: 'Generate React bindings (Provider and hook)'
+        describe: 'Generate React bindings (Provider and hook)',
       })
 );
 
@@ -94,8 +94,8 @@ void (async () => {
       showTranslations,
       translate,
       dynamicNaming,
-      nested
-    }
+      nested,
+    },
   } = cliDefinition;
 
   const entries = Object.entries(config?.entries ?? {});
@@ -115,7 +115,7 @@ void (async () => {
       dynamicNaming,
       functionName: key,
       translationFn: translate,
-      flatten: !nested
+      flatten: !nested,
     }).generate()
   );
 

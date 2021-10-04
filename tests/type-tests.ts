@@ -3,27 +3,27 @@ import { TFunction } from 'i18next';
 
 import {
   CustomFnName,
-  customFnName
+  customFnName,
 } from './__generated__/pregenerated/fn-name-dynamic/customFnName';
 import {
   ILocaleKeys,
-  LocaleKeys
+  LocaleKeys,
 } from './__generated__/pregenerated/general/LocaleKeys';
 import { LocaleKeys as LocaleKeysNoFn } from './__generated__/pregenerated/no-fn/LocaleKeys';
 import {
   ILocaleKeys as ILocaleKeysTypedFn,
-  LocaleKeys as LocaleKeysTypedFn
+  LocaleKeys as LocaleKeysTypedFn,
 } from './__generated__/pregenerated/type-fn/LocaleKeys';
 
 const str: string = LocaleKeys((() => '') as TFunction).common.loggedIn.message(
   {
-    username: 'John'
+    username: 'John',
   }
 );
 
 const otherStr: string = LocaleKeysTypedFn(() => '').readingWarning({
   reader: 'Alice',
-  writer: 'Bob'
+  writer: 'Bob',
 });
 
 const someVal: ReturnType<ILocaleKeys['common']['loggedIn']['message']> =
@@ -37,8 +37,8 @@ const noFn: string = LocaleKeysNoFn().common.loggedIn.message;
 const keys: CustomFnName = {
   common: {
     loggedIn: {
-      message: 'foo'
-    }
+      message: 'foo',
+    },
   },
-  readingWarning: 'buz'
+  readingWarning: 'buz',
 };

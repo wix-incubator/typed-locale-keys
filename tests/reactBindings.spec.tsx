@@ -6,8 +6,8 @@ import React from 'react';
 import {
   LocaleKeys,
   LocaleKeysProvider,
-  useLocaleKeys
-} from './__generated__/pregenerated/react/LocaleKeys';
+  useLocaleKeys,
+} from './__generated__/pregenerated/react/LocaleKeys'; // eslint-disable-line import/extensions
 import { Driver } from './driver';
 
 const namespace = 'react';
@@ -20,7 +20,7 @@ beforeAll(async () => {
   driver.given.namespace('react');
 
   await driver.when.runsCodegenCommand({
-    reactHook: true
+    reactHook: true,
   });
 
   importResult = await driver.get.generatedResults<{
@@ -63,7 +63,7 @@ test('provider and hook should call translation function and return its result',
 
   expect(renderResult.getByTestId(testId).innerHTML).toContain(
     driver.get.expectedTranslationOf('common.loggedIn.message', {
-      username: 'Bruce'
+      username: 'Bruce',
     })
   );
 });
@@ -79,7 +79,7 @@ test('provider and hook should call translation function and return its result w
 
   expect(renderResult.getByTestId(testId).innerHTML).toContain(
     driver.get.expectedTranslationOf('common.loggedIn.message', {
-      username: 'Bruce'
+      username: 'Bruce',
     })
   );
 });
