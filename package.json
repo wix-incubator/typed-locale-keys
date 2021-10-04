@@ -16,7 +16,7 @@
     "jest": "^27.1.1",
     "ts-essentials": "^8.1.0",
     "ts-morph": "^12.0.0",
-    "ts-node": "^10.2.1",
+    "ts-node": "^9.1.1",
     "typescript": "^4.4.3",
     "yargs": "^17.1.1"
   },
