@@ -53,7 +53,7 @@ export class Driver {
 
   given = {
     cwd: (cwd: string): void => {
-      this.cwd = cwd;
+      this.cwd = path.resolve(process.cwd(), cwd);
     },
     namespace: (namespace: string): void => {
       this.namespace = namespace;
