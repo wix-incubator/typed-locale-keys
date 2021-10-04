@@ -80,8 +80,12 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
 );
 
 void (async () => {
-  const config = (await cosmiconfig('typedLocaleKeys').search(process.cwd()))
-    ?.config as Config | undefined;
+  const config = (await cosmiconfig('typedLocaleKeys').search())?.config as
+    | Config
+    | undefined;
+
+  // eslint-disable-next-line no-console
+  console.log('>__check if config loaded properly:::', JSON.stringify(config));
 
   const {
     argv: {

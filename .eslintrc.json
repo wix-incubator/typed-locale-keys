@@ -21,6 +21,7 @@
     "import/no-default-export": "error",
     "import/prefer-default-export": "off",
     "no-void": ["error", { "allowAsStatement": true }],
+    "no-console": "error",
     "prettier/prettier": [
       "warn",
       {
