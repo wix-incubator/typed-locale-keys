@@ -84,9 +84,6 @@ void (async () => {
     | Config
     | undefined;
 
-  // eslint-disable-next-line no-console
-  console.log('>__check if config loaded properly:::', JSON.stringify(config));
-
   const {
     argv: {
       output = config?.primaryOutput ?? DEFAULT_OUTPUT,
