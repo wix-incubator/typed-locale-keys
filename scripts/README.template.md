@@ -15,8 +15,13 @@ tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 
 Add to `scripts`
 
-```javascript
-"pretest": "tlk codegen [ENTRY-DIRECTORY]/messages_en.json [OUTPUT-DIRECTORY]",
+```json lines
+// package.json
+{
+  "scripts": {
+    "pretest": "tlk codegen [ENTRY-DIRECTORY]/messages_en.json -o [OUTPUT-DIRECTORY]"
+  }
+}
 ```
 
 ### Initialize generated file with translate function
@@ -31,17 +36,20 @@ default is double curly braces. To use single mode pass:
 
 or setting in configuration
 `package.json`:
-```json
-"typedLocaleKeys": {
+```json lines
+// package.json
+{
+  "typedLocaleKeys": {
     "singleCurlyBraces" : true //optional field. default is false
-},
+  }
+}
 ```
 
 ## Example
 
 input: `messages_en.json`:
 
-```json
+```json lines
 {{source}}
 ```
 
@@ -59,8 +67,9 @@ output with React Hook:
 
 To read the configuration file [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) is used so it supports files like
 `.typedlocalekeysrc.json`, `typedlocalekeys.config.js`, `package.json` etc.:
-```json
-"typedLocaleKeys": {
+```json lines
+{
+  "typedLocaleKeys": {
     "entries": {
       "GalleryKeys": {
         "source": "./locale/messages_en.json",
@@ -71,12 +80,13 @@ To read the configuration file [cosmiconfig](https://github.com/davidtheclark/co
     "primaryOutput": "./dist", // fallback output (after cli's `--output` fallback)
     "singleCurlyBraces" : false //optional field. default is false
     "reactHook": false //optional field. default is false
-},
+  }
+}
 ```
 
 ## More options:
 
-```shell
+```
 {{cliHelp}}
 ```
 
