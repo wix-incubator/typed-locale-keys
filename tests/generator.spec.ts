@@ -181,18 +181,31 @@ test('data interpolation single quote', async () => {
   );
 });
 
-test('complex interpolation case', async () => {
-  const driver = new Driver();
-  driver.given.namespace('interpolation-complex');
+describe('complex interpolation case', () => {
+  let driver: Driver;
 
-  await driver.when.runsGenerator();
-
-  const { LocaleKeys } = await driver.get.generatedResults<{
+  let LocaleKeys: (t: (...params: unknown[]) => string) => {
     order: {
       shippingLabel: {
+        labelDetailsCard: {
+          shipFrom: {
+            addressFormat(
+              data: Record<
+                | 'addressLine1'
+                | 'addressLine2'
+                | 'city'
+                | 'state'
+                | 'zipCode'
+                | 'country',
+                unknown
+              >
+            ): string;
+          };
+        };
+
         customerDetailsCard: {
           address(
-            params: Record<
+            data: Record<
               | 'firstName'
               | 'lastName'
               | 'addressLine1'
@@ -207,12 +220,20 @@ test('complex interpolation case', async () => {
         };
       };
     };
-  }>();
+  };
 
-  expect(
-    LocaleKeys(
-      driver.get.defaultTranslationFn()
-    ).order.shippingLabel.customerDetailsCard.address({
+  beforeEach(async () => {
+    driver = new Driver();
+    driver.given.namespace('interpolation-complex');
+
+    await driver.when.runsGenerator();
+
+    LocaleKeys = (await driver.get.generatedResults())
+      .LocaleKeys as unknown as typeof LocaleKeys;
+  });
+
+  test('general case', () => {
+    const data = {
       firstName: 'Eddard',
       lastName: 'Stark',
       city: 'Winterfell',
@@ -221,22 +242,41 @@ test('complex interpolation case', async () => {
       state: 'North',
       zipCode: '123',
       country: 'Seven Kingdoms',
-    })
-  ).toBe(
-    driver.get.expectedTranslationOf(
-      'order.shippingLabel.customerDetailsCard.address',
-      {
-        firstName: 'Eddard',
-        lastName: 'Stark',
-        city: 'Winterfell',
-        addressLine1: 'Main caslte',
-        addressLine2: 'Big Hall',
-        state: 'North',
-        zipCode: '123',
-        country: 'Seven Kingdoms',
-      }
-    )
-  );
+    };
+
+    expect(
+      LocaleKeys(
+        driver.get.defaultTranslationFn()
+      ).order.shippingLabel.customerDetailsCard.address(data)
+    ).toBe(
+      driver.get.expectedTranslationOf(
+        'order.shippingLabel.customerDetailsCard.address',
+        data
+      )
+    );
+  });
+
+  test('case when the complex interpolation comes first', async () => {
+    const data = {
+      city: 'Winterfell',
+      addressLine1: 'Main caslte',
+      addressLine2: 'Big Hall',
+      state: 'North',
+      zipCode: '123',
+      country: 'Seven Kingdoms',
+    };
+
+    expect(
+      LocaleKeys(
+        driver.get.defaultTranslationFn()
+      ).order.shippingLabel.labelDetailsCard.shipFrom.addressFormat(data)
+    ).toBe(
+      driver.get.expectedTranslationOf(
+        'order.shippingLabel.labelDetailsCard.shipFrom.addressFormat',
+        data
+      )
+    );
+  });
 });
 
 test('custom function name', async () => {

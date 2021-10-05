@@ -1,3 +1,4 @@
 {
-  "order.shippingLabel.customerDetailsCard.address": "{{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}}"
+  "order.shippingLabel.customerDetailsCard.address": "{{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}}",
+  "order.shippingLabel.labelDetailsCard.shipFrom.addressFormat": "{{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, suffix ', '}}{{state}} {{zipCode, suffix ', '}}{{country}}"
 }

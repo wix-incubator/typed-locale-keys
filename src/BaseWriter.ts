@@ -179,22 +179,22 @@ export class BaseWriter {
 
     const [firstKey] = first?.split(this.interpolation.suffix) ?? [];
 
+    const extractInterpolationValue = (str: string): string => {
+      const [result] = str.split(this.innerInterpolationSeparator);
+      return result;
+    };
+
     return tail
       .reduce(
         (result, substr) => {
           if (substr.includes(this.interpolation.suffix)) {
             const [nextKey] = substr.split(this.interpolation.suffix);
-
-            const [firstChunk] = nextKey.split(
-              this.innerInterpolationSeparator
-            );
-
-            result.push(firstChunk);
+            result.push(extractInterpolationValue(nextKey));
           }
 
           return result;
         },
-        [firstKey]
+        [extractInterpolationValue(firstKey)]
       )
       .filter(Boolean);
   }
