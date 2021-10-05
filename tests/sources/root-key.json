@@ -5,5 +5,10 @@
   "common": {
     "nested": "Mixed nesting root",
     "nested.deep": "Mixed nesting"
-  }
+  },
+  "home.vague.short": "Short",
+  "home.vague.shortAndLong": "Longer",
+  "home.vague.shortNested.inner": "Short inner",
+  "home.vague.shortNestedAndLong.inner": "Longer inner",
+  "home.vague.shortNestedAndLong": "Longer root"
 }

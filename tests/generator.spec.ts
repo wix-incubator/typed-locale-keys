@@ -96,6 +96,17 @@ test('root key', async () => {
         $value(): string;
         deep(): string;
       };
+      vague: {
+        short(): string;
+        shortAndLong(): string;
+        shortNested: {
+          inner(): string;
+        };
+        shortNestedAndLong: {
+          $value(): string;
+          inner(): string;
+        };
+      };
     };
     common: {
       nested: {
@@ -119,6 +130,21 @@ test('root key', async () => {
   );
   expect(result.common.nested.deep()).toBe(
     driver.get.expectedTranslationOf('common.nested.deep')
+  );
+  expect(result.home.vague.short()).toBe(
+    driver.get.expectedTranslationOf('home.vague.short')
+  );
+  expect(result.home.vague.shortAndLong()).toBe(
+    driver.get.expectedTranslationOf('home.vague.shortAndLong')
+  );
+  expect(result.home.vague.shortNested.inner()).toBe(
+    driver.get.expectedTranslationOf('home.vague.shortNested.inner')
+  );
+  expect(result.home.vague.shortNestedAndLong.$value()).toBe(
+    driver.get.expectedTranslationOf('home.vague.shortNestedAndLong')
+  );
+  expect(result.home.vague.shortNestedAndLong.inner()).toBe(
+    driver.get.expectedTranslationOf('home.vague.shortNestedAndLong.inner')
   );
 });
 

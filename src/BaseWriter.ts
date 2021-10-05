@@ -112,7 +112,7 @@ export class BaseWriter {
     let objectToHandle: NestedLocaleValues = Object.fromEntries(
       Object.entries(flatValue).map(([key, value]) => {
         const isParentKey = flatKeys.some(
-          (flatKey) => new RegExp(`${key}\..+`).test(flatKey) // eslint-disable-line no-useless-escape
+          (flatKey) => key !== flatKey && flatKey.startsWith(`${key}.`)
         );
 
         if (isParentKey) {
