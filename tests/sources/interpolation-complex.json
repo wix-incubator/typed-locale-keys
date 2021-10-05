@@ -1,0 +1,3 @@
+{
+  "order.shippingLabel.customerDetailsCard.address": "{{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}}"
+}

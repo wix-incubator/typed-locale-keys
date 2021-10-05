@@ -26,6 +26,8 @@ export class BaseWriter {
 
   private readonly keySeparator = '.';
 
+  private readonly innerInterpolationSeparator = ',';
+
   private readonly rootKey = '$value';
 
   private get interpolation() {
@@ -183,7 +185,11 @@ export class BaseWriter {
           if (substr.includes(this.interpolation.suffix)) {
             const [nextKey] = substr.split(this.interpolation.suffix);
 
-            result.push(nextKey);
+            const [firstChunk] = nextKey.split(
+              this.innerInterpolationSeparator
+            );
+
+            result.push(firstChunk);
           }
 
           return result;

@@ -181,6 +181,64 @@ test('data interpolation single quote', async () => {
   );
 });
 
+test('complex interpolation case', async () => {
+  const driver = new Driver();
+  driver.given.namespace('interpolation-complex');
+
+  await driver.when.runsGenerator();
+
+  const { LocaleKeys } = await driver.get.generatedResults<{
+    order: {
+      shippingLabel: {
+        customerDetailsCard: {
+          address(
+            params: Record<
+              | 'firstName'
+              | 'lastName'
+              | 'addressLine1'
+              | 'addressLine2'
+              | 'city'
+              | 'state'
+              | 'zipCode'
+              | 'country',
+              unknown
+            >
+          ): string;
+        };
+      };
+    };
+  }>();
+
+  expect(
+    LocaleKeys(
+      driver.get.defaultTranslationFn()
+    ).order.shippingLabel.customerDetailsCard.address({
+      firstName: 'Eddard',
+      lastName: 'Stark',
+      city: 'Winterfell',
+      addressLine1: 'Main caslte',
+      addressLine2: 'Big Hall',
+      state: 'North',
+      zipCode: '123',
+      country: 'Seven Kingdoms',
+    })
+  ).toBe(
+    driver.get.expectedTranslationOf(
+      'order.shippingLabel.customerDetailsCard.address',
+      {
+        firstName: 'Eddard',
+        lastName: 'Stark',
+        city: 'Winterfell',
+        addressLine1: 'Main caslte',
+        addressLine2: 'Big Hall',
+        state: 'North',
+        zipCode: '123',
+        country: 'Seven Kingdoms',
+      }
+    )
+  );
+});
+
 test('custom function name', async () => {
   const driver = new Driver();
   driver.given.namespace('fn-name');
