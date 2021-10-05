@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TFunction } from 'i18next';
 
-import { ICustomFnName } from './__generated__/pregenerated/fn-name-dynamic/customFnName';
+import { ICustomFnName } from './__generated__/pregenerated/custom-fn-name/customFnName';
 import {
   ILocaleKeys,
   LocaleKeys,

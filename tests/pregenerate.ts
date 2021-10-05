@@ -30,16 +30,10 @@ void (async () => {
       functionName,
     }).generate(),
     new Generator({
-      srcFile: 'tests/sources/interpolation-complex.json',
-      outDir: 'tests/__generated__/pregenerated/fn-name-dynamic/',
+      srcFile: 'tests/sources/typeTests.json',
+      outDir: 'tests/__generated__/pregenerated/custom-fn-name/',
       translationFn: false,
       functionName: 'customFnName',
-    }).generate(),
-    new Generator({
-      srcFile: 'tests/sources/typeTests.json',
-      outDir: 'tests/__generated__/pregenerated/interpolation-complex/',
-      translationFn: true,
-      functionName: DEFAULT_FN_NAME,
     }).generate(),
   ]);
 })();
