@@ -194,7 +194,7 @@ export class BaseWriter {
 
           return result;
         },
-        [extractInterpolationValue(firstKey)]
+        firstKey ? [extractInterpolationValue(firstKey)] : []
       )
       .filter(Boolean);
   }
