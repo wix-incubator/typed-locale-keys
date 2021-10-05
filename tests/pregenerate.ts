@@ -34,7 +34,6 @@ void (async () => {
       outDir: 'tests/__generated__/pregenerated/fn-name-dynamic/',
       translationFn: false,
       functionName: 'customFnName',
-      dynamicNaming: true,
     }).generate(),
   ]);
 })();

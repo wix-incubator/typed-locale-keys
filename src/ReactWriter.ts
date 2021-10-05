@@ -57,9 +57,7 @@ export class ReactWriter {
         isExported: true,
         declarations: [
           {
-            name: this.options.dynamicNaming
-              ? `${capitalFnName}Provider`
-              : 'LocaleKeysProvider',
+            name: `${capitalFnName}Provider`,
             type: `React.FC<{ ${this.translateFnProp}?: ${
               this.options.translationFunctionTypeImport
                 ? this.translationFnTypeName
@@ -89,9 +87,7 @@ export class ReactWriter {
         isExported: true,
         declarations: [
           {
-            name: this.options.dynamicNaming
-              ? `use${capitalFnName}`
-              : 'useLocaleKeys',
+            name: `use${capitalFnName}`,
             initializer: `() => React.useContext(${this.contextName})`,
           },
         ],

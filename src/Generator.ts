@@ -8,7 +8,7 @@ import { IndentationText, Project, QuoteKind, ScriptKind } from 'ts-morph';
 import { BaseWriter } from './BaseWriter';
 import { ReactWriter } from './ReactWriter';
 import { DEFAULT_FN_NAME, DEFAULT_TYPE_NAME } from './constants';
-import { capitalize, isCapitalized } from './utils';
+import { capitalize } from './utils';
 
 export interface Options {
   srcFile: string;
@@ -20,7 +20,6 @@ export interface Options {
   showTranslations?: boolean;
   reactBindings?: boolean;
   translationFn?: boolean;
-  dynamicNaming?: boolean;
   flatten?: boolean;
 }
 
@@ -47,12 +46,8 @@ export class Generator {
   private get typeName() {
     let name = DEFAULT_TYPE_NAME;
 
-    const isPascalCased = isCapitalized(this.options.functionName);
-
-    if (this.options.dynamicNaming && this.options.functionName) {
-      name = isPascalCased
-        ? `I${this.options.functionName}`
-        : capitalize(this.options.functionName);
+    if (this.options.functionName) {
+      name = `I${capitalize(this.options.functionName)}`;
     }
 
     return name;

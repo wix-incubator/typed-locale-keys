@@ -95,7 +95,6 @@ export class Driver {
         showTranslations = true,
         reactHook: reactBindings,
         singleCurlyBraces,
-        dynamicNaming,
       } = params;
 
       await new Generator({
@@ -105,7 +104,6 @@ export class Driver {
         interpolationPrefix: singleCurlyBraces ? '{' : '{{',
         interpolationSuffix: singleCurlyBraces ? '}' : '}}',
         showTranslations,
-        dynamicNaming,
         functionName,
         translationFn,
         flatten: !nested,

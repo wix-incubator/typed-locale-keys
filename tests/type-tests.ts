@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TFunction } from 'i18next';
 
-import {
-  CustomFnName,
-  customFnName,
-} from './__generated__/pregenerated/fn-name-dynamic/customFnName';
+import { ICustomFnName } from './__generated__/pregenerated/fn-name-dynamic/customFnName';
 import {
   ILocaleKeys,
   LocaleKeys,
@@ -34,7 +31,7 @@ const someOtherVal: ReturnType<ILocaleKeysTypedFn['readingWarning']> =
 
 const noFn: string = LocaleKeysNoFn().common.loggedIn.message;
 
-const keys: CustomFnName = {
+const keys: ICustomFnName = {
   common: {
     loggedIn: {
       message: 'foo',

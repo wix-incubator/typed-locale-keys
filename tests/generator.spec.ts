@@ -188,9 +188,10 @@ test('custom function name', async () => {
   await driver.when.runsCodegenCommand({
     source: 'tests/sources/default.json',
     functionName: 'customFnName',
+    reactHook: true,
   });
 
-  const { customFnName } = await driver.get.generatedResults<
+  const { customFnName, useCustomFnName } = await driver.get.generatedResults<
     {
       common: {
         loggedIn: {
@@ -199,10 +200,12 @@ test('custom function name', async () => {
       };
       readingWarning(data: { reader: unknown; writer: string }): string;
     },
-    'customFnName'
+    'customFnName',
+    'useCustomFnName'
   >('tests/__generated__/runtime-generation/fn-name/customFnName');
 
   expect(customFnName).not.toBeUndefined();
+  expect(useCustomFnName).not.toBeUndefined();
 
   expect(
     customFnName(driver.get.defaultTranslationFn()).common.loggedIn.message({
@@ -213,37 +216,6 @@ test('custom function name', async () => {
       username: 'Alice',
     })
   );
-});
-
-test('custom function name and dynamic naming', async () => {
-  const driver = new Driver();
-  driver.given.namespace('fn-name-dynamic');
-
-  await driver.when.runsCodegenCommand({
-    source: 'tests/sources/default.json',
-    functionName: 'customDynamicFnName',
-    dynamicNaming: true,
-    reactHook: true,
-  });
-
-  const { customDynamicFnName, useCustomDynamicFnName } =
-    await driver.get.generatedResults<
-      {
-        common: {
-          loggedIn: {
-            message(data: { username: unknown }): string;
-          };
-        };
-        readingWarning(data: { reader: unknown; writer: string }): string;
-      },
-      'customDynamicFnName',
-      'useCustomDynamicFnName'
-    >(
-      'tests/__generated__/runtime-generation/fn-name-dynamic/customDynamicFnName'
-    );
-
-  expect(customDynamicFnName).not.toBeUndefined();
-  expect(useCustomDynamicFnName).not.toBeUndefined();
 });
 
 test('add translated value as a comment', async () => {
