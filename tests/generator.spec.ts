@@ -226,7 +226,7 @@ describe('complex interpolation case', () => {
     driver = new Driver();
     driver.given.namespace('interpolation-complex');
 
-    await driver.when.runsGenerator();
+    await driver.when.runsCodegenCommand();
 
     LocaleKeys = (await driver.get.generatedResults())
       .LocaleKeys as unknown as typeof LocaleKeys;
