@@ -150,8 +150,6 @@ Options:
                                                        [boolean] [default: true]
   -f, --functionName       Generated function name
                                                 [string] [default: "LocaleKeys"]
-  -d, --dynamicNaming      Also modify type and react bindings names following
-                           functionName value                          [boolean]
       --singleCurlyBraces  Read interpolation arguments using single curly
                            instead of double                           [boolean]
       --reactHook          Generate React bindings (Provider and hook) [boolean]
