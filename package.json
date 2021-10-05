@@ -3,8 +3,12 @@
   "version": "2.0.0",
   "description": "Generates typed object to provide translations",
   "scripts": {
-    "pretest": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist && ts-node tests/pregenerate.ts",
-    "test": "eslint '**/*.{ts,tsx}' && tsc --noEmit && jest -i",
+    "clean-generated": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist",
+    "generate-for-type-tests": "ts-node tests/pregenerate.ts",
+    "lint": "eslint '**/*.{ts,tsx}'",
+    "typecheck": "tsc --noEmit",
+    "pretest": "yarn run clean-generated && yarn run generate-for-type-tests && yarn run lint && yarn run typecheck",
+    "test": "jest -i",
     "build": "tsc -p tsconfig.build.json",
     "generate-readme": "ts-node scripts/generateReadme.ts"
   },
