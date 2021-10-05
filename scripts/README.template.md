@@ -15,7 +15,7 @@ tlk codegen [INPUT_JSON_FILE] --output [DESTINATION_DIRECTORY]
 
 Add to `scripts`
 
-```json lines
+```javascript
 // package.json
 {
   "scripts": {
@@ -36,7 +36,7 @@ default is double curly braces. To use single mode pass:
 
 or setting in configuration
 `package.json`:
-```json lines
+```javascript
 // package.json
 {
   "typedLocaleKeys": {
@@ -49,7 +49,7 @@ or setting in configuration
 
 input: `messages_en.json`:
 
-```json lines
+```json
 {{source}}
 ```
 
@@ -67,7 +67,7 @@ output with React Hook:
 
 To read the configuration file [cosmiconfig](https://github.com/davidtheclark/cosmiconfig) is used so it supports files like
 `.typedlocalekeysrc.json`, `typedlocalekeys.config.js`, `package.json` etc.:
-```json lines
+```javascript
 {
   "typedLocaleKeys": {
     "entries": {
