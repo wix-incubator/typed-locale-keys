@@ -433,3 +433,19 @@ test('flatten result', async () => {
     })
   );
 });
+
+test('should contain linter disable comments on first lines', async () => {
+  const driver = new Driver();
+  driver.given.namespace('lint-disable');
+
+  await driver.when.runsCodegenCommand({
+    source: 'tests/sources/default.json',
+  });
+
+  const resultStr = await driver.get.generatedResultsAsStr();
+
+  const [firstLine, secondLine] = resultStr.split('\n');
+
+  expect(firstLine).toBe('/* eslint-disable */');
+  expect(secondLine).toBe('/* tslint:disable */');
+});

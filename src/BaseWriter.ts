@@ -40,7 +40,10 @@ export class BaseWriter {
   constructor(private readonly options: Options) {}
 
   public async write(): Promise<void> {
-    this.options.resultFile.addStatements(['/* eslint-disable */']);
+    this.options.resultFile.addStatements([
+      '/* eslint-disable */',
+      '/* tslint:disable */',
+    ]);
 
     if (this.options.translationFunctionTypeImport) {
       const [moduleSpecifier, namedImport] =
