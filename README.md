@@ -64,6 +64,7 @@ input: `messages_en.json`:
 output:
 ```typescript
 /* eslint-disable */
+/* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
   return {
     common: {
@@ -82,6 +83,7 @@ export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 output with React Hook:
 ```tsx
 /* eslint-disable */
+/* tslint:disable */
 import React from 'react';
 
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
