@@ -1,0 +1,45 @@
+name: 'Quality Check & Bump Version'
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
+
+jobs:
+  bump-version:
+    name: 'Quality Check & Bump Version'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
+        with:
+          ref: ${{ github.ref }}
+
+      - name: 'cat package.json'
+        run: cat ./package.json
+
+      - name: 'Run quality check'
+        run: yarn test
+
+      - name: 'Automated Version Bump'
+        if: ${{ github.event == 'push' }}
+        id: version-bump
+        uses: 'phips28/gh-action-bump-version@master'
+        with:
+          tag-prefix: 'v'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'cat package.json'
+        if: ${{ github.event == 'push' }}
+        run: cat ./package.json
+
+      - name: 'Output Step'
+        if: ${{ github.event == 'push' }}
+        env:
+          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        run: echo "new tag $NEW_TAG"
