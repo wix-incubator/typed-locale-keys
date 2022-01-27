@@ -30,7 +30,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn test
 
-      - if: github.event == 'push'
+      - if: github.event_name == 'push'
         name: 'Automated Version Bump'
         id: version-bump
         uses: 'phips28/gh-action-bump-version@master'
@@ -39,10 +39,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - if: github.event == 'push'
+      - if: github.event_name == 'push'
         run: cat ./package.json
 
-      - if: github.event == 'push'
+      - if: github.event_name == 'push'
         name: 'Output Step'
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
