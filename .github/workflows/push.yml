@@ -19,11 +19,10 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: 'cat package.json'
-        run: cat ./package.json
+      - run: cat ./package.json
 
-      - name: 'Run quality check'
-        run: yarn test
+      - run: yarn install --frozen-lockfile
+      - run: yarn test
 
       - name: 'Automated Version Bump'
         if: ${{ github.event == 'push' }}
@@ -34,12 +33,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 'cat package.json'
-        if: ${{ github.event == 'push' }}
+      - if: ${{ github.event == 'push' }}
         run: cat ./package.json
 
-      - name: 'Output Step'
-        if: ${{ github.event == 'push' }}
+      - if: ${{ github.event == 'push' }}
+        name: 'Output Step'
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
