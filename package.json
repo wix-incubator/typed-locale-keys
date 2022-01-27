@@ -10,7 +10,8 @@
     "pretest": "yarn run clean-generated && yarn run generate-for-type-tests && yarn run lint && yarn run typecheck",
     "test": "jest -i",
     "build": "tsc -p tsconfig.build.json",
-    "generate-readme": "ts-node scripts/generateReadme.ts"
+    "generate-readme": "ts-node scripts/generateReadme.ts",
+    "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "@types/flat": "^5.0.2",
