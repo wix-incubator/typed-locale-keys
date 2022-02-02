@@ -16,7 +16,7 @@ jobs:
         uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
-          token: ${{ secrets.BUMP_SECRET }}
+          ssh-key: ${{ secrets.BUMP_SECRET }}
 
       - run: cat ./package.json
 
@@ -35,8 +35,6 @@ jobs:
         uses: 'phips28/gh-action-bump-version@master'
         with:
           tag-prefix: 'v'
-        env:
-          GITHUB_TOKEN: ${{ secrets.BUMP_SECRET }}
 
       - if: github.event_name == 'push'
         run: cat ./package.json
