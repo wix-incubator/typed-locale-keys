@@ -30,17 +30,28 @@ jobs:
       - run: yarn test
 
       - if: github.event_name == 'push'
-        name: 'Automated Version Bump'
-        id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+        name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
         with:
-          tag-prefix: 'v'
+          key: ${{ secrets.BUMP_SECRET }}
+          known_hosts: github.com
+
+      - if: github.event_name == 'push'
+        name: Automated Version Bump
+        id: version-bump
+        uses: phips28/gh-action-bump-version@master
+        with:
+          tag-prefix: v
+          skip-push: true
+
+      - if: github.event_name == 'push'
+        run: git push origin ${{ github.ref_name }} --tags
 
       - if: github.event_name == 'push'
         run: cat ./package.json
 
       - if: github.event_name == 'push'
-        name: 'Output Step'
+        name: Output Step
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
