@@ -10,7 +10,7 @@ jobs:
   quality-check:
     name: Quality Check
     runs-on: ubuntu-latest
-    if: "!startsWith(github.event.head_commit.message, 'v')"
+    if: "!startsWith(github.event.head_commit.message, 'ci: version bump to v')"
     steps:
       - uses: actions/checkout@v2
         with:
@@ -48,6 +48,7 @@ jobs:
         id: version-bump
         uses: phips28/gh-action-bump-version@master
         with:
+          minor-wording: ''
           tag-prefix: v
           skip-push: true
 
