@@ -10,7 +10,7 @@ jobs:
   quality-check:
     name: 'Quality Check & Bump Version'
     runs-on: ubuntu-latest
-    if: !startsWith(github.event.head_commit.message, 'v')
+    if: "!startsWith(github.event.head_commit.message, 'v')"
     steps:
       - uses: actions/checkout@v2
         with:
