@@ -48,7 +48,9 @@ jobs:
         id: version-bump
         uses: phips28/gh-action-bump-version@master
         with:
-          minor-wording: ''
+          major-wording:  MAJOR,BREAKING
+          minor-wording: MINOR
+          patch-wording: ''
           tag-prefix: v
           skip-push: true
 
