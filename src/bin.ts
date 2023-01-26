@@ -7,6 +7,7 @@ import { hideBin } from 'yargs/helpers';
 
 import { Generator } from './Generator';
 import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from './constants';
+import { getInterpolationPrefix, getInterpolationSuffix } from './utils';
 
 export interface Config {
   entries: {
@@ -104,8 +105,8 @@ void (async () => {
       srcFile: typeof value === 'string' ? value : value.source,
       outDir: typeof value !== 'string' && value.output ? value.output : output,
       reactBindings: reactHook,
-      interpolationPrefix: singleCurlyBraces ? '{' : '{{',
-      interpolationSuffix: singleCurlyBraces ? '}' : '}}',
+      interpolationPrefix: getInterpolationPrefix(singleCurlyBraces),
+      interpolationSuffix: getInterpolationSuffix(singleCurlyBraces),
       showTranslations,
       functionName: key,
       translationFn: translate,
