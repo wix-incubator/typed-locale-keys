@@ -3,3 +3,8 @@ export const capitalize = (s: string): string =>
 
 export const isCapitalized = (s: string): boolean =>
   s.charAt(0) === s.charAt(0).toUpperCase();
+
+export const getInterpolationPrefix = (singleCurlyBraces?: boolean) =>
+  singleCurlyBraces ? '{' : '{{';
+export const getInterpolationSuffix = (singleCurlyBraces?: boolean) =>
+  singleCurlyBraces ? '}' : '}}';

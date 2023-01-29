@@ -1,0 +1,8 @@
+{
+  "common": {
+    "people": {
+      "message": "Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}}",
+      "messageComplex": "Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}}"
+    }
+  }
+}

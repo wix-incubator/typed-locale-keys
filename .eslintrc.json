@@ -18,6 +18,8 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "@typescript-eslint/lines-between-class-members": "off",
+    "import/extensions": "off",
     "import/no-default-export": "error",
     "import/prefer-default-export": "off",
     "no-void": ["error", { "allowAsStatement": true }],

@@ -178,27 +178,41 @@ export class BaseWriter {
   }
 
   private getInterpolationKeys(value: string): string[] {
-    const [, first, ...tail] = value.split(this.interpolation.prefix);
+    const values = [];
+    let nextValue = '';
+    let isInterpolationInProgress = false;
+    let innerBracesOpen = 0;
+    const prefixLength = this.interpolation.prefix.length;
 
-    const [firstKey] = first?.split(this.interpolation.suffix) ?? [];
+    for (let i = 0; i < value.length; i++) {
+      const char = value.slice(i, i + prefixLength);
+      const skipPrefixSuffix = () => (i += prefixLength - 1);
+      if (!isInterpolationInProgress && char === this.interpolation.prefix) {
+        isInterpolationInProgress = true;
+        skipPrefixSuffix();
+        continue;
+      }
 
-    const extractInterpolationValue = (str: string): string => {
-      const [result] = str.split(this.innerInterpolationSeparator);
-      return result;
-    };
-
-    return tail
-      .reduce(
-        (result, substr) => {
-          if (substr.includes(this.interpolation.suffix)) {
-            const [nextKey] = substr.split(this.interpolation.suffix);
-            result.push(extractInterpolationValue(nextKey));
+      if (isInterpolationInProgress) {
+        if (char === this.interpolation.prefix) {
+          innerBracesOpen++;
+          skipPrefixSuffix();
+        } else if (char === this.interpolation.suffix) {
+          if (innerBracesOpen > 0) {
+            innerBracesOpen--;
+            skipPrefixSuffix();
+          } else {
+            values.push(nextValue.split(this.innerInterpolationSeparator)[0]);
+            isInterpolationInProgress = false;
+            nextValue = '';
+            innerBracesOpen = 0;
+            continue;
           }
+        }
 
-          return result;
-        },
-        firstKey ? [extractInterpolationValue(firstKey)] : []
-      )
-      .filter(Boolean);
+        nextValue += char[0];
+      }
+    }
+    return values;
   }
 }
