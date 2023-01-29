@@ -8,3 +8,6 @@ export const getInterpolationPrefix = (singleCurlyBraces?: boolean) =>
   singleCurlyBraces ? '{' : '{{';
 export const getInterpolationSuffix = (singleCurlyBraces?: boolean) =>
   singleCurlyBraces ? '}' : '}}';
+
+export const getFileExtension = (isReactFile?: boolean): string =>
+  isReactFile ? 'tsx' : 'ts';
