@@ -7,12 +7,10 @@ import {
   LocaleKeys,
   LocaleKeysProvider,
   useLocaleKeys,
-} from './__generated__/pregenerated/react/LocaleKeys'; // eslint-disable-line import/extensions
+} from './__generated__/pregenerated/react/LocaleKeys';
 import { Driver } from './driver';
 
 const namespace = 'react';
-let importResult: Record<string, unknown>;
-
 let driver: Driver;
 
 beforeAll(async () => {
@@ -23,12 +21,7 @@ beforeAll(async () => {
     reactHook: true,
   });
 
-  importResult = await driver.get.generatedResults<{
-    common: {
-      create(): string;
-    };
-    model: { user: { id(): string } };
-  }>();
+  await driver.get.generatedResults();
 });
 
 const testId = 'some-translated-text';
@@ -49,9 +42,12 @@ test('ts file is not generated', () => {
   );
 });
 
-test('hook and provider should be defined in file', () => {
-  expect(importResult.useLocaleKeys).not.toBeUndefined();
-  expect(importResult.LocaleKeysProvider).not.toBeUndefined();
+test('react file (snapshot)', async () => {
+  const [generatedResultsAsStr, generatedSnapShotAsStr] = await Promise.all([
+    driver.get.generatedResultsAsStr(),
+    driver.get.generatedSnapShotAsStr(),
+  ]);
+  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
 });
 
 test('provider and hook should call translation function and return its result', () => {

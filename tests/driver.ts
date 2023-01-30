@@ -6,6 +6,8 @@ import jsonStringify from 'fast-json-stable-stringify';
 import { Generator } from '../src/Generator';
 import { CliParams } from '../src/bin';
 import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from '../src/constants';
+import { EXPORT_SNAPSHOT_DIRECTORY } from './generateFiles';
+import { getFileExtension } from '../src/utils';
 
 const readFile = util.promisify(fs.readFile);
 
@@ -13,6 +15,7 @@ export class Driver {
   private cwd: string = process.cwd();
   private namespace: string | undefined;
   private functionName: string | undefined;
+  private isReactFile: boolean | undefined;
 
   private defaultTranslateFn = (key: string, options?: unknown) =>
     options ? `KEY: ${key}; OPTIONS: ${jsonStringify(options)}` : `KEY: ${key}`;
@@ -53,10 +56,12 @@ export class Driver {
         source = this.namespacedSource,
         output = this.namespacedOutput,
         functionName = DEFAULT_FN_NAME,
+        reactHook,
         ...rest
       } = params;
 
       this.functionName = functionName;
+      this.isReactFile = reactHook;
 
       await spawn(
         'ts-node',
@@ -64,9 +69,13 @@ export class Driver {
           path.resolve(process.cwd(), 'src/bin.ts'),
           'codegen',
           source ?? '',
-          ...Object.entries({ output, functionName, ...rest }).flatMap(
-            ([key, value]) =>
-              value != null ? [`--${key}`, value.toString()] : []
+          ...Object.entries({
+            output,
+            functionName,
+            reactHook,
+            ...rest,
+          }).flatMap(([key, value]) =>
+            value != null ? [`--${key}`, value.toString()] : []
           ),
         ],
         {
@@ -116,10 +125,14 @@ export class Driver {
     generatedResultsAsStr: (): Promise<string> =>
       readFile(
         `tests/__generated__/runtime-generation/${this
-          .namespace!}/LocaleKeys.ts`,
+          .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
         'utf8'
       ),
     generatedSnapShotAsStr: (): Promise<string> =>
-      readFile(`tests/snapshot/${this.namespace!}/LocaleKeys.ts`, 'utf8'),
+      readFile(
+        `${EXPORT_SNAPSHOT_DIRECTORY}/${this
+          .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
+        'utf8'
+      ),
   };
 }

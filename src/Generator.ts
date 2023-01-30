@@ -8,7 +8,7 @@ import { IndentationText, Project, QuoteKind, ScriptKind } from 'ts-morph';
 import { BaseWriter } from './BaseWriter';
 import { ReactWriter } from './ReactWriter';
 import { DEFAULT_FN_NAME, DEFAULT_TYPE_NAME } from './constants';
-import { capitalize } from './utils';
+import { capitalize, getFileExtension } from './utils';
 
 export interface Options {
   srcFile: string;
@@ -62,7 +62,7 @@ export class Generator {
     const resultFile = this.project.createSourceFile(
       path.join(
         this.options.outDir,
-        `${this.functionName}.${this.options.reactBindings ? 'tsx' : 'ts'}`
+        `${this.functionName}.${getFileExtension(this.options.reactBindings)}`
       ),
       '',
       {

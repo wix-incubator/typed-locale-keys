@@ -1,15 +1,15 @@
 import { Driver } from './driver';
-import * as InterpolationComplexLocaleKeys from './snapshot/interpolation-complex/LocaleKeys';
-import * as ICULocaleKeys from './snapshot/icu/LocaleKeys';
-import * as CustomFnNameLocaleKeys from './snapshot/fn-name/customFnName';
-import * as ExoticKeysLocaleKeys from './snapshot/exotic-keys/LocaleKeys';
-import * as FlatLocaleKeys from './snapshot/flat/LocaleKeys';
-import * as FlattenLocaleKeys from './snapshot/flatten/LocaleKeys';
-import * as RootKeyLocaleKeys from './snapshot/root-key/LocaleKeys';
-import * as InterpolationDoubleLocaleKeys from './snapshot/interpolation-double/LocaleKeys';
-import * as InterpolationSingleLocaleKeys from './snapshot/interpolation-single/LocaleKeys';
-import * as NestedLocaleKeys from './snapshot/nested/LocaleKeys';
-import * as NoTranslFnLocaleKeys from './snapshot/no-transl-fn/LocaleKeys';
+import * as InterpolationComplexLocaleKeys from './__generated__/pregenerated/interpolation-complex/LocaleKeys';
+import * as ICULocaleKeys from './__generated__/pregenerated/icu/LocaleKeys';
+import * as CustomFnNameLocaleKeys from './__generated__/pregenerated/fn-name/customFnName';
+import * as ExoticKeysLocaleKeys from './__generated__/pregenerated/exotic-keys/LocaleKeys';
+import * as FlatLocaleKeys from './__generated__/pregenerated/flat/LocaleKeys';
+import * as FlattenLocaleKeys from './__generated__/pregenerated/flatten/LocaleKeys';
+import * as RootKeyLocaleKeys from './__generated__/pregenerated/root-key/LocaleKeys';
+import * as InterpolationDoubleLocaleKeys from './__generated__/pregenerated/interpolation-double/LocaleKeys';
+import * as InterpolationSingleLocaleKeys from './__generated__/pregenerated/interpolation-single/LocaleKeys';
+import * as NestedLocaleKeys from './__generated__/pregenerated/nested/LocaleKeys';
+import * as NoTranslFnLocaleKeys from './__generated__/pregenerated/no-transl-fn/LocaleKeys';
 
 let driver: Driver;
 
@@ -363,6 +363,20 @@ test('should contain linter disable comments on first lines', async () => {
   expect(secondLine).toBe('/* tslint:disable */');
 });
 
+test('should have exported function with correct generics and argument types', async () => {
+  driver.given.namespace('lint-disable');
+
+  await driver.when.runsCodegenCommand({
+    source: 'tests/sources/default.json',
+  });
+
+  const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+
+  expect(generatedResultsAsStr).toContain(
+    'export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R)'
+  );
+});
+
 test('data interpolation icu', async () => {
   driver.given.namespace('icu');
   await driver.when.runsCodegenCommand({
@@ -377,8 +391,18 @@ test('data interpolation icu', async () => {
     ]);
 
   const result = LocaleKeys(driver.get.defaultTranslationFn());
-  expect(result.common.people.message({ numPersons: 0 })).toBe(
-    driver.get.expectedTranslationOf('common.people.message', { numPersons: 0 })
+  expect(
+    result.common.people.messageComplex({
+      numPersons: 0,
+      name: 'test',
+      productsAmount: 0,
+    })
+  ).toBe(
+    driver.get.expectedTranslationOf('common.people.messageComplex', {
+      numPersons: 0,
+      name: 'test',
+      productsAmount: 0,
+    })
   );
   expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
 });
