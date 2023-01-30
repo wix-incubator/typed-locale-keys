@@ -4,14 +4,10 @@ import { Generator } from '../src/Generator';
 import { getInterpolationPrefix, getInterpolationSuffix } from '../src/utils';
 
 const SOURCE_DIRECTORY = 'tests/sources';
-export const EXPORT_SNAPSHOT_DIRECTORY = 'tests/snapshot';
-const EXPORT_PREGENERATED_DIRECTORY = 'tests/__generated__/pregenerated';
 const getSourceFile = (fileName: string) =>
   `${SOURCE_DIRECTORY}/${fileName}.json`;
-const getOutputFile = (dirName: string, isSnapshot: boolean) =>
-  `${
-    isSnapshot ? EXPORT_SNAPSHOT_DIRECTORY : EXPORT_PREGENERATED_DIRECTORY
-  }/${dirName}`;
+const getOutputFile = (dirName: string) =>
+  `tests/__generated__/pregenerated/${dirName}`;
 
 interface Config {
   sourceFileName: string;
@@ -28,6 +24,7 @@ export const Entries: Record<string, Partial<Config>> = {
   icu: {
     singleCurlyBraces: true,
   },
+  'icu-double': {},
   nested: {},
   flat: {},
   'exotic-keys': {},
@@ -54,35 +51,9 @@ export const Entries: Record<string, Partial<Config>> = {
   },
 };
 
-export const generateFiles = async ({
-  all,
-  fileName,
-  isSnapshot,
-}: {
-  all?: boolean;
-  fileName?: string;
-  isSnapshot: boolean;
-}) => {
+export const generateFiles = async () => {
   let entries: [string, Partial<Config>][] = [];
-
-  if (all) {
-    entries = Object.entries(Entries);
-  } else if (fileName) {
-    if (!Object.keys(entries).includes(fileName)) {
-      throw new Error(
-        `File "${fileName}" has no snapshot generation implementation`
-      );
-    }
-    entries = [[fileName, Entries[fileName]]];
-  } else {
-    throw new Error(
-      `Must enter at least a single source file name from the entry list: ${Object.keys(
-        entries
-      )
-        .map((entry) => `"${entry}"`)
-        .join(', ')}`
-    );
-  }
+  entries = Object.entries(Entries);
 
   fs.readdir(SOURCE_DIRECTORY, (err, files) => {
     const errors: string[] = [];
@@ -121,7 +92,7 @@ export const generateFiles = async ({
     ]) =>
       new Generator({
         srcFile: getSourceFile(sourceFileName ?? key),
-        outDir: getOutputFile(key, isSnapshot),
+        outDir: getOutputFile(key),
         reactBindings: reactHook,
         interpolationPrefix: getInterpolationPrefix(singleCurlyBraces),
         interpolationSuffix: getInterpolationSuffix(singleCurlyBraces),
@@ -134,7 +105,5 @@ export const generateFiles = async ({
 
   await Promise.all(promises);
   // eslint-disable-next-line no-console
-  console.log(
-    `✨  Done generating ${isSnapshot ? 'snapshots' : 'pretest files'}`
-  );
+  console.log('✨  Done generating pretest files');
 };

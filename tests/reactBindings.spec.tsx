@@ -43,11 +43,10 @@ test('ts file is not generated', () => {
 });
 
 test('react file (snapshot)', async () => {
-  const [generatedResultsAsStr, generatedSnapShotAsStr] = await Promise.all([
+  const [generatedResultsAsStr] = await Promise.all([
     driver.get.generatedResultsAsStr(),
-    driver.get.generatedSnapShotAsStr(),
   ]);
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
+  expect(generatedResultsAsStr).toMatchSnapshot();
 });
 
 test('provider and hook should call translation function and return its result', () => {
