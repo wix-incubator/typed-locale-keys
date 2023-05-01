@@ -1,6 +1,6 @@
 {
   "name": "typed-locale-keys",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Generates typed object to provide translations",
   "scripts": {
     "clean-generated": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist",
