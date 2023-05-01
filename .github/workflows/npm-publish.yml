@@ -22,8 +22,8 @@ jobs:
 
       - run: echo "Published!"
 
-#      - run: yarn install --frozen-lockfile
-#      - run: yarn run build
-#      - run: yarn publish
-#        env:
-#          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - run: yarn install --frozen-lockfile
+      - run: yarn run build
+      - run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
