@@ -2,7 +2,7 @@ name: 'Publish NPM Package'
 
 on:
   workflow_run:
-    workflows: [ "Build" ]
+    workflows: [ "build" ]
     types: [ completed ]
 #    branches: [ 'actions-testing' ]
 
