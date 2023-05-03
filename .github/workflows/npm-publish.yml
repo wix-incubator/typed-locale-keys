@@ -17,7 +17,7 @@ jobs:
         uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
-          ssh-key: ${{ secrets.BUMP_SECRET }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - run: cat ./package.json
 
