@@ -1,9 +1,10 @@
 name: 'Publish NPM Package'
 
 on:
-  workflow_run:
-    workflows: [ "build" ]
-    types: [ completed ]
+  pull_request:
+  push:
+    branches:
+      - 'master'
 #    branches: [ 'actions-testing' ]
 
 jobs:
