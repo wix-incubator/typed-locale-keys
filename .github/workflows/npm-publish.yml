@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [ "Build" ]
     types: [ completed ]
-    branches: [master]
+    branches: [ 'master' ]
 
 jobs:
   create-release:
@@ -17,7 +17,7 @@ jobs:
         uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
-          ssh-key: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - run: cat ./package.json
 
@@ -41,30 +41,30 @@ jobs:
       #      - run: git push origin ${{ github.ref_name }} --tags
 
       - name: Changelog
-#        uses: scottbrenner/generate-changelog-action@master
+        #        uses: scottbrenner/generate-changelog-action@master
         id: Changelog
-#        env:
-#          REPO: ${{ github.repository }}
+        #        env:
+        #          REPO: ${{ github.repository }}
         run: echo "Finished!"
 
       - name: Create Release
         id: create_release
         run: echo "Finished!"
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ steps.version-bump.outputs.newTag }}
-#          release_name: Release ${{ steps.version-bump.outputs.newTag }}
-#          body: ${{ steps.Changelog.outputs.changelog }}
-#          draft: false
-#          prerelease: false
+      #        uses: actions/create-release@v1
+      #        env:
+      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #        with:
+      #          tag_name: ${{ steps.version-bump.outputs.newTag }}
+      #          release_name: Release ${{ steps.version-bump.outputs.newTag }}
+      #          body: ${{ steps.Changelog.outputs.changelog }}
+      #          draft: false
+      #          prerelease: false
 
       - run: cat ./package.json
 
       - name: Output Step
-#        env:
-#          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+        #        env:
+        #          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
   publish-npm:
     runs-on: ubuntu-latest
@@ -78,10 +78,10 @@ jobs:
           cache: yarn
           registry-url: https://registry.npmjs.org/
 
-#      - run: yarn install --frozen-lockfile
-#      - run: yarn run build
-#      - run: yarn publish
-#        env:
-#          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      #      - run: yarn install --frozen-lockfile
+      #      - run: yarn run build
+      #      - run: yarn publish
+      #        env:
+      #          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - run: echo "Published!"
