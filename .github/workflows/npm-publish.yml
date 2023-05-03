@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [ "Build" ]
     types: [ completed ]
-    branches: [ 'actions-testing' ]
+#    branches: [ 'actions-testing' ]
 
 jobs:
   create-release:
