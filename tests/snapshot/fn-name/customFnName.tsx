@@ -16,7 +16,7 @@ export function customFnName<R extends string>(t: (...args: unknown[]) => R) {
 export type ICustomFnName = ReturnType<typeof customFnName>;
 
 const LocaleKeysContext = React.createContext({} as ICustomFnName);
-export const CustomFnNameProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ICustomFnName }> = ({ translateFn, localeKeys, children }) => {
+export const CustomFnNameProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ICustomFnName; children?: React.ReactNode }> = ({ translateFn, localeKeys, children }) => {
     if (!translateFn && !localeKeys) { throw new Error('Either translateFn or localeKeys must be provided') }
     const value = (typeof translateFn === 'function' ? customFnName(translateFn) : localeKeys) as ICustomFnName
     return <LocaleKeysContext.Provider value={value}>{children}</LocaleKeysContext.Provider>;

@@ -62,7 +62,9 @@ export class ReactWriter {
               this.options.translationFunctionTypeImport
                 ? this.translationFnTypeName
                 : '(...args: unknown[]) => string'
-            }; ${this.localeKeysProp}?: ${this.options.typeName} }>`,
+            }; ${this.localeKeysProp}?: ${
+              this.options.typeName
+            }; children?: React.ReactNode }>`,
             initializer: `({ ${this.translateFnProp}, ${
               this.localeKeysProp
             }, children }) => ${writer

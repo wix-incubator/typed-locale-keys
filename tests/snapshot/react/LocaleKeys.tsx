@@ -16,7 +16,7 @@ export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
 export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 
 const LocaleKeysContext = React.createContext({} as ILocaleKeys);
-export const LocaleKeysProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ILocaleKeys }> = ({ translateFn, localeKeys, children }) => {
+export const LocaleKeysProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ILocaleKeys; children?: React.ReactNode }> = ({ translateFn, localeKeys, children }) => {
     if (!translateFn && !localeKeys) { throw new Error('Either translateFn or localeKeys must be provided') }
     const value = (typeof translateFn === 'function' ? LocaleKeys(translateFn) : localeKeys) as ILocaleKeys
     return <LocaleKeysContext.Provider value={value}>{children}</LocaleKeysContext.Provider>;
