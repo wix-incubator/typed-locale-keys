@@ -1877,6 +1877,11 @@ form-data@^3.0.0:
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
 
+format-message-parse@^6.2.4:
+  version "6.2.4"
+  resolved "https://npm.dev.wixpress.com/api/npm/npm-repos/format-message-parse/-/format-message-parse-6.2.4.tgz#2c9b39a32665bd247cb1c31ba2723932d9edf3f9"
+  integrity sha512-k7WqXkEzgXkW4wkHdS6Cv2Ou0rIFtiDelZjgoe1saW4p7FT7zS8OeAUpAekhormqzpeecR97e4vBft1zMsfFOQ==
+
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"

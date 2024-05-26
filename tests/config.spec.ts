@@ -84,6 +84,7 @@ test('should override params in package.json with cli args', async () => {
     output: 'dist',
     reactHook: false,
     showTranslations: false,
+    singleCurlyBraces: false,
   });
 
   const { useLocaleKeys, LocaleKeys } = await driver.get.generatedResults<

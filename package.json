@@ -19,6 +19,7 @@
     "child-process-promise": "^2.2.1",
     "cosmiconfig": "^7.0.1",
     "flat": "^5.0.2",
+    "format-message-parse": "^6.2.4",
     "handlebars": "^4.7.7",
     "ts-essentials": "^8.1.0",
     "ts-morph": "^12.0.0",
@@ -48,14 +49,14 @@
     "eslint-plugin-prettier": "^4.0.0",
     "fast-json-stable-stringify": "^2.1.0",
     "i18next": "^20.6.1",
+    "jest": "^27.1.1",
     "lint-staged": "^11.2.0",
     "prettier": "2.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
     "simple-git-hooks": "^2.6.1",
-    "ts-jest": "^27.0.5",
-    "jest": "^27.1.1"
+    "ts-jest": "^27.0.5"
   },
   "keywords": [
     "i18n",
