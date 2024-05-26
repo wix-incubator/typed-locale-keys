@@ -172,7 +172,7 @@ export class BaseWriter {
       const params = getTypedParams(value);
       if (params.length) {
         param = `data: { ${params
-          .map(({ name, type }) => `${name}: ${type}`)
+          .map(({ name, type }) => `${name}?: ${type}`)
           .join('; ')} }`;
         secondCallParam = ', data';
       }
