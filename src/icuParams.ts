@@ -5,10 +5,20 @@ interface Param {
   type: string;
 }
 
-type Format = 'plural' | 'selectordinal' | 'date' | 'time' | 'select';
+type Format =
+  | 'plural'
+  | 'selectordinal'
+  | 'date'
+  | 'time'
+  | 'select'
+  | 'number';
 
 const isPlural = (format: Format): boolean => {
   return format === 'plural' || format === 'selectordinal';
+};
+
+const isNumber = (format: Format): boolean => {
+  return format === 'number';
 };
 
 const isDateOrTime = (format: Format): boolean => {
@@ -53,7 +63,7 @@ const formatToType = (
   format?: Format,
   subMessages?: Record<string, any> | string
 ): string => {
-  if (isPlural(format!)) {
+  if (isPlural(format!) || isNumber(format!)) {
     return 'number';
   } else if (isDateOrTime(format!)) {
     return 'Date';
