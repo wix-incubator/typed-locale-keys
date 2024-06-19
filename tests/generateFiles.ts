@@ -28,6 +28,9 @@ export const Entries: Record<string, Partial<Config>> = {
   icu: {
     singleCurlyBraces: true,
   },
+  'icu-nested': {
+    singleCurlyBraces: true,
+  },
   nested: {},
   flat: {},
   'exotic-keys': {},
