@@ -168,22 +168,14 @@ export class BaseWriter {
     let secondCallParam = '';
     const icuCompatible = isSingleCurlyBraces(this.interpolation.prefix);
 
-    if (icuCompatible) {
-      const params = getTypedParams(value);
-      if (params.length) {
-        param = `data: { ${params
-          .map(({ name, type }) => `${name}?: ${type}`)
-          .join('; ')} }`;
-        secondCallParam = ', data';
-      }
-    } else {
-      const interpolationKeys = this.getInterpolationKeys(value);
-      if (interpolationKeys.length) {
-        param = `data: Record<${interpolationKeys
-          .map((k) => `'${k}'`)
-          .join(' | ')}, unknown>`;
-        secondCallParam = ', data';
-      }
+    const interpolationKeys = icuCompatible
+      ? getTypedParams(value).map((p) => p.name)
+      : this.getInterpolationKeys(value);
+    if (interpolationKeys.length) {
+      param = `data: Record<${interpolationKeys
+        .map((k) => `'${k}'`)
+        .join(' | ')}, unknown>`;
+      secondCallParam = ', data';
     }
 
     return `(${param}) => ${this.translationFnName}('${key}'${secondCallParam})`;

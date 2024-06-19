@@ -2,7 +2,6 @@ import parse, { AST, Element, SubMessages } from 'format-message-parse';
 
 interface Param {
   name: string;
-  type: string;
 }
 
 type Format =
@@ -15,14 +14,6 @@ type Format =
 
 const isPlural = (format: Format): boolean => {
   return format === 'plural' || format === 'selectordinal';
-};
-
-const isNumber = (format: Format): boolean => {
-  return format === 'number';
-};
-
-const isDateOrTime = (format: Format): boolean => {
-  return format === 'date' || format === 'time';
 };
 
 const isSelect = (format: Format): boolean => {
@@ -59,22 +50,6 @@ const getSubMessages = (
   return undefined;
 };
 
-const formatToType = (
-  format?: Format,
-  subMessages?: Record<string, any> | string
-): string => {
-  if (isPlural(format!) || isNumber(format!)) {
-    return 'number';
-  } else if (isDateOrTime(format!)) {
-    return 'Date';
-  } else if (isSelect(format!)) {
-    return Object.keys(subMessages!)
-      .map((selectValue) => `'${selectValue}'`)
-      .join(' | ');
-  }
-  return 'string';
-};
-
 const stackWithSubMessages = (
   stack: Element[],
   subMessages: SubMessages
@@ -95,10 +70,9 @@ const getParamsFromPatternAst = (parsedArray: AST): Param[] => {
 
     const [name, format] = element!;
     const subMessages = getSubMessages(element, format as Format);
-    const type = formatToType(format as Format, subMessages);
 
     if (!used.has(name)) {
-      params.push({ name: name as string, type });
+      params.push({ name: name as string });
       used.add(name);
     }
 
