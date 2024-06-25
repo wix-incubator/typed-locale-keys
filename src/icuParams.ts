@@ -69,13 +69,13 @@ const getParamsFromPatternAst = (parsedArray: AST): Param[] => {
     if (hasHashtagOnly(element)) continue;
 
     const [name, format] = element!;
-    const subMessages = getSubMessages(element, format as Format);
 
     if (!used.has(name)) {
       params.push({ name: name as string });
       used.add(name);
     }
 
+    const subMessages = getSubMessages(element, format as Format);
     if (subMessages) {
       stack = stackWithSubMessages(stack, subMessages);
     }
