@@ -1,6 +1,7 @@
 import { Driver } from './driver';
 import * as InterpolationComplexLocaleKeys from './__generated__/pregenerated/interpolation-complex/LocaleKeys';
 import * as ICULocaleKeys from './__generated__/pregenerated/icu/LocaleKeys';
+import * as ICUNestedLocaleKeys from './__generated__/pregenerated/icu-nested/LocaleKeys';
 import * as CustomFnNameLocaleKeys from './__generated__/pregenerated/fn-name/customFnName';
 import * as ExoticKeysLocaleKeys from './__generated__/pregenerated/exotic-keys/LocaleKeys';
 import * as FlatLocaleKeys from './__generated__/pregenerated/flat/LocaleKeys';
@@ -402,6 +403,34 @@ test('data interpolation icu', async () => {
       numPersons: 0,
       name: 'test',
       productsAmount: 0,
+    })
+  );
+  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
+});
+
+test('data interpolation icu with nested params', async () => {
+  driver.given.namespace('icu-nested');
+  await driver.when.runsCodegenCommand({
+    singleCurlyBraces: true,
+  });
+
+  const [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
+    await Promise.all([
+      driver.get.generatedResults<typeof ICUNestedLocaleKeys>(),
+      driver.get.generatedResultsAsStr(),
+      driver.get.generatedSnapShotAsStr(),
+    ]);
+
+  const result = LocaleKeys(driver.get.defaultTranslationFn());
+  expect(
+    result.common.people.messageNestedParams({
+      numPersons: 2,
+      name: 'something',
+    })
+  ).toBe(
+    driver.get.expectedTranslationOf('common.people.messageNestedParams', {
+      numPersons: 2,
+      name: 'something',
     })
   );
   expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);

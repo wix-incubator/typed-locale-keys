@@ -11,6 +11,8 @@ import type {
   NestedLocaleValues,
 } from './Generator';
 import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
+import { getTypedParams } from './icuParams';
+import { isSingleCurlyBraces } from './utils';
 
 export interface Options extends GeneratorOptions {
   project: Project;
@@ -162,11 +164,13 @@ export class BaseWriter {
   }
 
   private buildFunction(key: string, value: string): string {
-    const interpolationKeys = this.getInterpolationKeys(value);
-
     let param = '';
     let secondCallParam = '';
+    const icuCompatible = isSingleCurlyBraces(this.interpolation.prefix);
 
+    const interpolationKeys = icuCompatible
+      ? getTypedParams(value).map((p) => p.name)
+      : this.getInterpolationKeys(value);
     if (interpolationKeys.length) {
       param = `data: Record<${interpolationKeys
         .map((k) => `'${k}'`)

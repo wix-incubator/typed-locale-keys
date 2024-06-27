@@ -2,7 +2,13 @@
   "common": {
     "people": {
       "message": "Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}}",
-      "messageComplex": "Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}}"
+      "messageComplex": "Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}}",
+      "pluralMessage": "{numPeople, plural, =0 {No one is} =1 {One person is} other {# people are}} interested",
+      "ordinalMessage": "{position, selectordinal, one {You're 1st} two {You're 2nd} few {You're 3rd} other {You're #th}}",
+      "dateMessage": "Today is {currentDate, date, long}",
+      "timeMessage": "The current time is {currentTime, time, short}",
+      "selectMessage": "{gender, select, male {He is} female {She is} other {They are} } interested",
+      "numberMessage": "You have {numApples, number} apples"
     }
   }
 }

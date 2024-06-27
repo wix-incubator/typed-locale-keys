@@ -1,0 +1,8 @@
+{
+  "common": {
+    "people": {
+      "message": "Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}}",
+      "messageNestedParams": "Hey, {numPersons, plural, =0 {No one here.} one {{name}. You are the only person here.} other {{name} and # other persons are here.}}"
+    }
+  }
+}
