@@ -6,7 +6,6 @@ import jsonStringify from 'fast-json-stable-stringify';
 import { Generator } from '../src/Generator';
 import { CliParams } from '../src/bin';
 import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from '../src/constants';
-import { EXPORT_SNAPSHOT_DIRECTORY } from './generateFiles';
 import { getFileExtension } from '../src/utils';
 
 const readFile = util.promisify(fs.readFile);
@@ -125,12 +124,6 @@ export class Driver {
     generatedResultsAsStr: (): Promise<string> =>
       readFile(
         `tests/__generated__/runtime-generation/${this
-          .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
-        'utf8'
-      ),
-    generatedSnapShotAsStr: (): Promise<string> =>
-      readFile(
-        `${EXPORT_SNAPSHOT_DIRECTORY}/${this
           .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
         'utf8'
       ),

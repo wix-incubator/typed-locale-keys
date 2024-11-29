@@ -1,4 +1,7 @@
-/* eslint-disable */
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`react file (snapshot) 1`] = `
+"/* eslint-disable */
 /* tslint:disable */
 import React from 'react';
 
@@ -22,3 +25,5 @@ export const LocaleKeysProvider: React.FC<{ translateFn?: (...args: unknown[]) =
     return <LocaleKeysContext.Provider value={value}>{children}</LocaleKeysContext.Provider>;
   };
 export const useLocaleKeys = () => React.useContext(LocaleKeysContext);
+"
+`;

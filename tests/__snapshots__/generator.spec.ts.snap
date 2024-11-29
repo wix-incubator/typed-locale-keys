@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`complex interpolation case general case 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    order: {
+      shippingLabel: {
+        customerDetailsCard: {
+          address: (data: Record<'firstName' | 'lastName' | 'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => t('order.shippingLabel.customerDetailsCard.address', data), /* {{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}} */
+        },
+        labelDetailsCard: {
+          shipFrom: {
+            addressFormat: (data: Record<'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => t('order.shippingLabel.labelDetailsCard.shipFrom.addressFormat', data), /* {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, suffix ', '}}{{state}} {{zipCode, suffix ', '}}{{country}} */
+          },
+        },
+      },
+    },
+  };
+}
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
+
+exports[`data interpolation icu 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      people: {
+        message: (data: Record<'numPersons', unknown>) => t('common.people.message', data), /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
+        messageComplex: (data: Record<'name' | 'numPersons' | 'productsAmount', unknown>) => t('common.people.messageComplex', data), /* Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}} */
+        pluralMessage: (data: Record<'numPeople', unknown>) => t('common.people.pluralMessage', data), /* {numPeople, plural, =0 {No one is} =1 {One person is} other {# people are}} interested */
+        ordinalMessage: (data: Record<'position', unknown>) => t('common.people.ordinalMessage', data), /* {position, selectordinal, one {You're 1st} two {You're 2nd} few {You're 3rd} other {You're #th}} */
+        dateMessage: (data: Record<'currentDate', unknown>) => t('common.people.dateMessage', data), /* Today is {currentDate, date, long} */
+        timeMessage: (data: Record<'currentTime', unknown>) => t('common.people.timeMessage', data), /* The current time is {currentTime, time, short} */
+        selectMessage: (data: Record<'gender', unknown>) => t('common.people.selectMessage', data), /* {gender, select, male {He is} female {She is} other {They are} } interested */
+        numberMessage: (data: Record<'numApples', unknown>) => t('common.people.numberMessage', data), /* You have {numApples, number} apples */
+      },
+    },
+  };
+}
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
+
+exports[`data interpolation icu with nested params 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      people: {
+        message: (data: Record<'numPersons', unknown>) => t('common.people.message', data), /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
+        messageNestedParams: (data: Record<'name' | 'numPersons', unknown>) => t('common.people.messageNestedParams', data), /* Hey, {numPersons, plural, =0 {No one here.} one {{name}. You are the only person here.} other {{name} and # other persons are here.}} */
+      },
+    },
+  };
+}
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
+
+exports[`data interpolation single quote 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      loggedIn: {
+        message: (data: Record<'username', unknown>) => t('common.loggedIn.message', data), /* Hey, {username}, you have successfully logged in! */
+      },
+    },
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => t('readingWarning', data), /* {reader} reads message from {writer} */
+  };
+}
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
+
+exports[`flat data 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      cancel: () => t('common.cancel'), /* Cancel */
+    },
+    model: {
+      player: {
+        name: () => t('model.player.name'), /* Name */
+      },
+    },
+  };
+}
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
+
+exports[`nested data 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return {
+    common: {
+      create: () => t('common.create'), /* Create */
+    },
+    model: {
+      user: {
+        id: () => t('model.user.id'), /* ID */
+      },
+    },
+  };
+}
+
+export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
