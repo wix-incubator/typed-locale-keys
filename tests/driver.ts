@@ -6,13 +6,15 @@ import jsonStringify from 'fast-json-stable-stringify';
 import { Generator } from '../src/Generator';
 import { CliParams } from '../src/bin';
 import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from '../src/constants';
-import { EXPORT_SNAPSHOT_DIRECTORY } from './generateFiles';
 import { getFileExtension } from '../src/utils';
 
 const readFile = util.promisify(fs.readFile);
 
 export class Driver {
   private cwd: string = process.cwd();
+  private cliParams: Partial<CliParams> = {
+    functionName: DEFAULT_FN_NAME,
+  };
   private namespace: string | undefined;
   private functionName: string | undefined;
   private isReactFile: boolean | undefined;
@@ -46,19 +48,20 @@ export class Driver {
     namespace: (namespace: string): void => {
       this.namespace = namespace;
     },
+    cliParams: (values: Partial<CliParams>) => {
+      Object.assign(this.cliParams, values);
+    },
   };
 
   public when = {
-    runsCodegenCommand: async (
-      params: Partial<CliParams> = {}
-    ): Promise<void> => {
+    runsCodegenCommand: async (): Promise<void> => {
       const {
         source = this.namespacedSource,
         output = this.namespacedOutput,
         functionName = DEFAULT_FN_NAME,
         reactHook,
         ...rest
-      } = params;
+      } = this.cliParams;
 
       this.functionName = functionName;
       this.isReactFile = reactHook;
@@ -125,12 +128,6 @@ export class Driver {
     generatedResultsAsStr: (): Promise<string> =>
       readFile(
         `tests/__generated__/runtime-generation/${this
-          .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
-        'utf8'
-      ),
-    generatedSnapShotAsStr: (): Promise<string> =>
-      readFile(
-        `${EXPORT_SNAPSHOT_DIRECTORY}/${this
           .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
         'utf8'
       ),

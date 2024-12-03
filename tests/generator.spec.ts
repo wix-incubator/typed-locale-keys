@@ -18,49 +18,56 @@ beforeEach(() => {
   driver = new Driver();
 });
 
-test('nested data', async () => {
-  driver.given.namespace('nested');
+describe('nested data', () => {
+  beforeEach(async () => {
+    driver.given.namespace('nested');
+    await driver.when.runsCodegenCommand();
+  });
 
-  await driver.when.runsCodegenCommand();
+  it('functional', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof NestedLocaleKeys
+    >();
+    const result = LocaleKeys(driver.get.defaultTranslationFn());
+    expect(result.common.create()).toBe(
+      driver.get.expectedTranslationOf('common.create')
+    );
+    expect(result.model.user.id()).toBe(
+      driver.get.expectedTranslationOf('model.user.id')
+    );
+  });
 
-  const [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
-    await Promise.all([
-      driver.get.generatedResults<typeof NestedLocaleKeys>(),
-      driver.get.generatedResultsAsStr(),
-      driver.get.generatedSnapShotAsStr(),
-    ]);
-  const result = LocaleKeys(driver.get.defaultTranslationFn());
-
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
-  expect(result.common.create()).toBe(
-    driver.get.expectedTranslationOf('common.create')
-  );
-  expect(result.model.user.id()).toBe(
-    driver.get.expectedTranslationOf('model.user.id')
-  );
+  it('snapshot', async () => {
+    const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+    expect(generatedResultsAsStr).toMatchSnapshot();
+  });
 });
 
-test('flat data', async () => {
-  driver.given.namespace('flat');
+describe('flat data', () => {
+  beforeEach(async () => {
+    driver.given.namespace('flat');
+    await driver.when.runsCodegenCommand();
+  });
 
-  await driver.when.runsCodegenCommand();
+  test('functional', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof FlatLocaleKeys
+    >();
 
-  const [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
-    await Promise.all([
-      driver.get.generatedResults<typeof FlatLocaleKeys>(),
-      driver.get.generatedResultsAsStr(),
-      driver.get.generatedSnapShotAsStr(),
-    ]);
+    const result = LocaleKeys(driver.get.defaultTranslationFn());
 
-  const result = LocaleKeys(driver.get.defaultTranslationFn());
+    expect(result.common.cancel()).toBe(
+      driver.get.expectedTranslationOf('common.cancel')
+    );
+    expect(result.model.player.name()).toBe(
+      driver.get.expectedTranslationOf('model.player.name')
+    );
+  });
 
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
-  expect(result.common.cancel()).toBe(
-    driver.get.expectedTranslationOf('common.cancel')
-  );
-  expect(result.model.player.name()).toBe(
-    driver.get.expectedTranslationOf('model.player.name')
-  );
+  test('snapshot', async () => {
+    const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+    expect(generatedResultsAsStr).toMatchSnapshot();
+  });
 });
 
 test('exotic keys', async () => {
@@ -148,54 +155,54 @@ test('data interpolation double quote', async () => {
   );
 });
 
-test('data interpolation single quote', async () => {
-  driver.given.namespace('interpolation-single');
-
-  await driver.when.runsCodegenCommand({
-    singleCurlyBraces: true,
+describe('data interpolation single quote', () => {
+  beforeEach(async () => {
+    driver.given.namespace('interpolation-single');
+    driver.given.cliParams({
+      singleCurlyBraces: true,
+    });
+    await driver.when.runsCodegenCommand();
   });
-  const [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
-    await Promise.all([
-      driver.get.generatedResults<typeof InterpolationSingleLocaleKeys>(),
-      driver.get.generatedResultsAsStr(),
-      driver.get.generatedSnapShotAsStr(),
-    ]);
 
-  const result = LocaleKeys(driver.get.defaultTranslationFn());
+  test('functional', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof InterpolationSingleLocaleKeys
+    >();
 
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
-  expect(result.common.loggedIn.message({ username: 'Boss' })).toBe(
-    driver.get.expectedTranslationOf('common.loggedIn.message', {
-      username: 'Boss',
-    })
-  );
+    const result = LocaleKeys(driver.get.defaultTranslationFn());
 
-  expect(result.readingWarning({ reader: 'Alice', writer: 'Bob' })).toBe(
-    driver.get.expectedTranslationOf('readingWarning', {
-      reader: 'Alice',
-      writer: 'Bob',
-    })
-  );
+    expect(result.common.loggedIn.message({ username: 'Boss' })).toBe(
+      driver.get.expectedTranslationOf('common.loggedIn.message', {
+        username: 'Boss',
+      })
+    );
+
+    expect(result.readingWarning({ reader: 'Alice', writer: 'Bob' })).toBe(
+      driver.get.expectedTranslationOf('readingWarning', {
+        reader: 'Alice',
+        writer: 'Bob',
+      })
+    );
+  });
+
+  test('snapshot', async () => {
+    const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+    expect(generatedResultsAsStr).toMatchSnapshot();
+  });
 });
 
 describe('complex interpolation case', () => {
-  let LocaleKeys: typeof InterpolationComplexLocaleKeys.LocaleKeys;
-  let generatedResultsAsStr: string, generatedSnapShotAsStr: string;
-
   beforeEach(async () => {
     driver.given.namespace('interpolation-complex');
 
     await driver.when.runsCodegenCommand();
-
-    [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
-      await Promise.all([
-        driver.get.generatedResults<typeof InterpolationComplexLocaleKeys>(),
-        driver.get.generatedResultsAsStr(),
-        driver.get.generatedSnapShotAsStr(),
-      ]);
   });
 
-  test('general case', () => {
+  test('general case', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof InterpolationComplexLocaleKeys
+    >();
+
     const data = {
       firstName: 'Eddard',
       lastName: 'Stark',
@@ -207,7 +214,6 @@ describe('complex interpolation case', () => {
       country: 'Seven Kingdoms',
     };
 
-    expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
     expect(
       LocaleKeys(
         driver.get.defaultTranslationFn()
@@ -220,7 +226,16 @@ describe('complex interpolation case', () => {
     );
   });
 
+  test('snapshot', async () => {
+    const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+    expect(generatedResultsAsStr).toMatchSnapshot();
+  });
+
   test('case when the complex interpolation comes first', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof InterpolationComplexLocaleKeys
+    >();
+
     const data = {
       city: 'Winterfell',
       addressLine1: 'Main caslte',
@@ -245,12 +260,12 @@ describe('complex interpolation case', () => {
 
 test('custom function name', async () => {
   driver.given.namespace('fn-name');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
     functionName: 'customFnName',
     reactHook: true,
   });
+  await driver.when.runsCodegenCommand();
 
   const { customFnName, useCustomFnName } = await driver.get.generatedResults<
     typeof CustomFnNameLocaleKeys
@@ -272,10 +287,10 @@ test('custom function name', async () => {
 
 test('add translated value as a comment', async () => {
   driver.given.namespace('comments');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
   });
+  await driver.when.runsCodegenCommand();
 
   const resultStr = await driver.get.generatedResultsAsStr();
 
@@ -287,11 +302,11 @@ test('add translated value as a comment', async () => {
 
 test('not add translated value as a comment', async () => {
   driver.given.namespace('no-comments');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
     showTranslations: false,
   });
+  await driver.when.runsCodegenCommand();
 
   const resultStr = await driver.get.generatedResultsAsStr();
 
@@ -305,11 +320,11 @@ test('not add translated value as a comment', async () => {
 
 test('values as translation keys without translation function', async () => {
   driver.given.namespace('no-transl-fn');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
     translate: false,
   });
+  await driver.when.runsCodegenCommand();
 
   const { LocaleKeys } = await driver.get.generatedResults<
     typeof NoTranslFnLocaleKeys
@@ -323,11 +338,11 @@ test('values as translation keys without translation function', async () => {
 
 test('flatten result', async () => {
   driver.given.namespace('flatten');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
     nested: false,
   });
+  await driver.when.runsCodegenCommand();
 
   const { LocaleKeys } = await driver.get.generatedResults<
     typeof FlattenLocaleKeys
@@ -351,10 +366,10 @@ test('flatten result', async () => {
 
 test('should contain linter disable comments on first lines', async () => {
   driver.given.namespace('lint-disable');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
   });
+  await driver.when.runsCodegenCommand();
 
   const resultStr = await driver.get.generatedResultsAsStr();
 
@@ -366,10 +381,10 @@ test('should contain linter disable comments on first lines', async () => {
 
 test('should have exported function with correct generics and argument types', async () => {
   driver.given.namespace('lint-disable');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'tests/sources/default.json',
   });
+  await driver.when.runsCodegenCommand();
 
   const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
 
@@ -378,60 +393,73 @@ test('should have exported function with correct generics and argument types', a
   );
 });
 
-test('data interpolation icu', async () => {
-  driver.given.namespace('icu');
-  await driver.when.runsCodegenCommand({
-    singleCurlyBraces: true,
+describe('data interpolation icu', () => {
+  beforeEach(async () => {
+    driver.given.namespace('icu');
+    driver.given.cliParams({
+      singleCurlyBraces: true,
+    });
+    await driver.when.runsCodegenCommand();
   });
 
-  const [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
-    await Promise.all([
-      driver.get.generatedResults<typeof ICULocaleKeys>(),
-      driver.get.generatedResultsAsStr(),
-      driver.get.generatedSnapShotAsStr(),
-    ]);
+  test('functional', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof ICULocaleKeys
+    >();
 
-  const result = LocaleKeys(driver.get.defaultTranslationFn());
-  expect(
-    result.common.people.messageComplex({
-      numPersons: 0,
-      name: 'test',
-      productsAmount: 0,
-    })
-  ).toBe(
-    driver.get.expectedTranslationOf('common.people.messageComplex', {
-      numPersons: 0,
-      name: 'test',
-      productsAmount: 0,
-    })
-  );
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
+    const result = LocaleKeys(driver.get.defaultTranslationFn());
+
+    expect(
+      result.common.people.messageComplex({
+        numPersons: 0,
+        name: 'test',
+        productsAmount: 0,
+      })
+    ).toBe(
+      driver.get.expectedTranslationOf('common.people.messageComplex', {
+        numPersons: 0,
+        name: 'test',
+        productsAmount: 0,
+      })
+    );
+  });
+
+  test('snapshot', async () => {
+    const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+    expect(generatedResultsAsStr).toMatchSnapshot();
+  });
 });
 
-test('data interpolation icu with nested params', async () => {
-  driver.given.namespace('icu-nested');
-  await driver.when.runsCodegenCommand({
-    singleCurlyBraces: true,
+describe('data interpolation icu with nested params', () => {
+  beforeEach(async () => {
+    driver.given.namespace('icu-nested');
+    driver.given.cliParams({
+      singleCurlyBraces: true,
+    });
+    await driver.when.runsCodegenCommand();
   });
 
-  const [{ LocaleKeys }, generatedResultsAsStr, generatedSnapShotAsStr] =
-    await Promise.all([
-      driver.get.generatedResults<typeof ICUNestedLocaleKeys>(),
-      driver.get.generatedResultsAsStr(),
-      driver.get.generatedSnapShotAsStr(),
-    ]);
+  test('functional', async () => {
+    const { LocaleKeys } = await driver.get.generatedResults<
+      typeof ICUNestedLocaleKeys
+    >();
 
-  const result = LocaleKeys(driver.get.defaultTranslationFn());
-  expect(
-    result.common.people.messageNestedParams({
-      numPersons: 2,
-      name: 'something',
-    })
-  ).toBe(
-    driver.get.expectedTranslationOf('common.people.messageNestedParams', {
-      numPersons: 2,
-      name: 'something',
-    })
-  );
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
+    const result = LocaleKeys(driver.get.defaultTranslationFn());
+    expect(
+      result.common.people.messageNestedParams({
+        numPersons: 2,
+        name: 'something',
+      })
+    ).toBe(
+      driver.get.expectedTranslationOf('common.people.messageNestedParams', {
+        numPersons: 2,
+        name: 'something',
+      })
+    );
+  });
+
+  test('snapshot', async () => {
+    const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+    expect(generatedResultsAsStr).toMatchSnapshot();
+  });
 });

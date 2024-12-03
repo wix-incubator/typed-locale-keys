@@ -16,10 +16,10 @@ let driver: Driver;
 beforeAll(async () => {
   driver = new Driver();
   driver.given.namespace('react');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     reactHook: true,
   });
+  await driver.when.runsCodegenCommand();
 
   await driver.get.generatedResults();
 });
@@ -43,11 +43,8 @@ test('ts file is not generated', () => {
 });
 
 test('react file (snapshot)', async () => {
-  const [generatedResultsAsStr, generatedSnapShotAsStr] = await Promise.all([
-    driver.get.generatedResultsAsStr(),
-    driver.get.generatedSnapShotAsStr(),
-  ]);
-  expect(generatedResultsAsStr).toBe(generatedSnapShotAsStr);
+  const generatedResultsAsStr = await driver.get.generatedResultsAsStr();
+  expect(generatedResultsAsStr).toMatchSnapshot();
 });
 
 test('provider and hook should call translation function and return its result', () => {
