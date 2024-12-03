@@ -54,10 +54,10 @@ test('should apply params from package.json', async () => {
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/packageJsonBooleans');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'source.json',
   });
+  await driver.when.runsCodegenCommand();
 
   const { useLocaleKeys, LocaleKeys } = await driver.get.generatedResults<
     GeneratedModule<ResultOne>
@@ -79,13 +79,14 @@ test('should override params in package.json with cli args', async () => {
 
   driver.given.cwd('tests/cli-configs-sandbox/overridePackageJson');
 
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     source: 'source.json',
     output: 'dist',
     reactHook: false,
     showTranslations: false,
     singleCurlyBraces: false,
   });
+  await driver.when.runsCodegenCommand();
 
   const { useLocaleKeys, LocaleKeys } = await driver.get.generatedResults<
     GeneratedModule<ResultOne>

@@ -12,6 +12,9 @@ const readFile = util.promisify(fs.readFile);
 
 export class Driver {
   private cwd: string = process.cwd();
+  private cliParams: Partial<CliParams> = {
+    functionName: DEFAULT_FN_NAME,
+  };
   private namespace: string | undefined;
   private functionName: string | undefined;
   private isReactFile: boolean | undefined;
@@ -45,19 +48,20 @@ export class Driver {
     namespace: (namespace: string): void => {
       this.namespace = namespace;
     },
+    cliParams: (values: Partial<CliParams>) => {
+      Object.assign(this.cliParams, values);
+    },
   };
 
   public when = {
-    runsCodegenCommand: async (
-      params: Partial<CliParams> = {}
-    ): Promise<void> => {
+    runsCodegenCommand: async (): Promise<void> => {
       const {
         source = this.namespacedSource,
         output = this.namespacedOutput,
         functionName = DEFAULT_FN_NAME,
         reactHook,
         ...rest
-      } = params;
+      } = this.cliParams;
 
       this.functionName = functionName;
       this.isReactFile = reactHook;

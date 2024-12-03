@@ -16,10 +16,10 @@ let driver: Driver;
 beforeAll(async () => {
   driver = new Driver();
   driver.given.namespace('react');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     reactHook: true,
   });
+  await driver.when.runsCodegenCommand();
 
   await driver.get.generatedResults();
 });
