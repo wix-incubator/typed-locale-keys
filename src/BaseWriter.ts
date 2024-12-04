@@ -143,9 +143,11 @@ export class BaseWriter {
         let comment = '';
 
         if (typeof value === 'string') {
-          valueToSet = this.options.translationFn
-            ? this.buildFunction(localeKey, value)
-            : `'${localeKey}'`;
+          if (this.options.translationFn) {
+            valueToSet = this.buildFunction(localeKey, value);
+          } else {
+            valueToSet = `'${localeKey}'`;
+          }
 
           if (this.options.showTranslations) {
             comment = ` /* ${value} */`;
@@ -164,21 +166,26 @@ export class BaseWriter {
   }
 
   private buildFunction(key: string, value: string): string {
-    let param = '';
-    let secondCallParam = '';
-    const icuCompatible = isSingleCurlyBraces(this.interpolation.prefix);
+    const params = this.buildFunctionParam(value);
+    return `(${params}) => ${this.translationFnName}('${key}'${
+      params ? ', data' : ''
+    })`;
+  }
 
+  private buildFunctionParam(value: string) {
+    let param = '';
+    const icuCompatible = isSingleCurlyBraces(this.interpolation.prefix);
     const interpolationKeys = icuCompatible
       ? getTypedParams(value).map((p) => p.name)
       : this.getInterpolationKeys(value);
+
     if (interpolationKeys.length) {
       param = `data: Record<${interpolationKeys
         .map((k) => `'${k}'`)
         .join(' | ')}, unknown>`;
-      secondCallParam = ', data';
     }
 
-    return `(${param}) => ${this.translationFnName}('${key}'${secondCallParam})`;
+    return param;
   }
 
   private getInterpolationKeys(value: string): string[] {
