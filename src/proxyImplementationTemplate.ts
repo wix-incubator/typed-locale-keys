@@ -8,9 +8,9 @@ export function proxyImplementationTemplate({
   useTranslateFn: boolean;
 }) {
   return `const ${creatorFnName} = <R extends string>(t: (...args: unknown[]) => R = (k) => k as R, prevKeys: string = ''): unknown => 
-  new Proxy({}, {
+  new Proxy(() => {}, {
     get: (_, key: string) => {
-      if (key === '${ownValueAlias}}') {
+      if (key === '${ownValueAlias}') {
         return ${creatorFnName}(t, prevKeys)
       }
 
