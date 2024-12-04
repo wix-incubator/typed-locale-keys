@@ -18,16 +18,7 @@ beforeEach(() => {
   driver = new Driver();
 });
 
-describe.each([
-  ['legacy impl', false],
-  ['proxy impl', true],
-])('generator [%s]', (_, proxyImpl) => {
-  beforeEach(() => {
-    driver.given.cliParams({
-      experimental_proxyImpl: proxyImpl,
-    });
-  });
-
+describe('generator', () => {
   describe('nested data', () => {
     beforeEach(async () => {
       driver.given.namespace('nested');

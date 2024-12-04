@@ -67,10 +67,7 @@ export class BaseWriter {
 
     const objectStr = this.writeObjectAsStr(source);
 
-    if (
-      this.options.experimental_proxyImplementation &&
-      this.options.translationFn
-    ) {
+    if (this.options.translationFn) {
       this.options.resultFile.addTypeAlias({
         kind: StructureKind.TypeAlias,
         name: this.options.typeName,
@@ -168,13 +165,11 @@ export class BaseWriter {
         let valueToSet: string;
         let comment = '';
 
-        if (typeof value === 'string') {
+        if (typeof value !== 'string') {
+          valueToSet = this.writeObjectAsStr(value, localeKey);
+        } else {
           if (this.options.translationFn) {
-            if (this.options.experimental_proxyImplementation) {
-              valueToSet = `(${this.buildFunctionParam(value)}) => string`;
-            } else {
-              valueToSet = this.buildFunction(localeKey, value);
-            }
+            valueToSet = `(${this.buildFunctionParam(value)}) => string`;
           } else {
             valueToSet = `'${localeKey}'`;
           }
@@ -182,24 +177,14 @@ export class BaseWriter {
           if (this.options.showTranslations) {
             comment = ` /* ${value} */`;
           }
-        } else {
-          valueToSet = this.writeObjectAsStr(value, localeKey);
         }
 
         const keyToSet = /([^A-z0-9_$]|^[0-9])/.test(key) ? `'${key}'` : key;
-
         writer.writeLine(`${keyToSet}: ${valueToSet},${comment}`);
       });
     });
 
     return writer.toString();
-  }
-
-  private buildFunction(key: string, value: string): string {
-    const params = this.buildFunctionParam(value);
-    return `(${params}) => ${this.translationFnName}('${key}'${
-      params ? ', data' : ''
-    })`;
   }
 
   private buildFunctionParam(value: string) {

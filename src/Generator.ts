@@ -20,7 +20,6 @@ export interface Options {
   showTranslations?: boolean;
   reactBindings?: boolean;
   translationFn?: boolean;
-  experimental_proxyImplementation?: boolean;
   flatten?: boolean;
 }
 

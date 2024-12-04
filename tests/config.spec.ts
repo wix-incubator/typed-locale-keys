@@ -107,9 +107,6 @@ test('should generate file with Proxy implementation if the flag is passed', asy
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/proxyImpl');
-  driver.given.cliParams({
-    experimental_proxyImpl: true,
-  });
   await driver.when.runsCodegenCommand();
 
   expect(

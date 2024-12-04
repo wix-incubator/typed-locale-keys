@@ -72,12 +72,6 @@ const cliDefinition = yargs(hideBin(process.argv)).command(
         type: 'boolean',
         describe: 'Generate React bindings (Provider and hook)',
       })
-      .option('experimental_proxyImpl', {
-        type: 'boolean',
-        default: false,
-        describe:
-          'Use new experimental proxy implementation which puts the most aggressively growing part of the file into type so it will not be bundled',
-      })
 );
 
 void (async () => {
@@ -97,7 +91,6 @@ void (async () => {
       showTranslations,
       translate,
       nested,
-      experimental_proxyImpl, // eslint-disable-line @typescript-eslint/naming-convention
     },
   } = cliDefinition;
 
@@ -118,7 +111,6 @@ void (async () => {
       functionName: key,
       translationFn: translate,
       flatten: !nested,
-      experimental_proxyImplementation: experimental_proxyImpl,
     }).generate()
   );
 
