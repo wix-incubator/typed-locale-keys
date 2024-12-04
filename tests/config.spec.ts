@@ -107,10 +107,10 @@ test('should generate file with Proxy implementation if the flag is passed', asy
   const driver = new Driver();
 
   driver.given.cwd('tests/cli-configs-sandbox/proxyImpl');
-
-  await driver.when.runsCodegenCommand({
+  driver.given.cliParams({
     experimental_proxyImpl: true,
   });
+  await driver.when.runsCodegenCommand();
 
   expect(
     await driver.get.generatedResultsAsStr('./dist/__generated__/LocaleKeys.ts')

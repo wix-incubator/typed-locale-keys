@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`complex interpolation case snapshot 1`] = `
+exports[`generator [legacy impl] complex interpolation case snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
@@ -24,7 +24,7 @@ export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 "
 `;
 
-exports[`data interpolation icu snapshot 1`] = `
+exports[`generator [legacy impl] data interpolation icu snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
@@ -48,7 +48,7 @@ export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 "
 `;
 
-exports[`data interpolation icu with nested params snapshot 1`] = `
+exports[`generator [legacy impl] data interpolation icu with nested params snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
@@ -66,7 +66,7 @@ export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 "
 `;
 
-exports[`data interpolation single quote snapshot 1`] = `
+exports[`generator [legacy impl] data interpolation single quote snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
@@ -84,7 +84,7 @@ export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 "
 `;
 
-exports[`flat data snapshot 1`] = `
+exports[`generator [legacy impl] flat data snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
@@ -104,7 +104,7 @@ export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
 "
 `;
 
-exports[`nested data snapshot 1`] = `
+exports[`generator [legacy impl] nested data snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
@@ -121,5 +121,219 @@ export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
 }
 
 export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+"
+`;
+
+exports[`generator [proxy impl] complex interpolation case snapshot 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export type ILocaleKeys = {
+    order: {
+      shippingLabel: {
+        customerDetailsCard: {
+          address: (data: Record<'firstName' | 'lastName' | 'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => string, /* {{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}} */
+        },
+        labelDetailsCard: {
+          shipFrom: {
+            addressFormat: (data: Record<'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => string, /* {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, suffix ', '}}{{state}} {{zipCode, suffix ', '}}{{country}} */
+          },
+        },
+      },
+    },
+  };
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
+
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
+"
+`;
+
+exports[`generator [proxy impl] data interpolation icu snapshot 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export type ILocaleKeys = {
+    common: {
+      people: {
+        message: (data: Record<'numPersons', unknown>) => string, /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
+        messageComplex: (data: Record<'name' | 'numPersons' | 'productsAmount', unknown>) => string, /* Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}} */
+        pluralMessage: (data: Record<'numPeople', unknown>) => string, /* {numPeople, plural, =0 {No one is} =1 {One person is} other {# people are}} interested */
+        ordinalMessage: (data: Record<'position', unknown>) => string, /* {position, selectordinal, one {You're 1st} two {You're 2nd} few {You're 3rd} other {You're #th}} */
+        dateMessage: (data: Record<'currentDate', unknown>) => string, /* Today is {currentDate, date, long} */
+        timeMessage: (data: Record<'currentTime', unknown>) => string, /* The current time is {currentTime, time, short} */
+        selectMessage: (data: Record<'gender', unknown>) => string, /* {gender, select, male {He is} female {She is} other {They are} } interested */
+        numberMessage: (data: Record<'numApples', unknown>) => string, /* You have {numApples, number} apples */
+      },
+    },
+  };
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
+
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
+"
+`;
+
+exports[`generator [proxy impl] data interpolation icu with nested params snapshot 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export type ILocaleKeys = {
+    common: {
+      people: {
+        message: (data: Record<'numPersons', unknown>) => string, /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
+        messageNestedParams: (data: Record<'name' | 'numPersons', unknown>) => string, /* Hey, {numPersons, plural, =0 {No one here.} one {{name}. You are the only person here.} other {{name} and # other persons are here.}} */
+      },
+    },
+  };
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
+
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
+"
+`;
+
+exports[`generator [proxy impl] data interpolation single quote snapshot 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export type ILocaleKeys = {
+    common: {
+      loggedIn: {
+        message: (data: Record<'username', unknown>) => string, /* Hey, {username}, you have successfully logged in! */
+      },
+    },
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string, /* {reader} reads message from {writer} */
+  };
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
+
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
+"
+`;
+
+exports[`generator [proxy impl] flat data snapshot 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export type ILocaleKeys = {
+    common: {
+      cancel: () => string, /* Cancel */
+    },
+    model: {
+      player: {
+        name: () => string, /* Name */
+      },
+    },
+  };
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
+
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
+"
+`;
+
+exports[`generator [proxy impl] nested data snapshot 1`] = `
+"/* eslint-disable */
+/* tslint:disable */
+export type ILocaleKeys = {
+    common: {
+      create: () => string, /* Create */
+    },
+    model: {
+      user: {
+        id: () => string, /* ID */
+      },
+    },
+  };
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
+
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;
