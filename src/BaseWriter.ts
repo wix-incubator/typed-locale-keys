@@ -13,6 +13,7 @@ import type {
 import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 import { getTypedParams } from './icuParams';
 import { isSingleCurlyBraces } from './utils';
+import { proxyImplementationTemplate } from './proxyImplementationTemplate';
 
 export interface Options extends GeneratorOptions {
   project: Project;
@@ -66,14 +67,37 @@ export class BaseWriter {
 
     const objectStr = this.writeObjectAsStr(source);
 
-    this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
-
-    this.options.resultFile.addTypeAlias({
-      kind: StructureKind.TypeAlias,
-      name: this.options.typeName,
-      type: `ReturnType<typeof ${this.options.functionName}>`,
-      isExported: true,
-    });
+    if (this.options.proxyImplementation) {
+      this.options.resultFile.addTypeAlias({
+        kind: StructureKind.TypeAlias,
+        name: this.options.typeName,
+        type: objectStr,
+        isExported: true,
+      });
+      const proxyImplName = 'createProxyImpl';
+      this.options.resultFile.addStatements([
+        proxyImplementationTemplate({
+          creatorFnName: proxyImplName,
+          ownValueAlias: this.rootKey,
+          useTranslateFn: this.options.translationFn ?? true,
+        }),
+      ]);
+      this.options.resultFile.addFunction(
+        this.buildLocaleKeysFn(
+          `${proxyImplName}(${
+            this.options.translationFn ? this.translationFnName : ''
+          }) as ${this.options.typeName}`
+        )
+      );
+    } else {
+      this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
+      this.options.resultFile.addTypeAlias({
+        kind: StructureKind.TypeAlias,
+        name: this.options.typeName,
+        type: `ReturnType<typeof ${this.options.functionName}>`,
+        isExported: true,
+      });
+    }
   }
 
   private buildLocaleKeysFn(objectStr: string) {
@@ -143,7 +167,9 @@ export class BaseWriter {
         let comment = '';
 
         if (typeof value === 'string') {
-          if (this.options.translationFn) {
+          if (this.options.proxyImplementation) {
+            valueToSet = `(${this.buildFunctionParam(value)}) => string`;
+          } else if (this.options.translationFn) {
             valueToSet = this.buildFunction(localeKey, value);
           } else {
             valueToSet = `'${localeKey}'`;

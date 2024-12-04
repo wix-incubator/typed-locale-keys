@@ -20,6 +20,7 @@ export interface Options {
   showTranslations?: boolean;
   reactBindings?: boolean;
   translationFn?: boolean;
+  proxyImplementation?: boolean;
   flatten?: boolean;
 }
 
@@ -79,6 +80,7 @@ export class Generator {
       translationFn: this.translateFn,
       typeName: this.typeName,
       resultFile,
+      proxyImplementation: true,
     }).write();
 
     if (this.options.reactBindings) {
