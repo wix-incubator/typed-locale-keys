@@ -67,7 +67,10 @@ export class BaseWriter {
 
     const objectStr = this.writeObjectAsStr(source);
 
-    if (this.options.proxyImplementation && this.options.translationFn) {
+    if (
+      this.options.experimental_proxyImplementation &&
+      this.options.translationFn
+    ) {
       this.options.resultFile.addTypeAlias({
         kind: StructureKind.TypeAlias,
         name: this.options.typeName,
@@ -166,10 +169,12 @@ export class BaseWriter {
         let comment = '';
 
         if (typeof value === 'string') {
-          if (this.options.proxyImplementation && this.options.translationFn) {
-            valueToSet = `(${this.buildFunctionParam(value)}) => string`;
-          } else if (this.options.translationFn) {
-            valueToSet = this.buildFunction(localeKey, value);
+          if (this.options.translationFn) {
+            if (this.options.experimental_proxyImplementation) {
+              valueToSet = `(${this.buildFunctionParam(value)}) => string`;
+            } else {
+              valueToSet = this.buildFunction(localeKey, value);
+            }
           } else {
             valueToSet = `'${localeKey}'`;
           }

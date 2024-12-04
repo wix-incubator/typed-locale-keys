@@ -125,10 +125,12 @@ export class Driver {
       key: string,
       options?: Record<string, unknown>
     ): string => this.defaultTranslateFn(key, options),
-    generatedResultsAsStr: (): Promise<string> =>
+    generatedResultsAsStr: (modulePath?: string): Promise<string> =>
       readFile(
-        `tests/__generated__/runtime-generation/${this
-          .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
+        modulePath
+          ? `${path.join(this.cwd, modulePath)}`
+          : `tests/__generated__/runtime-generation/${this
+              .namespace!}/LocaleKeys.${getFileExtension(this.isReactFile)}`,
         'utf8'
       ),
   };
