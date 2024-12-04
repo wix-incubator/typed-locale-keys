@@ -13,7 +13,7 @@ import type {
 import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 import { getTypedParams } from './icuParams';
 import { isSingleCurlyBraces } from './utils';
-import { proxyImplementationTemplate } from './proxyImplementationTemplate';
+import { renderProxyEngine } from './proxyEngine/renderProxyEngine';
 
 export interface Options extends GeneratorOptions {
   project: Project;
@@ -67,7 +67,7 @@ export class BaseWriter {
 
     const objectStr = this.writeObjectAsStr(source);
 
-    if (this.options.proxyImplementation) {
+    if (this.options.proxyImplementation && this.options.translationFn) {
       this.options.resultFile.addTypeAlias({
         kind: StructureKind.TypeAlias,
         name: this.options.typeName,
@@ -76,10 +76,9 @@ export class BaseWriter {
       });
       const proxyImplName = 'createProxyImpl';
       this.options.resultFile.addStatements([
-        proxyImplementationTemplate({
+        renderProxyEngine({
           creatorFnName: proxyImplName,
           ownValueAlias: this.rootKey,
-          useTranslateFn: this.options.translationFn ?? true,
         }),
       ]);
       this.options.resultFile.addFunction(
@@ -167,7 +166,7 @@ export class BaseWriter {
         let comment = '';
 
         if (typeof value === 'string') {
-          if (this.options.proxyImplementation) {
+          if (this.options.proxyImplementation && this.options.translationFn) {
             valueToSet = `(${this.buildFunctionParam(value)}) => string`;
           } else if (this.options.translationFn) {
             valueToSet = this.buildFunction(localeKey, value);
