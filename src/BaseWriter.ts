@@ -16,7 +16,7 @@ import { isSingleCurlyBraces } from './utils';
 
 export interface Options extends GeneratorOptions {
   project: Project;
-  sourceFile: Promise<NestedLocaleValues>;
+  sourceFile: Promise<Record<string, string>>;
   resultFile: SourceFile;
   typeName: string;
 }
