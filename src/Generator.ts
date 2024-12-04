@@ -80,6 +80,12 @@ export class Generator {
       translationFn: this.translateFn,
       typeName: this.typeName,
       resultFile,
+      /**
+       * TODO(titk@wix.com): This one is temporary for testing purposes.
+       * Must be read from args
+       * And eventually become V3 with a default
+       */
+      proxyImplementation: true,
     }).write();
 
     if (this.options.reactBindings) {
