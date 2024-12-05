@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.2.0] - 4-12-2024
+## [2.1.25] - 5-12-2024
 ### Changed
 - Reworked the way to generate file to rely on typed recursive proxy.
   - How it was: result file had a function which had a generated JS object which mirrored structure of locale keys. Thus locale keys hang in memory in runtime duplicating keys loaded as s JSON file
