@@ -8,10 +8,14 @@ import React from 'react';
 export type ILocaleKeys = {
     common: {
       loggedIn: {
-        message: (data: Record<'username', unknown>) => string, /* Hey, {{username}}, you have successfully logged in! */
-      },
-    },
-    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string, /* {{reader}} reads message from {{writer}} */
+        /* common.loggedIn.message */
+        /* Hey, {{username}}, you have successfully logged in! */
+        message: (data: Record<'username', unknown>) => string; 
+      }; 
+    }; 
+    /* readingWarning */
+    /* {{reader}} reads message from {{writer}} */
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string; 
   };
 const createProxyImpl = <R extends string>(
   t = (...[k]: unknown[]) => k as R,

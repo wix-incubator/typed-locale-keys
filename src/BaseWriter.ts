@@ -161,26 +161,37 @@ export class BaseWriter {
           key === this.rootKey
             ? keyPrefix
             : [keyPrefix, key].filter(Boolean).join('.');
+        const delimiter = this.options.translationFn ? ';' : ',';
 
+        let valueComment = '';
+        let keyComment = '';
         let valueToSet: string;
-        let comment = '';
 
         if (typeof value !== 'string') {
           valueToSet = this.writeObjectAsStr(value, localeKey);
         } else {
           if (this.options.translationFn) {
             valueToSet = `(${this.buildFunctionParam(value)}) => string`;
+            keyComment = `/* ${localeKey} */`;
           } else {
             valueToSet = `'${localeKey}'`;
           }
 
           if (this.options.showTranslations) {
-            comment = ` /* ${value} */`;
+            valueComment = `/* ${value} */`;
           }
         }
 
+        if (keyComment) {
+          writer.writeLine(keyComment);
+          writer.writeLine(valueComment);
+          valueComment = '';
+        }
+
         const keyToSet = /([^A-z0-9_$]|^[0-9])/.test(key) ? `'${key}'` : key;
-        writer.writeLine(`${keyToSet}: ${valueToSet},${comment}`);
+        writer.writeLine(
+          `${keyToSet}: ${valueToSet}${delimiter} ${valueComment}`
+        );
       });
     });
 
