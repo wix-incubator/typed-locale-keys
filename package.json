@@ -5,7 +5,7 @@
   "scripts": {
     "clean-generated": "rimraf tests/__generated__ tests/**/__generated__ tests/cli-configs-sandbox/*/dist",
     "generate-for-type-tests": "ts-node tests/pregenerate.ts",
-    "generate-snapshot": "jest -i --updateSnapshot",
+    "generate-snapshot": "yarn test -- --updateSnapshot",
     "lint": "eslint '**/*.{ts,tsx}'",
     "lint:fix": "eslint '**/*.{ts,tsx}' --fix",
     "typecheck": "tsc --noEmit",

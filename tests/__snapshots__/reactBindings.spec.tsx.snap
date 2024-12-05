@@ -5,18 +5,37 @@ exports[`react file (snapshot) 1`] = `
 /* tslint:disable */
 import React from 'react';
 
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     common: {
       loggedIn: {
-        message: (data: Record<'username', unknown>) => t('common.loggedIn.message', data), /* Hey, {{username}}, you have successfully logged in! */
-      },
-    },
-    readingWarning: (data: Record<'reader' | 'writer', unknown>) => t('readingWarning', data), /* {{reader}} reads message from {{writer}} */
+        /* common.loggedIn.message */
+        /* Hey, {{username}}, you have successfully logged in! */
+        message: (data: Record<'username', unknown>) => string; 
+      }; 
+    }; 
+    /* readingWarning */
+    /* {{reader}} reads message from {{writer}} */
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 
 const LocaleKeysContext = React.createContext({} as ILocaleKeys);
 export const LocaleKeysProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ILocaleKeys; children?: React.ReactNode }> = ({ translateFn, localeKeys, children }) => {

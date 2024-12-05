@@ -13,10 +13,11 @@ import type {
 import { IMPORTED_TRANSLATION_FN_TYPE_NAME } from './constants';
 import { getTypedParams } from './icuParams';
 import { isSingleCurlyBraces } from './utils';
+import { renderProxyEngine } from './proxyEngine/renderProxyEngine';
 
 export interface Options extends GeneratorOptions {
   project: Project;
-  sourceFile: Promise<NestedLocaleValues>;
+  sourceFile: Promise<Record<string, string>>;
   resultFile: SourceFile;
   typeName: string;
 }
@@ -66,14 +67,36 @@ export class BaseWriter {
 
     const objectStr = this.writeObjectAsStr(source);
 
-    this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
-
-    this.options.resultFile.addTypeAlias({
-      kind: StructureKind.TypeAlias,
-      name: this.options.typeName,
-      type: `ReturnType<typeof ${this.options.functionName}>`,
-      isExported: true,
-    });
+    if (this.options.translationFn) {
+      this.options.resultFile.addTypeAlias({
+        kind: StructureKind.TypeAlias,
+        name: this.options.typeName,
+        type: objectStr,
+        isExported: true,
+      });
+      const proxyImplName = 'createProxyImpl';
+      this.options.resultFile.addStatements([
+        renderProxyEngine({
+          creatorFnName: proxyImplName,
+          ownValueAlias: this.rootKey,
+        }),
+      ]);
+      this.options.resultFile.addFunction(
+        this.buildLocaleKeysFn(
+          `${proxyImplName}(${
+            this.options.translationFn ? this.translationFnName : ''
+          }) as ${this.options.typeName}`
+        )
+      );
+    } else {
+      this.options.resultFile.addFunction(this.buildLocaleKeysFn(objectStr));
+      this.options.resultFile.addTypeAlias({
+        kind: StructureKind.TypeAlias,
+        name: this.options.typeName,
+        type: `ReturnType<typeof ${this.options.functionName}>`,
+        isExported: true,
+      });
+    }
   }
 
   private buildLocaleKeysFn(objectStr: string) {
@@ -138,47 +161,57 @@ export class BaseWriter {
           key === this.rootKey
             ? keyPrefix
             : [keyPrefix, key].filter(Boolean).join('.');
+        const delimiter = this.options.translationFn ? ';' : ',';
 
+        let valueComment = '';
+        let keyComment = '';
         let valueToSet: string;
-        let comment = '';
 
-        if (typeof value === 'string') {
-          valueToSet = this.options.translationFn
-            ? this.buildFunction(localeKey, value)
-            : `'${localeKey}'`;
+        if (typeof value !== 'string') {
+          valueToSet = this.writeObjectAsStr(value, localeKey);
+        } else {
+          if (this.options.translationFn) {
+            valueToSet = `(${this.buildFunctionParam(value)}) => string`;
+            keyComment = `/* ${localeKey} */`;
+          } else {
+            valueToSet = `'${localeKey}'`;
+          }
 
           if (this.options.showTranslations) {
-            comment = ` /* ${value} */`;
+            valueComment = `/* ${value} */`;
           }
-        } else {
-          valueToSet = this.writeObjectAsStr(value, localeKey);
+        }
+
+        if (keyComment) {
+          writer.writeLine(keyComment);
+          writer.writeLine(valueComment);
+          valueComment = '';
         }
 
         const keyToSet = /([^A-z0-9_$]|^[0-9])/.test(key) ? `'${key}'` : key;
-
-        writer.writeLine(`${keyToSet}: ${valueToSet},${comment}`);
+        writer.writeLine(
+          `${keyToSet}: ${valueToSet}${delimiter} ${valueComment}`
+        );
       });
     });
 
     return writer.toString();
   }
 
-  private buildFunction(key: string, value: string): string {
+  private buildFunctionParam(value: string) {
     let param = '';
-    let secondCallParam = '';
     const icuCompatible = isSingleCurlyBraces(this.interpolation.prefix);
-
     const interpolationKeys = icuCompatible
       ? getTypedParams(value).map((p) => p.name)
       : this.getInterpolationKeys(value);
+
     if (interpolationKeys.length) {
       param = `data: Record<${interpolationKeys
         .map((k) => `'${k}'`)
         .join(' | ')}, unknown>`;
-      secondCallParam = ', data';
     }
 
-    return `(${param}) => ${this.translationFnName}('${key}'${secondCallParam})`;
+    return param;
   }
 
   private getInterpolationKeys(value: string): string[] {

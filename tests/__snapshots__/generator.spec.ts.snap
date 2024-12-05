@@ -1,125 +1,251 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`complex interpolation case snapshot 1`] = `
+exports[`generator complex interpolation case snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     order: {
       shippingLabel: {
         customerDetailsCard: {
-          address: (data: Record<'firstName' | 'lastName' | 'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => t('order.shippingLabel.customerDetailsCard.address', data), /* {{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}} */
-        },
+          /* order.shippingLabel.customerDetailsCard.address */
+          /* {{firstName}} {{lastName}}, {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, concat ', '}}{{state, suffix ' '}}{{zipCode, suffix ', '}}{{country}} */
+          address: (data: Record<'firstName' | 'lastName' | 'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => string; 
+        }; 
         labelDetailsCard: {
           shipFrom: {
-            addressFormat: (data: Record<'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => t('order.shippingLabel.labelDetailsCard.shipFrom.addressFormat', data), /* {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, suffix ', '}}{{state}} {{zipCode, suffix ', '}}{{country}} */
-          },
-        },
-      },
-    },
+            /* order.shippingLabel.labelDetailsCard.shipFrom.addressFormat */
+            /* {{addressLine1, suffix ', '}}{{addressLine2, suffix ', '}}{{city, suffix ', '}}{{state}} {{zipCode, suffix ', '}}{{country}} */
+            addressFormat: (data: Record<'addressLine1' | 'addressLine2' | 'city' | 'state' | 'zipCode' | 'country', unknown>) => string; 
+          }; 
+        }; 
+      }; 
+    }; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;
 
-exports[`data interpolation icu snapshot 1`] = `
+exports[`generator data interpolation icu snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     common: {
       people: {
-        message: (data: Record<'numPersons', unknown>) => t('common.people.message', data), /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
-        messageComplex: (data: Record<'name' | 'numPersons' | 'productsAmount', unknown>) => t('common.people.messageComplex', data), /* Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}} */
-        pluralMessage: (data: Record<'numPeople', unknown>) => t('common.people.pluralMessage', data), /* {numPeople, plural, =0 {No one is} =1 {One person is} other {# people are}} interested */
-        ordinalMessage: (data: Record<'position', unknown>) => t('common.people.ordinalMessage', data), /* {position, selectordinal, one {You're 1st} two {You're 2nd} few {You're 3rd} other {You're #th}} */
-        dateMessage: (data: Record<'currentDate', unknown>) => t('common.people.dateMessage', data), /* Today is {currentDate, date, long} */
-        timeMessage: (data: Record<'currentTime', unknown>) => t('common.people.timeMessage', data), /* The current time is {currentTime, time, short} */
-        selectMessage: (data: Record<'gender', unknown>) => t('common.people.selectMessage', data), /* {gender, select, male {He is} female {She is} other {They are} } interested */
-        numberMessage: (data: Record<'numApples', unknown>) => t('common.people.numberMessage', data), /* You have {numApples, number} apples */
-      },
-    },
+        /* common.people.message */
+        /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
+        message: (data: Record<'numPersons', unknown>) => string; 
+        /* common.people.messageComplex */
+        /* Hey {name}, There are {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} that want to change the {productsAmount, plural, =1 {price of 1 product} other {prices of # products}} */
+        messageComplex: (data: Record<'name' | 'numPersons' | 'productsAmount', unknown>) => string; 
+        /* common.people.pluralMessage */
+        /* {numPeople, plural, =0 {No one is} =1 {One person is} other {# people are}} interested */
+        pluralMessage: (data: Record<'numPeople', unknown>) => string; 
+        /* common.people.ordinalMessage */
+        /* {position, selectordinal, one {You're 1st} two {You're 2nd} few {You're 3rd} other {You're #th}} */
+        ordinalMessage: (data: Record<'position', unknown>) => string; 
+        /* common.people.dateMessage */
+        /* Today is {currentDate, date, long} */
+        dateMessage: (data: Record<'currentDate', unknown>) => string; 
+        /* common.people.timeMessage */
+        /* The current time is {currentTime, time, short} */
+        timeMessage: (data: Record<'currentTime', unknown>) => string; 
+        /* common.people.selectMessage */
+        /* {gender, select, male {He is} female {She is} other {They are} } interested */
+        selectMessage: (data: Record<'gender', unknown>) => string; 
+        /* common.people.numberMessage */
+        /* You have {numApples, number} apples */
+        numberMessage: (data: Record<'numApples', unknown>) => string; 
+      }; 
+    }; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;
 
-exports[`data interpolation icu with nested params snapshot 1`] = `
+exports[`generator data interpolation icu with nested params snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     common: {
       people: {
-        message: (data: Record<'numPersons', unknown>) => t('common.people.message', data), /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
-        messageNestedParams: (data: Record<'name' | 'numPersons', unknown>) => t('common.people.messageNestedParams', data), /* Hey, {numPersons, plural, =0 {No one here.} one {{name}. You are the only person here.} other {{name} and # other persons are here.}} */
-      },
-    },
+        /* common.people.message */
+        /* Hey, {numPersons, plural, =0 {no one} =1 {one person} other {# persons}} */
+        message: (data: Record<'numPersons', unknown>) => string; 
+        /* common.people.messageNestedParams */
+        /* Hey, {numPersons, plural, =0 {No one here.} one {{name}. You are the only person here.} other {{name} and # other persons are here.}} */
+        messageNestedParams: (data: Record<'name' | 'numPersons', unknown>) => string; 
+      }; 
+    }; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;
 
-exports[`data interpolation single quote snapshot 1`] = `
+exports[`generator data interpolation single quote snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     common: {
       loggedIn: {
-        message: (data: Record<'username', unknown>) => t('common.loggedIn.message', data), /* Hey, {username}, you have successfully logged in! */
-      },
-    },
-    readingWarning: (data: Record<'reader' | 'writer', unknown>) => t('readingWarning', data), /* {reader} reads message from {writer} */
+        /* common.loggedIn.message */
+        /* Hey, {username}, you have successfully logged in! */
+        message: (data: Record<'username', unknown>) => string; 
+      }; 
+    }; 
+    /* readingWarning */
+    /* {reader} reads message from {writer} */
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;
 
-exports[`flat data snapshot 1`] = `
+exports[`generator flat data snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     common: {
-      cancel: () => t('common.cancel'), /* Cancel */
-    },
+      /* common.cancel */
+      /* Cancel */
+      cancel: () => string; 
+    }; 
     model: {
       player: {
-        name: () => t('model.player.name'), /* Name */
-      },
-    },
+        /* model.player.name */
+        /* Name */
+        name: () => string; 
+      }; 
+    }; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;
 
-exports[`nested data snapshot 1`] = `
+exports[`generator nested data snapshot 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return {
+export type ILocaleKeys = {
     common: {
-      create: () => t('common.create'), /* Create */
-    },
+      /* common.create */
+      /* Create */
+      create: () => string; 
+    }; 
     model: {
       user: {
-        id: () => t('model.user.id'), /* ID */
-      },
-    },
+        /* model.user.id */
+        /* ID */
+        id: () => string; 
+      }; 
+    }; 
   };
-}
+const createProxyImpl = <R extends string>(
+  t = (...[k]: unknown[]) => k as R,
+  prevKeys = ''
+): unknown =>
+  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
+    get: (_, key: string): unknown => {
+      let nextKey = prevKeys;
 
-export type ILocaleKeys = ReturnType<typeof LocaleKeys>;
+      if (key !== '$value') {
+        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
+      }
+
+      return createProxyImpl(t, nextKey);
+    },
+  });
+
+export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
+  return createProxyImpl(t) as ILocaleKeys;
+}
 "
 `;

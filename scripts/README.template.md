@@ -1,4 +1,4 @@
-# Typed-Local-Keys
+# Typed-Locale-Keys
 
 Generate typescript code from locale keys JSON.
 
