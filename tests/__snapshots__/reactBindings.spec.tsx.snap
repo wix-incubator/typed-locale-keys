@@ -3,8 +3,6 @@
 exports[`react file (snapshot) 1`] = `
 "/* eslint-disable */
 /* tslint:disable */
-import React from 'react';
-
 export type ILocaleKeys = {
     common: {
       loggedIn: {
@@ -17,21 +15,17 @@ export type ILocaleKeys = {
     /* {{reader}} reads message from {{writer}} */
     readingWarning: (data: Record<'reader' | 'writer', unknown>) => string; 
   };
+import { pathgen } from 'object-path-generator';
+import React from 'react';
+
 const createProxyImpl = <R extends string>(
-  t = (...[k]: unknown[]) => k as R,
-  prevKeys = ''
-): unknown =>
-  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
-    get: (_, key: string): unknown => {
-      let nextKey = prevKeys;
-
-      if (key !== '$value') {
-        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
-      }
-
-      return createProxyImpl(t, nextKey);
-    },
-  });
+  t = (...[k]: unknown[]) => k as R
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+) =>
+  pathgen<R>(undefined, (path: string, ...options: any[]) => {
+    const finalPath = path.split('.$value')[0];
+    return t(finalPath, ...options);
+  }) as unknown;
 
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
   return createProxyImpl(t) as ILocaleKeys;

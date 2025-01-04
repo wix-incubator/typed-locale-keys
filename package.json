@@ -21,6 +21,7 @@
     "flat": "^5.0.2",
     "format-message-parse": "^6.2.4",
     "handlebars": "^4.7.7",
+    "object-path-generator": "^1.0.1",
     "ts-essentials": "^8.1.0",
     "ts-morph": "^12.0.0",
     "ts-node": "^10.2.1",
