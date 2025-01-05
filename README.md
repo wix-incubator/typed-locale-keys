@@ -1,4 +1,4 @@
-# Typed-Locale-Keys
+# Typed-Locale-Keys &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wix-incubator/typed-locale-keys/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/typed-locale-keys.svg?style=flat)](https://www.npmjs.com/package/typed-locale-keys)
 
 Generate typescript code from locale keys JSON.
 
