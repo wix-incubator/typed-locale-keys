@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.template.*"],
   "compilerOptions": {
     "outDir": "dist"
   }
