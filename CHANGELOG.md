@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.27] - 5-01-2025
+### Fixed
+- Resolved an issue where `tlk` was missing `template.ts` in the `dist` library.
+### Added
+- npm package [`object-path-generator`](https://www.npmjs.com/package/object-path-generator)
+### Improved
+- `pathgen` is used to achieve proxy-based behavior which also support caching mechanism.
+
 ## [2.1.25] - 5-12-2024
 ### Changed
 - Reworked the way to generate file to rely on typed recursive proxy.

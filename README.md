@@ -1,4 +1,4 @@
-# Typed-Locale-Keys
+# Typed-Locale-Keys &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wix-incubator/typed-locale-keys/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/typed-locale-keys.svg?style=flat)](https://www.npmjs.com/package/typed-locale-keys)
 
 Generate typescript code from locale keys JSON.
 
@@ -67,76 +67,62 @@ output:
 /* tslint:disable */
 export type ILocaleKeys = {
     common: {
-      loggedIn: {
-        message: (data: Record<'username', unknown>) => string,
-      },
-    },
-    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string,
-  };
+        loggedIn: {
+            /* common.loggedIn.message */
+            /* Hey, {username}, you have successfully logged in! */
+            message: (data: Record<'username', unknown>) => string;
+        };
+    };
+    /* readingWarning */
+    /* {reader} reads message from {writer} */
+    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string;
+};
+import { pathgen } from 'object-path-generator';
+
 const createProxyImpl = <R extends string>(
-  t = (...[k]: unknown[]) => k as R,
-  prevKeys = ''
-): unknown =>
-  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
-    get: (_, key: string): unknown => {
-      let nextKey = prevKeys;
-
-      if (key !== '$value') {
-        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
-      }
-
-      return createProxyImpl(t, nextKey);
-    },
-  });
+    t = (...[k]: unknown[]) => k as R
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+) =>
+    pathgen<R>(undefined, (path, ...options) => {
+        const finalPath = path.split('.$value')[0];
+        return t(finalPath, ...options);
+    }) as unknown;
 
 export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return createProxyImpl(t) as ILocaleKeys;
+    return createProxyImpl(t) as ILocaleKeys;
 }
+
 
 ```
 
-output with React Hook:
+### **React Support**
+
+Enable React integration by turning on the `--reactHook` flag or setting it in the configuration file.
+
+#### **Usage Example**
+
 ```tsx
-/* eslint-disable */
-/* tslint:disable */
-import React from 'react';
+import { LocaleKeysProvider, useLocaleKeys } from './generated/localeKeys';
 
-export type ILocaleKeys = {
-    common: {
-      loggedIn: {
-        message: (data: Record<'username', unknown>) => string,
-      },
-    },
-    readingWarning: (data: Record<'reader' | 'writer', unknown>) => string,
-  };
-const createProxyImpl = <R extends string>(
-  t = (...[k]: unknown[]) => k as R,
-  prevKeys = ''
-): unknown =>
-  new Proxy((...args: unknown[]) => t(prevKeys, ...args), {
-    get: (_, key: string): unknown => {
-      let nextKey = prevKeys;
+const App = () => {
+    const { t } = useI18n(); // Your translation function
 
-      if (key !== '$value') {
-        nextKey = prevKeys ? [prevKeys, key].join('.') : key;
-      }
+    return (
+        <LocaleKeysProvider translateFn={t}>
+            <ChildComponent />
+        </LocaleKeysProvider>
+    );
+};
 
-      return createProxyImpl(t, nextKey);
-    },
-  });
+const ChildComponent = () => {
+    const localeKeys = useLocaleKeys();
 
-export function LocaleKeys<R extends string>(t: (...args: unknown[]) => R) {
-  return createProxyImpl(t) as ILocaleKeys;
-}
-
-const LocaleKeysContext = React.createContext({} as ILocaleKeys);
-export const LocaleKeysProvider: React.FC<{ translateFn?: (...args: unknown[]) => string; localeKeys?: ILocaleKeys; children?: React.ReactNode }> = ({ translateFn, localeKeys, children }) => {
-    if (!translateFn && !localeKeys) { throw new Error('Either translateFn or localeKeys must be provided') }
-    const value = (typeof translateFn === 'function' ? LocaleKeys(translateFn) : localeKeys) as ILocaleKeys
-    return <LocaleKeysContext.Provider value={value}>{children}</LocaleKeysContext.Provider>;
-  };
-export const useLocaleKeys = () => React.useContext(LocaleKeysContext);
-
+    return (
+        <div>
+            {localeKeys.common.loggedIn.message({ username: 'John' })}
+        </div>
+    );
+};
 ```
 
 ## Configuration file
