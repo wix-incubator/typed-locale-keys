@@ -37,10 +37,11 @@
     "tlk": "dist/bin.js"
   },
   "devDependencies": {
-    "@testing-library/react": "^12.1.0",
+    "@testing-library/react": "^14.0.0",
     "@types/child-process-promise": "^2.2.2",
     "@types/jest": "^27.0.1",
-    "@types/react": "^17.0.21",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "eslint": "^7.32.0",
@@ -55,8 +56,8 @@
     "jest": "^27.1.1",
     "lint-staged": "^11.2.0",
     "prettier": "2.4.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "rimraf": "^3.0.2",
     "simple-git-hooks": "^2.6.1",
     "ts-jest": "^27.0.5"
@@ -91,5 +92,6 @@
   "bugs": {
     "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@3.6.4+sha512.e70835d4d6d62c07be76b3c1529cb640c7443f0fe434ef4b6478a5a399218cbaf1511b396b3c56eb03bc86424cff2320f6167ad2fde273aa0df6e60b7754029f"
 }
