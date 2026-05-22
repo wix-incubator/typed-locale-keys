@@ -36,6 +36,9 @@
   "bin": {
     "tlk": "dist/bin.js"
   },
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
     "@testing-library/react": "^12.1.0",
     "@types/child-process-promise": "^2.2.2",
