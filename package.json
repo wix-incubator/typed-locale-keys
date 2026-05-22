@@ -12,13 +12,12 @@
     "pretest": "yarn run clean-generated && yarn run generate-for-type-tests && yarn run lint && yarn run typecheck && yarn run build",
     "test": "jest -i",
     "build": "tsc -p tsconfig.build.json && yarn copy-templates",
-    "copy-templates": "cpx 'src/**/*.template.*' dist/",
+    "copy-templates": "ts-node scripts/copyTemplates.ts",
     "generate-readme": "ts-node scripts/generateReadme.ts"
   },
   "dependencies": {
     "@types/flat": "^5.0.2",
     "cosmiconfig": "^7.0.1",
-    "cpx": "^1.5.0",
     "flat": "^5.0.2",
     "format-message-parse": "^6.2.4",
     "handlebars": "^4.7.7",
@@ -36,7 +35,7 @@
     "tlk": "dist/bin.js"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.0",
