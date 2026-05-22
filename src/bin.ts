@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { cosmiconfig } from 'cosmiconfig';
-import yargs from 'yargs';
+import yargs, { Argv } from 'yargs';
 
 import { hideBin } from 'yargs/helpers';
 
@@ -22,59 +22,54 @@ export interface Config {
   singleCurlyBraces?: boolean;
   reactHook?: boolean;
 }
+export type CliParams = Awaited<ReturnType<typeof codegenBuilder>['argv']>;
 
-export type CliParams = typeof cliDefinition['argv'];
+const codegenBuilder = (y: Argv) =>
+  y
+    .positional('source', {
+      type: 'string',
+      describe: 'Locale JSON file path',
+    })
+    .option('output', {
+      type: 'string',
+      alias: 'o',
+      describe: 'Distribution directory for generated factory',
+    })
+    .option('nested', {
+      type: 'boolean',
+      describe: 'Should create nested object',
+      alias: 'n',
+      default: true,
+    })
+    .option('translate', {
+      type: 'boolean',
+      alias: 't',
+      default: true,
+      describe:
+        'Should add translate function. NOTE: will wrap value with function',
+    })
+    .option('showTranslations', {
+      type: 'boolean',
+      describe: "Add translations as function's comment",
+      default: true,
+    })
+    .option('functionName', {
+      type: 'string',
+      alias: 'f',
+      describe: 'Generated function name',
+      default: DEFAULT_FN_NAME,
+    })
+    .option('singleCurlyBraces', {
+      type: 'boolean',
+      describe:
+        'Read interpolation arguments using single curly instead of double',
+    })
+    .option('reactHook', {
+      type: 'boolean',
+      describe: 'Generate React bindings (Provider and hook)',
+    });
 
-const cliDefinition = yargs(hideBin(process.argv)).command(
-  'codegen [source]',
-  'Generates a factory from the keys of a locale.json file',
-  (y) =>
-    y
-      .positional('source', {
-        type: 'string',
-        describe: 'Locale JSON file path',
-      })
-      .option('output', {
-        type: 'string',
-        alias: 'o',
-        describe: 'Distribution directory for generated factory',
-      })
-      .option('nested', {
-        type: 'boolean',
-        describe: 'Should create nested object',
-        alias: 'n',
-        default: true,
-      })
-      .option('translate', {
-        type: 'boolean',
-        alias: 't',
-        default: true,
-        describe:
-          'Should add translate function. NOTE: will wrap value with function',
-      })
-      .option('showTranslations', {
-        type: 'boolean',
-        describe: "Add translations as function's comment",
-        default: true,
-      })
-      .option('functionName', {
-        type: 'string',
-        alias: 'f',
-        describe: 'Generated function name',
-        default: DEFAULT_FN_NAME,
-      })
-      .option('singleCurlyBraces', {
-        type: 'boolean',
-        describe:
-          'Read interpolation arguments using single curly instead of double',
-      })
-      .option('reactHook', {
-        type: 'boolean',
-        describe: 'Generate React bindings (Provider and hook)',
-      })
-);
-
-void (async () => {
+const runCodegen = async (argv: CliParams): Promise<void> => {
   const config = (
     await cosmiconfig('typedlocalekeys', {
       packageProp: 'typedLocaleKeys',
@@ -82,17 +77,15 @@ void (async () => {
   )?.config as Config | undefined;
 
   const {
-    argv: {
-      output = config?.primaryOutput ?? DEFAULT_OUTPUT,
-      reactHook = config?.reactHook,
-      singleCurlyBraces = config?.singleCurlyBraces,
-      functionName,
-      source,
-      showTranslations,
-      translate,
-      nested,
-    },
-  } = cliDefinition;
+    output = config?.primaryOutput ?? DEFAULT_OUTPUT,
+    reactHook = config?.reactHook,
+    singleCurlyBraces = config?.singleCurlyBraces,
+    functionName,
+    source,
+    showTranslations,
+    translate,
+    nested,
+  } = argv;
 
   const entries = Object.entries(config?.entries ?? {});
 
@@ -115,4 +108,14 @@ void (async () => {
   );
 
   await Promise.all(promises);
-})();
+};
+
+void yargs(hideBin(process.argv))
+  .command(
+    'codegen [source]',
+    'Generates a factory from the keys of a locale.json file',
+    codegenBuilder,
+    runCodegen
+  )
+  .demandCommand(1)
+  .parseAsync();

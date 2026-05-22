@@ -1,15 +1,15 @@
-import { InitialOptionsTsJest } from 'ts-jest/dist/types';
+import type { Config } from 'jest';
 
-const jestConfig: InitialOptionsTsJest = {
-  preset: 'ts-jest',
+const jestConfig: Config = {
   testEnvironment: 'jsdom',
   testTimeout: 10000,
-  globals: {
-    'ts-jest': {
-      diagnostics: {
-        warnOnly: true,
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        diagnostics: { warnOnly: true },
       },
-    },
+    ],
   },
 };
 

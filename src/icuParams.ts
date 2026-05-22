@@ -28,7 +28,7 @@ const isStringOnly = (element: Format | undefined): boolean => {
   return typeof element === 'string';
 };
 
-const isValidSubMessages = (subMessages: {} | undefined): boolean => {
+const isValidSubMessages = (subMessages: object | undefined): boolean => {
   return typeof subMessages === 'object';
 };
 
