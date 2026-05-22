@@ -71,7 +71,6 @@
     "locale",
     "typescript"
   ],
-  "private": false,
   "publishConfig": {
     "versionBumpStrategy": "patch",
     "registry": "https://registry.npmjs.org/"
@@ -94,5 +93,6 @@
   "bugs": {
     "url": "https://github.com/wix-incubator/typed-locale-keys/issues"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@4.15.0"
 }
