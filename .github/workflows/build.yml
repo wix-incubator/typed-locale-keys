@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     if: "!startsWith(github.event.head_commit.message, 'ci: version bump to v')"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version-file: '.nvmrc'
           cache: yarn
           registry-url: https://registry.npmjs.org/
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn test
