@@ -1,7 +1,7 @@
+import { spawn as spawnProcess } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
-import { spawn } from 'child-process-promise';
 import jsonStringify from 'fast-json-stable-stringify';
 import { Generator } from '../src/Generator';
 import { CliParams } from '../src/bin';
@@ -9,6 +9,26 @@ import { DEFAULT_FN_NAME, DEFAULT_OUTPUT } from '../src/constants';
 import { getFileExtension } from '../src/utils';
 
 const readFile = util.promisify(fs.readFile);
+
+const spawn = (
+  command: string,
+  args: string[],
+  options: { cwd: string }
+): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const child = spawnProcess(command, args, {
+      ...options,
+      stdio: 'inherit',
+    });
+    child.on('error', reject);
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`${command} exited with code ${code ?? 'null'}`));
+      }
+    });
+  });
 
 export class Driver {
   private cwd: string = process.cwd();

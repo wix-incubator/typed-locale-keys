@@ -12,14 +12,12 @@
     "pretest": "yarn run clean-generated && yarn run generate-for-type-tests && yarn run lint && yarn run typecheck && yarn run build",
     "test": "jest -i",
     "build": "tsc -p tsconfig.build.json && yarn copy-templates",
-    "copy-templates": "cpx 'src/**/*.template.*' dist/",
+    "copy-templates": "node scripts/copy-templates.js",
     "generate-readme": "ts-node scripts/generateReadme.ts"
   },
   "dependencies": {
     "@types/flat": "^5.0.2",
-    "child-process-promise": "^2.2.1",
     "cosmiconfig": "^7.0.1",
-    "cpx": "^1.5.0",
     "flat": "^5.0.2",
     "format-message-parse": "^6.2.4",
     "handlebars": "^4.7.7",
@@ -38,7 +36,6 @@
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.0",
-    "@types/child-process-promise": "^2.2.2",
     "@types/jest": "^27.0.1",
     "@types/react": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
