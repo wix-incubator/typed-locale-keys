@@ -1,7 +1,7 @@
+import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import util from 'util';
 
-import { exec } from 'child-process-promise';
 import Handlebars from 'handlebars';
 
 import { Generator } from '../src/Generator';
@@ -9,6 +9,7 @@ import { DEFAULT_FN_NAME } from '../src/constants';
 
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
+const exec = util.promisify(execCallback);
 
 void (async () => {
   const template = Handlebars.compile(
